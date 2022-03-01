@@ -1,7 +1,7 @@
 package com.deinsoft.efacturador3.parser;
 
-import com.deinsoft.efacturador3.bean.Empresa;
-import com.deinsoft.efacturador3.bean.FacturaElectronica;
+import com.deinsoft.efacturador3.model.Empresa;
+import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.model.Contribuyente;
 import com.deinsoft.efacturador3.parser.pipe.PipeFacturaParser;
 import com.deinsoft.efacturador3.parser.pipe.PipeGuiaParser;

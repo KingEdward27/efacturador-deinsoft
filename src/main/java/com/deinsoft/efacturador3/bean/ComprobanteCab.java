@@ -86,6 +86,8 @@ public class ComprobanteCab {
     private BigDecimal totalValorVentasInafectas;
     private BigDecimal totalValorVentasExoneradas;
     
+    private String forma_pago;
+    
     @Valid
     private Set<ComprobanteDet> lista;
 
@@ -367,6 +369,14 @@ public class ComprobanteCab {
 
     public void setTotalValorVentasExoneradas(BigDecimal totalValorVentasExoneradas) {
         this.totalValorVentasExoneradas = totalValorVentasExoneradas;
+    }
+
+    public String getForma_pago() {
+        return forma_pago;
+    }
+
+    public void setForma_pago(String forma_pago) {
+        this.forma_pago = forma_pago;
     }
 
     

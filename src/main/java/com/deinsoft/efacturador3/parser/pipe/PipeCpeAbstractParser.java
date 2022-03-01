@@ -101,39 +101,39 @@ public abstract class PipeCpeAbstractParser
 
 
       
-      List<Map<String, Object>> listaTributos = new ArrayList<>();
-      Map<String, Object> tributo = null;
-      if (activarAdiTributos.intValue() == 1) {
-        
-        FileReader fArchivoAdiTributos = new FileReader(archivoAdiTributos);
-        BufferedReader bArchivoAdiTributos = new BufferedReader(fArchivoAdiTributos);
-        while ((cadena = bArchivoAdiTributos.readLine()) != null) {
-          String[] registro = cadena.split("\\|");
-          
-          if (registro.length != 5) {
-            bArchivoAdiTributos.close();
-            throw new RuntimeException("El archivo de tributos de cabecera no contiene la cantidad de datos esperada (5 columnas).");
-          } 
-          
-          tributo = new HashMap<>();
-          tributo.put("ideTributo", registro[0]);
-          tributo.put("nomTributo", registro[1]);
-          tributo.put("codTipTributo", registro[2]);
-          tributo.put("mtoBaseImponible", registro[3]);
-          tributo.put("mtoTributo", registro[4]);
-          tributo.put("codigoMonedaSolesSwf", "PEN");
-          
-          listaTributos.add(tributo);
-        } 
-
-        
-        bArchivoAdiTributos.close();
-        comprobante.put("listaTributos", listaTributos);
-      }
-      else {
-        
-        comprobante.put("listaTributos", listaTributos);
-      } 
+//      List<Map<String, Object>> listaTributos = new ArrayList<>();
+//      Map<String, Object> tributo = null;
+//      if (activarAdiTributos.intValue() == 1) {
+//        
+//        FileReader fArchivoAdiTributos = new FileReader(archivoAdiTributos);
+//        BufferedReader bArchivoAdiTributos = new BufferedReader(fArchivoAdiTributos);
+//        while ((cadena = bArchivoAdiTributos.readLine()) != null) {
+//          String[] registro = cadena.split("\\|");
+//          
+//          if (registro.length != 5) {
+//            bArchivoAdiTributos.close();
+//            throw new RuntimeException("El archivo de tributos de cabecera no contiene la cantidad de datos esperada (5 columnas).");
+//          } 
+//          
+//          tributo = new HashMap<>();
+//          tributo.put("ideTributo", registro[0]);
+//          tributo.put("nomTributo", registro[1]);
+//          tributo.put("codTipTributo", registro[2]);
+//          tributo.put("mtoBaseImponible", registro[3]);
+//          tributo.put("mtoTributo", registro[4]);
+//          tributo.put("codigoMonedaSolesSwf", "PEN");
+//          
+//          listaTributos.add(tributo);
+//        } 
+//
+//        
+//        bArchivoAdiTributos.close();
+//        comprobante.put("listaTributos", listaTributos);
+//      }
+//      else {
+//        
+//        comprobante.put("listaTributos", listaTributos);
+//      } 
 
       
       List<Map<String, Object>> listaAdicionalDetalle = new ArrayList<>();

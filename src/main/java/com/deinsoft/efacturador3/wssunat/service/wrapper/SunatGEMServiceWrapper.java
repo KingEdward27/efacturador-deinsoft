@@ -85,9 +85,9 @@ public class SunatGEMServiceWrapper
     
     System.out.println(">>>curentURLService:" + this.curentURLService);
     
-    System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
+//    System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
     
-    BillService client = initWebService(1);
+    BillService client = initWebService2();
     try {
       return sendBill(rutaArchivoCdr, nombreArchivo, source, client);
     } catch (SOAPFaultException e) {
@@ -127,7 +127,8 @@ public class SunatGEMServiceWrapper
 
   
   private Response sendBill(String rutaArchivoCdr, String nombreArchivo, DataSource source, BillService client) {
-    byte[] constancia = client.sendBill(nombreArchivo, new DataHandler(source));
+    
+      byte[] constancia = client.sendBill(nombreArchivo, new DataHandler(source));
     System.out.println(">>>constancia:" + constancia);
     try {
       FileUtils.writeByteArrayToFile(new File(rutaArchivoCdr + "R" + nombreArchivo), constancia);
@@ -301,7 +302,48 @@ public class SunatGEMServiceWrapper
     } 
     return byteToResponse(constancia);
   }
-  
+  private BillService initWebService2() {
+    JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
+    Map<String, Object> props = new HashMap<>();
+    props.put("mtom-enabled", Boolean.FALSE);
+    factory.setProperties(props);
+    
+    factory.setAddress(this.curentURLService);
+//    factory.getInInterceptors().add(new LoggingInInterceptor());
+//    factory.getOutInterceptors().add(new LoggingOutInterceptor());
+    
+    factory.setServiceClass(BillService.class);
+    
+    BillService client = (BillService)factory.create();
+//    
+//    FiltersType filter = new FiltersType();
+//    filter.getInclude().add(".*_EXPORT_.*");
+//    filter.getInclude().add(".*_EXPORT1024_.*");
+//    filter.getInclude().add(".*_WITH_DES_.*");
+//    filter.getInclude().add(".*_WITH_NULL_.*");
+//    filter.getExclude().add(".*_DH_anon_.*");
+//
+//    
+//    try {
+//      TLSClientParameters tlsParams = new TLSClientParameters();
+//      tlsParams.setDisableCNCheck(true);
+//      if (ind == 1) {
+//        tlsParams.setCipherSuites(Collections.singletonList("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256"));
+//      } else {
+//        tlsParams.setSecureSocketProtocol("TLSv1.2");
+//      } 
+//      
+//      tlsParams.setTrustManagers(getTrustManagers("truststore.jks"));
+//      tlsParams.setCipherSuitesFilter(filter);
+//      
+//      System.out.println(">> Usuario:" + this.usuario);
+//      configureSSLOnTheClient(client, this.usuario, tlsParams);
+//    } catch (WebserviceConfigurationException e1) {
+//      throw new RuntimeException(e1);
+//    } 
+    
+    return client;
+  }
   private BillService initWebService(int ind) {
     JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
     Map<String, Object> props = new HashMap<>();

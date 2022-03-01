@@ -2,7 +2,6 @@ package com.deinsoft.efacturador3.service;
 
 import java.util.List;
 import java.util.Properties;
-import com.deinsoft.efacturador3.model.Documento;
 import com.deinsoft.efacturador3.model.Parametro;
 
 public interface ComunesService {

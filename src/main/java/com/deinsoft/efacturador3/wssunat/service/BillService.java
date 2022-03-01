@@ -11,7 +11,7 @@ import javax.xml.ws.ResponseWrapper;
 import com.deinsoft.efacturador3.wssunat.model.StatusResponse;
 
 @WebService(targetNamespace = "http://service.sunat.gob.pe", name = "billService")
-@XmlSeeAlso({ObjectFactory.class})
+//@XmlSeeAlso({ObjectFactory.class})
 public interface BillService {
   @WebResult(name = "ticket", targetNamespace = "")
   @RequestWrapper(localName = "sendSummary", targetNamespace = "http://service.sunat.gob.pe", className = "com.deinsoft.efacturador2.wssunat.model.SendSummary")

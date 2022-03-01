@@ -23,12 +23,13 @@ import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import com.deinsoft.efacturador3.ConfigurationHolder;
+import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.config.XsltCpePath;
 //import com.deinsoft.efacturador3.dao.ErrorDao;
 import com.deinsoft.efacturador3.exception.XsdException;
 import com.deinsoft.efacturador3.repository.ErrorRepository;
 import com.deinsoft.efacturador3.service.ComunesService;
-import com.deinsoft.efacturador3.service.ResourceResolver;
+import com.deinsoft.efacturador3.util.ResourceResolver;
 import com.deinsoft.efacturador3.util.Constantes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,42 +50,43 @@ public class XsdCpeValidator
     this.xsltCpePath = xsltCpePath;
   }
 
-  public void validarSchemaXML(String tipoComprobante, String nombreArchivo) throws XsdException {
+  public void validarSchemaXML(String rootPath, FacturaElectronica facturaElectronica, String nombreArchivo) throws XsdException {
     log.debug("validarSchemaXML...Iniciando Validacion de Schema");
     
     ConfigurationHolder config = ConfigurationHolder.getInstance();
-
+    String tipoComprobante = facturaElectronica.getTipo();
     
     try {
       String schemaValidador = "";
       
       if ("01".equals(tipoComprobante) || "03"
         .equals(tipoComprobante)) {
-        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getFacturaXsd();
+          //rootPath + "/VALI/" +
+        schemaValidador = rootPath + "/VALI/" +  xsltCpePath.getFacturaXsd();
       }
       if ("07".equals(tipoComprobante)) {
-        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getNotaCreditoXsd();
+        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getNotaCreditoXsd();
       }
       if ("08".equals(tipoComprobante)) {
-        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getNotaDebitoXsd();
+        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getNotaDebitoXsd();
       }
       if ("RA".equals(tipoComprobante)) {
-        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenAnuladoXsd();
+        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getResumenAnuladoXsd();
       }
       if ("RC".equals(tipoComprobante)) {
-        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenBoletaXsd();
+        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getResumenBoletaXsd();
       }
       if ("RR".equals(tipoComprobante)) {
-        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenReversionXsd();
+        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getResumenReversionXsd();
       }
       if ("20".equals(tipoComprobante)) {
-        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getRetencionXsd();
+        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getRetencionXsd();
       }
       if ("40".equals(tipoComprobante)) {
-        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getPercepcionXsd();
+        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getPercepcionXsd();
       }
       if ("09".equals(tipoComprobante)) {
-        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getGuiaXsd();
+        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getGuiaXsd();
       }
       log.debug("validarSchemaXML...Asignando schemaValidador (" + schemaValidador + ")");
       log.debug("validarSchemaXML...Aplicando builderFactory");

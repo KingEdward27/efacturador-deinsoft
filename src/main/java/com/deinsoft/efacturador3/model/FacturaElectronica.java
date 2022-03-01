@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.deinsoft.efacturador3.bean;
+package com.deinsoft.efacturador3.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
@@ -18,8 +18,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -27,33 +30,40 @@ import javax.validation.constraints.Size;
  *
  * @author EDWARD-PC
  */
-@Entity(name="facturaElectronica")
+@Entity(name = "facturaElectronica")
 @Table(name = "factura_electronica")
 public class FacturaElectronica implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "m_id")
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
+    @NotNull
+    @Valid
+    @OneToOne
+    @JoinColumn(name = "empresa_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+    private Empresa empresa;
+
     @Column(name = "fecha_emision")
     private Date fechaEmision;
-    
+
     private String tipo;
-    
+
     private String serie;
-    
+
     private String numero;
-    
+
     private String fechaVencimiento;
-    
+
     private String tipoOperacion;
-    
+
     private String clienteTipo;
-    
+
     private String clienteDocumento;
-    
+
     private String clienteNombre;
     private String clienteDireccion;
     private String clienteEmail;
@@ -64,8 +74,7 @@ public class FacturaElectronica implements Serializable {
     private String ordenCompra;
     private String guiaRemision;
     private String descuentoGlobalPorcentaje;
-    
-    
+
     private String moneda;
     private String notaTipo;
     private String notaMotivo;
@@ -74,7 +83,7 @@ public class FacturaElectronica implements Serializable {
     private String notaReferenciaNumero;
     private String incluirPdf;
     private String incluirXml;
-    
+
     private BigDecimal sumatoriaIGV;
     private BigDecimal sumatoriaISC;
     private BigDecimal sumatoriaOtrosTributos;
@@ -82,49 +91,65 @@ public class FacturaElectronica implements Serializable {
     private BigDecimal totalValorVentasGravadas;
     private BigDecimal totalValorVentasInafectas;
     private BigDecimal totalValorVentasExoneradas;
-    
+
     @Column(name = "descuentos_globales")
     private BigDecimal descuentosGlobales;
-    
+
     @Column(name = "importe_total")
     private BigDecimal importeTotal;
-    
+
     @Column(name = "leyenda1")
     private String leyenda1;
-    
+
     @Column(name = "leyenda2")
     private String leyenda2;
-    
+
     @Column(name = "leyenda3")
     private String leyenda3;
-    
+
     @Column(name = "xml_hash")
     private String xmlHash;
-    
-    @Column(name = "idempresa")
-    private int idempresa;
 
     @Column(name = "total_valor_venta")
     private BigDecimal totalValorVenta;
-    
+
     @Column(name = "customization_id")
     private String customizationId;
-    
+
     @Column(name = "ind_situacion")
     private String indSituacion;
     
+    @Column(name = "fecha_envio")
+    private Date fechaEnvio;
+    
     private Date FechaGenXml;
+    
+    @Column(name = "observacion_envio")
+    private String observacionEnvio;
+    
+    @Column(name = "cod_local")
+    private String codLocal;
+    
+    @Column(name = "forma_pago")
+    private String formaPago;
+    
 //    @Column(name = "nombre_Archivo")
 //    private String nombreArchivo;
-    
-    @OneToMany(mappedBy = "facturaElectronica",fetch=FetchType.LAZY,cascade = CascadeType.PERSIST)
-    @JsonIgnoreProperties(value = { "facturaElectronica" }, allowSetters = true)
+
+    @OneToMany(mappedBy = "facturaElectronica", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JsonIgnoreProperties(value = {"facturaElectronica"}, allowSetters = true)
     private List<FacturaElectronicaDet> listFacturaElectronicaDet;
+
+    @OneToMany(mappedBy = "facturaElectronica", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JsonIgnoreProperties(value = {"facturaElectronica"}, allowSetters = true)
+    private List<FacturaElectronicaTax> listFacturaElectronicaTax;
     
-    public void addFacturaElectronicaDet(FacturaElectronicaDet item){
-	    item.setFacturaElectronica(this);
-	}
-    
+    public void addFacturaElectronicaDet(FacturaElectronicaDet item) {
+        item.setFacturaElectronica(this);
+    }
+public void addFacturaElectronicaTax(FacturaElectronicaTax item) {
+        item.setFacturaElectronica(this);
+    }
     public FacturaElectronica() {
     }
 
@@ -132,7 +157,7 @@ public class FacturaElectronica implements Serializable {
         this.id = id;
     }
 
-    public FacturaElectronica(Long id, Date fechaEmision, String tipo, String serie, String numero, String fechaVencimiento, String tipoOperacion, String clienteTipo, String clienteDocumento, String clienteNombre, String clienteDireccion, String clienteEmail, String clienteTelefono, String vendedorNombre, String observaciones, String placaVehiculo, String ordenCompra, String guiaRemision, String descuentoGlobalPorcentaje, String moneda, String notaTipo, String notaMotivo, String notaReferenciaTipo, String notaReferenciaSerie, String notaReferenciaNumero, String incluirPdf, String incluirXml, BigDecimal sumatoriaIGV, BigDecimal sumatoriaISC, BigDecimal sumatoriaOtrosTributos, BigDecimal sumatoriaOtrosCargos, BigDecimal totalValorVentasGravadas, BigDecimal totalValorVentasInafectas, BigDecimal totalValorVentasExoneradas, BigDecimal descuentosGlobales, BigDecimal importeTotal, String leyenda1, String leyenda2, String leyenda3, String xmlHash, int idempresa, BigDecimal totalValorVenta, String customizationId, String indSituacion, List<FacturaElectronicaDet> listFacturaElectronicaDet) {
+    public FacturaElectronica(Long id, Date fechaEmision, String tipo, String serie, String numero, String fechaVencimiento, String tipoOperacion, String clienteTipo, String clienteDocumento, String clienteNombre, String clienteDireccion, String clienteEmail, String clienteTelefono, String vendedorNombre, String observaciones, String placaVehiculo, String ordenCompra, String guiaRemision, String descuentoGlobalPorcentaje, String moneda, String notaTipo, String notaMotivo, String notaReferenciaTipo, String notaReferenciaSerie, String notaReferenciaNumero, String incluirPdf, String incluirXml, BigDecimal sumatoriaIGV, BigDecimal sumatoriaISC, BigDecimal sumatoriaOtrosTributos, BigDecimal sumatoriaOtrosCargos, BigDecimal totalValorVentasGravadas, BigDecimal totalValorVentasInafectas, BigDecimal totalValorVentasExoneradas, BigDecimal descuentosGlobales, BigDecimal importeTotal, String leyenda1, String leyenda2, String leyenda3, String xmlHash, BigDecimal totalValorVenta, String customizationId, String indSituacion, List<FacturaElectronicaDet> listFacturaElectronicaDet) {
         this.id = id;
         this.fechaEmision = fechaEmision;
         this.tipo = tipo;
@@ -173,7 +198,6 @@ public class FacturaElectronica implements Serializable {
         this.leyenda2 = leyenda2;
         this.leyenda3 = leyenda3;
         this.xmlHash = xmlHash;
-        this.idempresa = idempresa;
         this.totalValorVenta = totalValorVenta;
         this.customizationId = customizationId;
         this.indSituacion = indSituacion;
@@ -186,6 +210,14 @@ public class FacturaElectronica implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     public Date getFechaEmision() {
@@ -500,14 +532,6 @@ public class FacturaElectronica implements Serializable {
         this.xmlHash = xmlHash;
     }
 
-    public int getIdempresa() {
-        return idempresa;
-    }
-
-    public void setIdempresa(int idempresa) {
-        this.idempresa = idempresa;
-    }
-
     public BigDecimal getTotalValorVenta() {
         return totalValorVenta;
     }
@@ -540,6 +564,38 @@ public class FacturaElectronica implements Serializable {
         this.FechaGenXml = FechaGenXml;
     }
 
+    public String getObservacionEnvio() {
+        return observacionEnvio;
+    }
+
+    public void setObservacionEnvio(String observacionEnvio) {
+        this.observacionEnvio = observacionEnvio;
+    }
+
+    public Date getFechaEnvio() {
+        return fechaEnvio;
+    }
+
+    public void setFechaEnvio(Date fechaEnvio) {
+        this.fechaEnvio = fechaEnvio;
+    }
+
+    public String getCodLocal() {
+        return codLocal;
+    }
+
+    public void setCodLocal(String codLocal) {
+        this.codLocal = codLocal;
+    }
+
+    public String getFormaPago() {
+        return formaPago;
+    }
+
+    public void setFormaPago(String formaPago) {
+        this.formaPago = formaPago;
+    }
+
     public List<FacturaElectronicaDet> getListFacturaElectronicaDet() {
         return listFacturaElectronicaDet;
     }
@@ -548,7 +604,14 @@ public class FacturaElectronica implements Serializable {
         this.listFacturaElectronicaDet = listFacturaElectronicaDet;
     }
 
-    
+    public List<FacturaElectronicaTax> getListFacturaElectronicaTax() {
+        return listFacturaElectronicaTax;
+    }
+
+    public void setListFacturaElectronicaTax(List<FacturaElectronicaTax> listFacturaElectronicaTax) {
+        this.listFacturaElectronicaTax = listFacturaElectronicaTax;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -573,5 +636,5 @@ public class FacturaElectronica implements Serializable {
     public String toString() {
         return "com.deinsoft.efacturador3.bean.FacturaElectronica[ mId=" + id + " ]";
     }
-    
+
 }

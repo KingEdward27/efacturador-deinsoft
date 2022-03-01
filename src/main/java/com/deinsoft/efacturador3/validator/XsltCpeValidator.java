@@ -28,6 +28,7 @@ import net.sf.saxon.trans.XPathException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.deinsoft.efacturador3.ConfigurationHolder;
+import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.config.XsltCpePath;
 //import com.deinsoft.efacturador3.dao.ErrorDao;
 import com.deinsoft.efacturador3.exception.XsltException;
@@ -52,9 +53,9 @@ public class XsltCpeValidator {
         this.errorDao = errorDao;
         this.xsltCpePath = xsltCpePath;
     }
-public String validarXML(String tipoComprobante, String rutaEntrada, String nombreArchivo) throws XsltException {
+    public String validarXMLYComprimir(String rootPath, FacturaElectronica facturaElectronica, String rutaEntrada, String nombreArchivo) throws XsltException {
         String XsltFullPath = "", retorno = "", outputHTML = "";
-
+        String tipoComprobante = facturaElectronica.getTipo();
         String XmlFullPath = rutaEntrada + nombreArchivo + ".xml";
 
 //        ConfigurationHolder config = ConfigurationHolder.getInstance();
@@ -63,12 +64,12 @@ public String validarXML(String tipoComprobante, String rutaEntrada, String nomb
 //            XsltFullPath = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenAnulado();
 //
 //        } else 
-        
+//        String CONSTANTE_PATH_FORMATOS_FTL = "D:/Proyectos/facturacion/efacturador3/sunat_archivos/sfs/VALI/";
             if ("03".equals(tipoComprobante)) {
-            XsltFullPath = Constantes.CONSTANTE_PATH_FORMATOS_FTL + this.xsltCpePath.getBoleta();
+            XsltFullPath = rootPath + "/VALI/" + this.xsltCpePath.getBoleta();
 
         } else if ("01".equals(tipoComprobante)) {
-            XsltFullPath = Constantes.CONSTANTE_PATH_FORMATOS_FTL +  this.xsltCpePath.getFactura();
+            XsltFullPath = rootPath + "/VALI/" +  this.xsltCpePath.getFactura();
 //        } else if ("07".equals(tipoComprobante)) {
 //            XsltFullPath = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getNotaCredito();
 //        } else if ("08".equals(tipoComprobante)) {
@@ -84,11 +85,11 @@ public String validarXML(String tipoComprobante, String rutaEntrada, String nomb
 //        } else if ("09".equals(tipoComprobante)) {
 //            XsltFullPath = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getGuia();
         }
-        outputHTML = this.comunesService.obtenerRutaTrabajo("FIRM") + nombreArchivo + ".xml";
+        outputHTML =  rootPath +"/"+facturaElectronica.getEmpresa().getNumdoc() + "/FIRMA/" + nombreArchivo + ".xml";
         try {
-            transform(XmlFullPath, XsltFullPath, outputHTML);
+//            transform(XmlFullPath, XsltFullPath, outputHTML);
 
-            String rutaZipSalida = this.comunesService.obtenerRutaTrabajo("ENVI") + nombreArchivo + ".zip";
+            String rutaZipSalida = rootPath +"/"+facturaElectronica.getEmpresa().getNumdoc() + "/ENVIO/" + nombreArchivo + ".zip";
             OutputStream archivoZip = new FileOutputStream(rutaZipSalida);
             InputStream archivoXml = new FileInputStream(XmlFullPath);
             FacturadorUtil.comprimirArchivo(archivoZip,archivoXml, nombreArchivo + ".xml");
@@ -129,9 +130,10 @@ public String validarXML(String tipoComprobante, String rutaEntrada, String nomb
 
         return retorno;
     }
-    public InputStream validarXML(String tipoComprobante, String rutaEntrada, InputStream file,String nomFile) throws XsltException {
+    public InputStream validarXMLYComprimir( String rootPath, FacturaElectronica facturaElectronica,InputStream file,String nomFile) throws XsltException {
         String XsltFullPath = "", retorno = "", outputHTML = "";
         InputStream is = null;
+        String tipoComprobante = facturaElectronica.getTipo();
 //        String XmlFullPath = rutaEntrada + nombreArchivo + ".xml";
 
 //        ConfigurationHolder config = ConfigurationHolder.getInstance();
@@ -165,12 +167,19 @@ public String validarXML(String tipoComprobante, String rutaEntrada, String nomb
 //            transform(XmlFullPath, XsltFullPath, outputHTML);
 
             String nomFileZip = nomFile + ".zip";
-            OutputStream archivoZip = new FileOutputStream(nomFileZip);
+//            OutputStream archivoZip = new FileOutputStream(nomFileZip);
             InputStream archivoXml = file;//new FileInputStream(XmlFullPath);
             
-            is = FacturadorUtil.comprimirArchivo(archivoZip,archivoXml, nomFile + ".xml");
-            
-//            is.close();
+            is = FacturadorUtil.comprimirArchivo(archivoXml, nomFile + ".xml");
+            File fileZip = new File(rootPath + facturaElectronica.getEmpresa().getNumdoc() + "/ENVIO/" + nomFile + ".zip");
+            try (FileOutputStream outputStream = new FileOutputStream(fileZip, false)) {
+                int read;
+                byte[] bytes = new byte[8192];
+                while ((read = is.read(bytes)) != -1) {
+                    outputStream.write(bytes, 0, read);
+                }
+            }
+            is.close();
 //            archivoXml.close();
 
         } catch (Exception e) {

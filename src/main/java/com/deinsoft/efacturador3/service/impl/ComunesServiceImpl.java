@@ -355,7 +355,7 @@ public class ComunesServiceImpl implements ComunesService
     Properties prop = new Properties();
     InputStream input = null;
     
-    String rutaArchivoProperties = obtenerRutaTrabajo("VALI") + nombreArchivo;
+    String rutaArchivoProperties = nombreArchivo;
     
     try {
       input = new FileInputStream(rutaArchivoProperties);

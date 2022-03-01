@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.deinsoft.efacturador3.bean;
+package com.deinsoft.efacturador3.model;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -35,6 +35,7 @@ public class Empresa implements Serializable {
     @Size(max = 300)
     @Column(name = "razon_social")
     private String razonSocial;
+    
     @Column(name = "tipodoc")
     private Integer tipodoc;
     
@@ -45,6 +46,21 @@ public class Empresa implements Serializable {
     @Size(max = 4)
     @Column(name = "serie")
     private String serie;
+    
+    @Column(name = "usuariosol")
+    private String usuariosol;
+    
+    @Column(name = "clavesol")
+    private String clavesol;
+    
+    @Column(name = "cert_name")
+    private String certName;
+    
+    @Column(name = "cert_pass")
+    private String certPass;
+    
+    @Column(name = "token")
+    private String token;
     
     @Column(name = "estado")
     private Character estado;
@@ -104,6 +120,47 @@ public class Empresa implements Serializable {
         this.estado = estado;
     }
 
+    public String getUsuariosol() {
+        return usuariosol;
+    }
+
+    public void setUsuariosol(String usuariosol) {
+        this.usuariosol = usuariosol;
+    }
+
+    public String getClavesol() {
+        return clavesol;
+    }
+
+    public void setClavesol(String clavesol) {
+        this.clavesol = clavesol;
+    }
+
+    public String getCertName() {
+        return certName;
+    }
+
+    public void setCertName(String certName) {
+        this.certName = certName;
+    }
+
+    public String getCertPass() {
+        return certPass;
+    }
+
+    public void setCertPass(String certPass) {
+        this.certPass = certPass;
+    }
+
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

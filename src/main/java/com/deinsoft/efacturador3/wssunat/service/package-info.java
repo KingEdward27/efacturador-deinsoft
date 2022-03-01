@@ -1,4 +1,4 @@
-package com.deinsoft.efacturador3.wssunat.service.wrapper;
+package com.deinsoft.efacturador3.wssunat.service;
 
 import javax.xml.bind.annotation.XmlSchema;
 
