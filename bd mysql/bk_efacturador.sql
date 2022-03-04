@@ -566,3 +566,25 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2022-02-28 23:22:05
+
+-- agregado 02/03/2022
+
+alter table factura_electronica
+add tipo_moneda_monto_neto_pendiente varchar(3);
+
+alter table factura_electronica
+add monto_neto_pendiente decimal(18,3);
+
+alter table factura_electronica
+add porcentaje_igv decimal(5,2);
+
+create table factura_electronica_cuota
+(
+	factura_electronica_cuota_id int auto_increment primary key,
+    factura_electronica_id int,
+    monto_cuota_pago decimal(18,3) ,
+    tipo_moneda_cuota_pago varchar(3),
+    fecha_cuota_pago date
+)engine=innodb;
+
+select * from factura_electronica

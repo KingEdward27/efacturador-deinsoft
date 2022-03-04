@@ -133,6 +133,15 @@ public class FacturaElectronica implements Serializable {
     @Column(name = "forma_pago")
     private String formaPago;
     
+    @Column(name = "tipo_moneda_monto_neto_pendiente")
+    private String tipoMonedaMontoNetoPendiente;
+    
+    @Column(name = "monto_neto_pendiente")
+    private BigDecimal montoNetoPendiente;
+    
+    @Column(name = "porcentaje_igv")
+    private BigDecimal porcentajeIGV;
+    
 //    @Column(name = "nombre_Archivo")
 //    private String nombreArchivo;
 
@@ -144,10 +153,17 @@ public class FacturaElectronica implements Serializable {
     @JsonIgnoreProperties(value = {"facturaElectronica"}, allowSetters = true)
     private List<FacturaElectronicaTax> listFacturaElectronicaTax;
     
+    @OneToMany(mappedBy = "facturaElectronica", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JsonIgnoreProperties(value = {"facturaElectronica"}, allowSetters = true)
+    private List<FacturaElectronicaCuotas> listFacturaElectronicaCuotas;
+    
     public void addFacturaElectronicaDet(FacturaElectronicaDet item) {
         item.setFacturaElectronica(this);
     }
-public void addFacturaElectronicaTax(FacturaElectronicaTax item) {
+    public void addFacturaElectronicaTax(FacturaElectronicaTax item) {
+        item.setFacturaElectronica(this);
+    }
+    public void addFacturaElectronicaCuotas(FacturaElectronicaCuotas item) {
         item.setFacturaElectronica(this);
     }
     public FacturaElectronica() {
@@ -596,6 +612,30 @@ public void addFacturaElectronicaTax(FacturaElectronicaTax item) {
         this.formaPago = formaPago;
     }
 
+    public String getTipoMonedaMontoNetoPendiente() {
+        return tipoMonedaMontoNetoPendiente;
+    }
+
+    public void setTipoMonedaMontoNetoPendiente(String tipoMonedaMontoNetoPendiente) {
+        this.tipoMonedaMontoNetoPendiente = tipoMonedaMontoNetoPendiente;
+    }
+
+    public BigDecimal getMontoNetoPendiente() {
+        return montoNetoPendiente;
+    }
+
+    public void setMontoNetoPendiente(BigDecimal montoNetoPendiente) {
+        this.montoNetoPendiente = montoNetoPendiente;
+    }
+
+    public BigDecimal getPorcentajeIGV() {
+        return porcentajeIGV;
+    }
+
+    public void setPorcentajeIGV(BigDecimal porcentajeIGV) {
+        this.porcentajeIGV = porcentajeIGV;
+    }
+
     public List<FacturaElectronicaDet> getListFacturaElectronicaDet() {
         return listFacturaElectronicaDet;
     }
@@ -610,6 +650,14 @@ public void addFacturaElectronicaTax(FacturaElectronicaTax item) {
 
     public void setListFacturaElectronicaTax(List<FacturaElectronicaTax> listFacturaElectronicaTax) {
         this.listFacturaElectronicaTax = listFacturaElectronicaTax;
+    }
+
+    public List<FacturaElectronicaCuotas> getListFacturaElectronicaCuotas() {
+        return listFacturaElectronicaCuotas;
+    }
+
+    public void setListFacturaElectronicaCuotas(List<FacturaElectronicaCuotas> listFacturaElectronicaCuotas) {
+        this.listFacturaElectronicaCuotas = listFacturaElectronicaCuotas;
     }
 
     @Override

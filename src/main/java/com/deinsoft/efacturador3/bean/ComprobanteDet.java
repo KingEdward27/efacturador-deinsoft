@@ -1,18 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.deinsoft.efacturador3.bean;
 
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import javax.persistence.Entity;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-//import javax.json.Json;
-//import javax.json.JsonObject;
-//import javax.json.JsonObjectBuilder;
 
 /**
  *
@@ -41,7 +32,6 @@ public class ComprobanteDet {
     private String tipo_igv;
 
     @NotNull
-//    @DecimalMin(value = "0.0", inclusive = false)
     private BigDecimal afectacionIGV;
     
     private BigDecimal afectacionISC;

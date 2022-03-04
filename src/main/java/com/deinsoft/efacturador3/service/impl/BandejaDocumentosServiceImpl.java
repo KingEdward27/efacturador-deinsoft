@@ -60,7 +60,7 @@ public class BandejaDocumentosServiceImpl implements BandejaDocumentosService {
         try {
             String retorno = "01";
             String tipoComprobante = null;
-
+            String nomFile = "";
             if ("01".equals(documento.getIndSituacion()) || "06"
                     .equals(documento.getIndSituacion()) || "07"
                     .equals(documento.getIndSituacion()) || "10"
@@ -70,7 +70,7 @@ public class BandejaDocumentosServiceImpl implements BandejaDocumentosService {
                 tipoComprobante = documento.getTipo();
                 log.debug("BandejaDocumentosServiceImpl.generarComprobantePagoSunat...tipoComprobante: " + tipoComprobante);
 
-                String nomFile = documento.getEmpresa().getNumdoc()
+                nomFile = documento.getEmpresa().getNumdoc()
                     +"-"+String.format("%02d", Integer.parseInt(documento.getTipo()))
                     +"-"+documento.getSerie()
                     +"-"+String.format("%08d", Integer.parseInt(documento.getNumero()));
@@ -83,7 +83,7 @@ public class BandejaDocumentosServiceImpl implements BandejaDocumentosService {
                 xsltCpeValidator.validarXMLYComprimir(rootpath,documento, rootpath + "/"+documento.getEmpresa().getNumdoc() + "/PARSE/", nomFile);
 
             }
-
+//            retorno = nomFile;
             return retorno;
         } catch (Exception e) {
 

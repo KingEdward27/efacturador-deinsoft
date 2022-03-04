@@ -88,21 +88,15 @@ public class ComprobanteCab {
     
     private String forma_pago;
     
-    @Valid
-    private Set<ComprobanteDet> lista;
-
-//    public long getId() {
-//        return id;
-//    }
-//
-//    public void setId(long id) {
-//        this.id = id;
-//    }
+    private String moneda_monto_neto_pendiente;
+    private BigDecimal monto_neto_pendiente;
     
-    public Set<ComprobanteDet> getLista() {
-        return lista;
-    }
+    @Valid
+    private Set<ComprobanteDet> lista_productos;
 
+    private Set<ComprobanteCuotas> lista_cuotas;
+    
+    
     public String getTipo() {
         return tipo;
     }
@@ -311,10 +305,25 @@ public class ComprobanteCab {
         this.incluir_xml = incluir_xml;
     }
 
-    public void setLista(Set<ComprobanteDet> lista) {
-        this.lista = lista;
+    public Set<ComprobanteDet> getLista_productos() {
+        return lista_productos;
     }
 
+    public void setLista_productos(Set<ComprobanteDet> lista_productos) {
+        this.lista_productos = lista_productos;
+    }
+
+    public Set<ComprobanteCuotas> getLista_cuotas() {
+        return lista_cuotas;
+    }
+
+    public void setLista_cuotas(Set<ComprobanteCuotas> lista_cuotas) {
+        this.lista_cuotas = lista_cuotas;
+    }
+
+    
+
+    
     public BigDecimal getSumatoriaIGV() {
         return sumatoriaIGV;
     }
@@ -377,6 +386,22 @@ public class ComprobanteCab {
 
     public void setForma_pago(String forma_pago) {
         this.forma_pago = forma_pago;
+    }
+
+    public String getMoneda_monto_neto_pendiente() {
+        return moneda_monto_neto_pendiente;
+    }
+
+    public void setMoneda_monto_neto_pendiente(String moneda_monto_neto_pendiente) {
+        this.moneda_monto_neto_pendiente = moneda_monto_neto_pendiente;
+    }
+
+    public BigDecimal getMonto_neto_pendiente() {
+        return monto_neto_pendiente;
+    }
+
+    public void setMonto_neto_pendiente(BigDecimal monto_neto_pendiente) {
+        this.monto_neto_pendiente = monto_neto_pendiente;
     }
 
     

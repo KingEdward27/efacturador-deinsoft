@@ -4,10 +4,12 @@ import com.deinsoft.efacturador3.bean.ComprobanteCab;
 import com.deinsoft.efacturador3.bean.ComprobanteDet;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
+import com.deinsoft.efacturador3.model.FacturaElectronicaCuotas;
 import com.deinsoft.efacturador3.model.FacturaElectronicaDet;
 import com.deinsoft.efacturador3.model.FacturaElectronicaTax;
 import com.deinsoft.efacturador3.parser.Parser;
 import com.deinsoft.efacturador3.parser.ParserException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -126,7 +128,7 @@ public class PipeFacturaParser
                 factura.put("nroCdpSwf",cabecera.getSerie() + "-" + String.format("%08d", Integer.parseInt(cabecera.getNumero())));
                 factura.put("tipCdpSwf", cabecera.getTipo());
                 factura.put("nroRucEmisorSwf", this.contri.getNumdoc());
-                factura.put("tipDocuEmisorSwf", "6");
+                factura.put("tipDocuEmisorSwf", cabecera.getEmpresa().getTipodoc().toString());
                 factura.put("nombreComercialSwf", this.contri.getRazonSocial());
                 factura.put("razonSocialSwf", this.contri.getRazonSocial());
                 factura.put("ubigeoDomFiscalSwf", "");
@@ -154,6 +156,10 @@ public class PipeFacturaParser
                 factura.put("codigoFacturadorSwf", codigoFacturadorSwf.toString());
                 factura.put("identificadorFirmaSwf", identificadorFirmaSwf);
                 factura.put("formaPago", cabecera.getFormaPago());
+                factura.put("tipMonedaMtoNetoPendientePago", cabecera.getTipoMonedaMontoNetoPendiente());
+//                factura.put("mtoNetoPendientePago", String.format("%.2f",cabecera.getMontoNetoPendiente()).replace(",", "."));
+                factura.put("mtoNetoPendientePago", String.format("%.2f",cabecera.getMontoNetoPendiente()).replace(",", "."));
+                
                 log.debug("cabecera factura plano:" + factura);
 
 //            }
@@ -182,25 +188,24 @@ public class PipeFacturaParser
 //                if (registro.length != 36) {
 //                    throw new ParserException("El archivo detalle no continene la cantidad de datos esperada (36 columnas).");
 //                }
+        int contadorItem = 0;
         for (FacturaElectronicaDet item : cabecera.getListFacturaElectronicaDet()) {
 //            linea = Integer.valueOf(linea.intValue() + 1);
                 detalle = new HashMap<>();
-                detalle.put("unidadMedida", item.getUnidadMedida());
-                detalle.put("ctdUnidadItem", item.getCantidad());
+                contadorItem++;
                 detalle.put("codProducto", item.getId());
-                detalle.put("codProductoSUNAT", "-");
                 detalle.put("desItem", item.getDescripcion());
                 detalle.put("mtoValorUnitario", item.getValorUnitario());
 
-                detalle.put("sumTotTributosItem", item.getAfectacionIgv());
-
+                detalle.put("sumTotTributosItem", String.valueOf(item.getAfectacionIgv()));
+                detalle.put("unidadMedida", item.getUnidadMedida());
                 detalle.put("codTriIGV", "1000");
-                detalle.put("mtoIgvItem", item.getAfectacionIgv());
+                detalle.put("mtoIgvItem", String.valueOf(item.getAfectacionIgv()));
                 detalle.put("mtoBaseIgvItem", item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv()));
                 detalle.put("nomTributoIgvItem", "IGV");
                 detalle.put("codTipTributoIgvItem", "VAT");
                 detalle.put("tipAfeIGV", item.getAfectacionIGVCode());
-                detalle.put("porIgvItem", "18.00");
+                detalle.put("porIgvItem", String.valueOf(cabecera.getPorcentajeIGV()));
 
                 detalle.put("codTriISC", "-");
                 detalle.put("mtoIscItem", "-");
@@ -225,11 +230,11 @@ public class PipeFacturaParser
                 detalle.put("mtoTriIcbperUnidad", "-");
 
                 detalle.put("mtoPrecioVentaUnitario", item.getPrecioVentaUnitario());
-                detalle.put("mtoValorVentaItem", item.getValorVentaItem());
-
+                detalle.put("mtoValorVentaItem", String.valueOf(item.getValorVentaItem()));
+                detalle.put("mtoValorVentaItem", String.valueOf(item.getValorVentaItem()));
                 detalle.put("mtoValorReferencialUnitario","0.00");
-
-                detalle.put("lineaSwf", item.getId());
+                detalle.put("ctdUnidadItem",String.valueOf(item.getCantidad()));
+                detalle.put("lineaSwf", String.valueOf(contadorItem));
                 detalle.put("tipoCodiMoneGratiSwf", "02");
 
                 listaDetalle.add(detalle);
@@ -241,20 +246,37 @@ public class PipeFacturaParser
             
             List<Map<String, Object>> listaTributos = new ArrayList<>();
         Map<String, Object> tributo = null;
-        for (FacturaElectronicaTax itemTax : cabecera.getListFacturaElectronicaTax()) {
-            
-            tributo = new HashMap<>();
-            tributo.put("ideTributo",String.valueOf(itemTax.getTaxId()));
-            tributo.put("nomTributo", "IGV");
-            tributo.put("codTipTributo", "VAT");
-            tributo.put("mtoBaseImponible", itemTax.getBaseamt().toString());
-            tributo.put("mtoTributo", itemTax.getTaxtotal().toString());
-            tributo.put("codigoMonedaSolesSwf", "PEN");
-          
-            listaTributos.add(tributo);
-        }
-        factura.put("listaTributos", listaTributos);      
+        if(cabecera.getListFacturaElectronicaTax() != null){
+            for (FacturaElectronicaTax itemTax : cabecera.getListFacturaElectronicaTax()) {
+                tributo = new HashMap<>();
+                tributo.put("ideTributo",String.valueOf(itemTax.getTaxId()));
+                tributo.put("nomTributo", "IGV");
+                tributo.put("codTipTributo", "VAT");
+                tributo.put("mtoBaseImponible", itemTax.getBaseamt().toString());
+                tributo.put("mtoTributo", itemTax.getTaxtotal().toString());
+                tributo.put("codigoMonedaSolesSwf",cabecera.getMoneda());
 
+                listaTributos.add(tributo);
+            }
+            factura.put("listaTributos", listaTributos);
+        }
+        List<Map<String, Object>> listaCuotas = new ArrayList<>();
+        Map<String, Object> cuotaMap = null;
+        if(cabecera.getListFacturaElectronicaCuotas() != null){
+            int contador = 0;
+            for (FacturaElectronicaCuotas cuota : cabecera.getListFacturaElectronicaCuotas()) {
+                contador++;
+                cuotaMap = new HashMap<>();
+                cuotaMap.put("lineaCuota","Cuota"+String.format("%03d", contador));
+                cuotaMap.put("tipMonedaCuotaPago",cuota.getTipMonedaCuotaPago());
+                cuotaMap.put("mtoCuotaPago",String.valueOf(cuota.getMtoCuotaPago()));
+                cuotaMap.put("fecCuotaPago", new SimpleDateFormat("yyyy-MM-dd").format(cuota.getFecCuotaPago()));
+                listaCuotas.add(cuotaMap);
+            }
+            
+            factura.put("listaCuotas", listaCuotas);
+        }
+        
             formatoComunes(factura, this.archivoRelacionado, this.archivoAdiCabecera, this.archivoAdiDetalle, this.archivoLeyendas, this.archivoAdiTributos, this.archivoAdiVariableGlobal);
 
 //        } catch (IOException x) {

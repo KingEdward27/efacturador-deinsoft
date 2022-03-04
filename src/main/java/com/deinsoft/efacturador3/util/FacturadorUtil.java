@@ -12,6 +12,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -245,5 +246,22 @@ public class FacturadorUtil
         } catch (Exception e) {
             throw new RuntimeException("Error al des encriptar", e);
         }
+    }
+    public static boolean isNullOrEmpty(Object object){
+        if(object == null) return true;
+        if(String.valueOf(object).equals("")) return true;
+        return false;
+    }
+    public static boolean isNumeric(Object object){
+        if(object == null) return false;
+        if(String.valueOf(object).equals("")) return false;
+        try {
+            Float.parseFloat(String.valueOf(object));
+//            BigDecimal test = new BigDecimal(String.valueOf(object));
+//            if(new BigDecimal(String.valueOf(object)) == BigDecimal.ZERO) return true;
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }

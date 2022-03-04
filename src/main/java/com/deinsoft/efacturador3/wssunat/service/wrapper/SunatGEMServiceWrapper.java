@@ -56,6 +56,7 @@ import com.deinsoft.efacturador3.wssunat.exception.WebserviceConfigurationExcept
 import com.deinsoft.efacturador3.wssunat.model.StatusResponse;
 import com.deinsoft.efacturador3.wssunat.model.UsuarioSol;
 import com.deinsoft.efacturador3.wssunat.service.BillService;
+import com.deinsoft.efacturador3.wssunat.service.BillService_BillServicePort0_Client;
 import com.deinsoft.efacturador3.wssunat.wss.handler.ClientePasswordCallback;
 
 
@@ -304,17 +305,21 @@ public class SunatGEMServiceWrapper
   }
   private BillService initWebService2() {
     JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
-    Map<String, Object> props = new HashMap<>();
-    props.put("mtom-enabled", Boolean.FALSE);
-    factory.setProperties(props);
+//    Map<String, Object> props = new HashMap<>();
+//    props.put("mtom-enabled", Boolean.FALSE);
+//    factory.setProperties(props);
     
     factory.setAddress(this.curentURLService);
 //    factory.getInInterceptors().add(new LoggingInInterceptor());
 //    factory.getOutInterceptors().add(new LoggingOutInterceptor());
-    
     factory.setServiceClass(BillService.class);
-    
-    BillService client = (BillService)factory.create();
+    BillService client = null;
+      try {
+          client = (BillService)factory.create();
+      } catch (Exception e) {
+          System.out.println("error: " + e.getMessage());
+      }
+//    BillService client = (BillService)factory.create();
 //    
 //    FiltersType filter = new FiltersType();
 //    filter.getInclude().add(".*_EXPORT_.*");
