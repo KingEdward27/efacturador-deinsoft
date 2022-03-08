@@ -29,8 +29,6 @@ public class PipeFacturaParser
 
     private FacturaElectronica cabecera;
 
-    private FacturaElectronicaDet detalle;
-
     private String nombreArchivo;
 
     private Empresa contri;
@@ -152,7 +150,7 @@ public class PipeFacturaParser
                 factura.put("codOtr", "OTROS");
                 factura.put("codExtOtr", "OTH");
                 factura.put("tipoCodigoMonedaSwf", "01");
-                factura.put("identificadorFacturadorSwf", "Elaborado por Sistema de Emision Electronica Facturador SUNAT (SEE-SFS) 1.3.2");
+                factura.put("identificadorFacturadorSwf", "SISTEMA FACTURADOR DEFACTURADOR - DEINSOFT SRL");
                 factura.put("codigoFacturadorSwf", codigoFacturadorSwf.toString());
                 factura.put("identificadorFirmaSwf", identificadorFirmaSwf);
                 factura.put("formaPago", cabecera.getFormaPago());
@@ -231,7 +229,6 @@ public class PipeFacturaParser
 
                 detalle.put("mtoPrecioVentaUnitario", item.getPrecioVentaUnitario());
                 detalle.put("mtoValorVentaItem", String.valueOf(item.getValorVentaItem()));
-                detalle.put("mtoValorVentaItem", String.valueOf(item.getValorVentaItem()));
                 detalle.put("mtoValorReferencialUnitario","0.00");
                 detalle.put("ctdUnidadItem",String.valueOf(item.getCantidad()));
                 detalle.put("lineaSwf", String.valueOf(contadorItem));
@@ -244,7 +241,7 @@ public class PipeFacturaParser
 
             factura.put("listaDetalle", listaDetalle);
             
-            List<Map<String, Object>> listaTributos = new ArrayList<>();
+        List<Map<String, Object>> listaTributos = new ArrayList<>();
         Map<String, Object> tributo = null;
         if(cabecera.getListFacturaElectronicaTax() != null){
             for (FacturaElectronicaTax itemTax : cabecera.getListFacturaElectronicaTax()) {

@@ -54,16 +54,16 @@ public class PipeParserFactory
     } 
 
     
-//    if ("07".equals(tipoDocumento))
-//    {
-//      return (Parser)new PipeNotaCreditoParser(contri, archivos, nombreArchivo);
-//    }
-//
-//    
-//    if ("08".equals(tipoDocumento))
-//    {
-//      return (Parser)new PipeNotaDebitoParser(contri, archivos, nombreArchivo);
-//    }
+    if ("07".equals(tipoDocumento))
+    {
+      return (Parser)new PipeNotaCreditoParser(contri, facturaElectronica);
+    }
+
+    
+    if ("08".equals(tipoDocumento))
+    {
+      return (Parser)new PipeNotaDebitoParser(contri, facturaElectronica);
+    }
 //
 //    
 //    if ("20".equals(tipoDocumento))

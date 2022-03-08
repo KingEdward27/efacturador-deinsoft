@@ -82,14 +82,15 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
 
     @Autowired
     private ComunesService comunesService;
-    
-    
+
     ConfigurationHolder config = ConfigurationHolder.getInstance();
 
-    public void formatoPlantillaXml(String rootPath, FacturaElectronica facturaElectronica,String nombreArchivo) throws TransferirArchivoException {
+    public void formatoPlantillaXml(String rootPath, FacturaElectronica facturaElectronica, String nombreArchivo) throws TransferirArchivoException {
         String idXml = "";
         String tipoComprobante = facturaElectronica.getTipo();
         if ("01".equals(tipoComprobante) || "03"
+                .equals(tipoComprobante) || "07"
+                .equals(tipoComprobante) || "08"
                 .equals(tipoComprobante)) {
             log.debug("BandejaDocumentosServiceImpl.generarComprobantePagoSunat...Formato de Facturas.");
         }
@@ -98,11 +99,11 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
 
         try {
             PipeParserFactory parserFactory = new PipeParserFactory();
-            Parser xmlParser = parserFactory.createParser(facturaElectronica.getEmpresa(), tipoComprobante,facturaElectronica);
+            Parser xmlParser = parserFactory.createParser(facturaElectronica.getEmpresa(), tipoComprobante, facturaElectronica);
 
             StringBuilder rutaSalida = new StringBuilder();
             rutaSalida.setLength(0);
-            rutaSalida.append(rootPath +"/"+ facturaElectronica.getEmpresa().getNumdoc()+ "/TEMP/").append(nombreArchivo).append(".xml");
+            rutaSalida.append(rootPath + "/" + facturaElectronica.getEmpresa().getNumdoc() + "/TEMP/").append(nombreArchivo).append(".xml");
             String templatesPath = rootPath + "/VALI/";
 
             byte[] myByteArray = xmlParser.parse(templatesPath);
@@ -112,26 +113,26 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
             }
 
             log.debug("SoftwareFacturadorController.formatoPlantillaXml...Final Procesamiento");
-            
+
         } catch (Exception e) {
 
             log.info("formatoPlantillaXml: " + e.getMessage());
             ExceptionDetail exceptionDetail = new ExceptionDetail();
             exceptionDetail.setMessage(e.getMessage());
             throw new TransferirArchivoException("Error en archivo TxT: " + e.getMessage(), exceptionDetail);
-            
+
         }
     }
 
-    public String firmarXml(String rootPath,FacturaElectronica facturaElectronica, String nombreArchivo) {
-        String rutaNombreEntrada = rootPath + "/"+facturaElectronica.getEmpresa().getNumdoc() + "/TEMP/" + nombreArchivo + ".xml";
-        String rutaNombreSalida = rootPath + "/"+facturaElectronica.getEmpresa().getNumdoc() + "/PARSE/" + nombreArchivo + ".xml";
+    public String firmarXml(String rootPath, FacturaElectronica facturaElectronica, String nombreArchivo) {
+        String rutaNombreEntrada = rootPath + facturaElectronica.getEmpresa().getNumdoc() + "/TEMP/" + nombreArchivo + ".xml";
+        String rutaNombreSalida = rootPath + facturaElectronica.getEmpresa().getNumdoc() + "/PARSE/" + nombreArchivo + ".xml";
 
         try {
             FileInputStream inDocument = new FileInputStream(rutaNombreEntrada);
             FileOutputStream fout = new FileOutputStream(rutaNombreSalida);
 
-            Map<String, Object> firma = firmarDocumento(rootPath,facturaElectronica.getEmpresa(),inDocument,nombreArchivo);
+            Map<String, Object> firma = firmarDocumento(rootPath, facturaElectronica.getEmpresa(), inDocument, nombreArchivo);
 //            ByteArrayOutputStream outDocument = (ByteArrayOutputStream) firma.get("signatureFile");
 //            String digestValue = (String) firma.get("digestValue");
 //
@@ -147,7 +148,6 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
             throw new RuntimeException("Error al firma archivo XML", e);
         }
     }
-    
 
     public Map<String, String> obtenerEstadoTicket(String rutaArchivo, String wsUrl, String nroTicket) {
         Parametro paramtroBean = new Parametro();
@@ -215,11 +215,10 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
         return resultado;
     }
 
-    public HashMap<String, String> enviarArchivoSunat(String wsUrl,String rootPath, String filename, FacturaElectronica facturaElectronica) {
-        Parametro paramtroBean = new Parametro();
+    public HashMap<String, String> enviarArchivoSunat(String wsUrl, String rootPath, String filename, FacturaElectronica facturaElectronica) {
         String tipoComprobante = facturaElectronica.getTipo();
         HashMap<String, String> resultado = new HashMap<>();
-        String param = "", numeroRUC = "", usuarioSOL = "", password = "", mensaje = "";
+        String numeroRUC = "", usuarioSOL = "", password = "", mensaje = "";
         log.info("url del servicio : " + wsUrl);
 
         synchronized (this) {
@@ -244,10 +243,10 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
                     .equals(tipoComprobante)) {
                 respon = client.sendSummary(zipFile, rootPath + "ENVIO/" + zipFile);
             } else {
-                respon = client.sendBill(rootPath + numeroRUC +  "/RPTA/", zipFile, rootPath + numeroRUC + "/ENVIO/" + zipFile);
+                respon = client.sendBill(rootPath + numeroRUC + "/RPTA/", zipFile, rootPath + numeroRUC + "/ENVIO/" + zipFile);
             }
             if (!respon.isError()) {
-                Integer errorCode = Integer.valueOf(respon.getCodigo());
+                Integer errorCode = respon.getCodigo();
                 log.debug("isError es Falso, Codigo de Error : " + errorCode);
                 String msgError = respon.getMensaje();
                 log.debug("isError es Falso, Mensaje Error Obtenido: " + respon.getMensaje());
@@ -259,13 +258,15 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
                         && !"RC".equals(tipoComprobante)
                         && !"RR".equals(tipoComprobante)) {
 
-                    if (errorCode.intValue() == 0 && listaWarnings.size() == 0) {
+                    if (errorCode == 0 && listaWarnings.isEmpty()) {
                         resultado.put("situacion", "03");
+                        resultado.put("mensaje", respon.getMensaje());
                     }
-                    if (errorCode.intValue() == 0 && listaWarnings.size() > 0) {
+                    if (errorCode == 0 && listaWarnings.size() > 0) {
                         resultado.put("situacion", "04");
+                        resultado.put("mensaje", respon.getMensaje());
                     }
-                    if (errorCode.intValue() > 0) {
+                    if (errorCode > 0) {
                         String codError = FacturadorUtil.completarCeros(errorCode.toString(), "I", Integer.valueOf(4));
                         Error error = new Error();
                         error.setCod_cataerro(codError);
@@ -279,7 +280,7 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
                         resultado.put("mensaje", mensaje);
                     }
 
-                    if (errorCode.intValue() < 0) {
+                    if (errorCode < 0) {
                         mensaje = "Error al invocar el servicio de SUNAT.";
                         resultado.put("situacion", "06");
                         resultado.put("mensaje", mensaje);
@@ -294,7 +295,7 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
 
             } else {
 
-                Integer errorCode = Integer.valueOf(respon.getCodigo());
+                Integer errorCode = respon.getCodigo();
                 log.debug("isError es True, Codigo de Error : " + errorCode);
                 String msgError = respon.getMensaje();
                 log.debug("isError es True, Mensaje Error Obtenido: " + msgError);
@@ -326,29 +327,38 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
                     Integer estado = consultaCdr.obtenerEstadoCdr(usuario, password, nombreArchivo, rucCdp, tipoCdp, serieCdp, new Integer(nroCdp), "0004");
 
                     log.debug("isError es True, Fin llamada al WS: " + estado);
-                    if (estado.intValue() == 0) {
-                        mensaje = "Este Comprobante ya fue enviado anteriormente, sÃ³lo se descargÃ³ el CDR nuevamente.";
-                        resultado.put("situacion", "11");
-                        resultado.put("mensaje", mensaje);
-
-                    } else if (estado.intValue() == 1) {
-                        mensaje = "Este Comprobante ya fue enviado anteriormente, sÃ³lo se descargÃ³ el CDR nuevamente.";
-                        resultado.put("situacion", "12");
-                        resultado.put("mensaje", mensaje);
-
-                    } else if (estado.intValue() == -1) {
-                        mensaje = "Error invocando al webservice para obtener CDR.";
+                    if (null == estado) {
+                        mensaje = "El webservice para obtener CDR, no se encontró el archivo CDR en SUNAT.";
                         resultado.put("situacion", "06");
                         resultado.put("mensaje", mensaje);
+
                     } else {
-                        mensaje = "El webservice para obtener CDR, no se encontrÃ³ el archivo CDR en SUNAT.";
-                        resultado.put("situacion", "06");
-                        resultado.put("mensaje", mensaje);
-
+                        switch (estado) {
+                            case 0:
+                                mensaje = "Este Comprobante ya fue enviado anteriormente, sólo se descargó el CDR nuevamente.";
+                                resultado.put("situacion", "11");
+                                resultado.put("mensaje", mensaje);
+                                break;
+                            case 1:
+                                mensaje = "Este Comprobante ya fue enviado anteriormente, sólo se descargó el CDR nuevamente.";
+                                resultado.put("situacion", "12");
+                                resultado.put("mensaje", mensaje);
+                                break;
+                            case -1:
+                                mensaje = "Error invocando al webservice para obtener CDR.";
+                                resultado.put("situacion", "06");
+                                resultado.put("mensaje", mensaje);
+                                break;
+                            default:
+                                mensaje = "El webservice para obtener CDR, no se encontró el archivo CDR en SUNAT.";
+                                resultado.put("situacion", "06");
+                                resultado.put("mensaje", mensaje);
+                                break;
+                        }
                     }
 
                 } else {
-                    String codError = FacturadorUtil.completarCeros(errorCode.toString(), "I", Integer.valueOf(4));
+                    String codError = FacturadorUtil.completarCeros(errorCode.toString(), "I", 4);
                     Error error = new Error();
                     error.setCod_cataerro(codError);
                     Error txxxzBean = this.errorDao.consultarErrorById(error);
@@ -365,6 +375,7 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
 
         return resultado;
     }
+
     public String obtenerArchivoXml(String nombreArchivo) {
         try {
             log.debug("GenerarDocumentosServiceImpl.obtenerArchivoXml...Inicio Procesamiento");
@@ -401,6 +412,7 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
             throw new RuntimeException("Error al obtener archivo xml", e);
         }
     }
+
     public void validarPlazo(String nombreArchivoXml) {
         try {
             String serie = nombreArchivoXml.substring(15, 16);
@@ -442,76 +454,15 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
         }
     }
 
-    private Map<String, Object> firmarDocumento(String rootPath,Empresa empresa, InputStream inDocument,String fileName) {
+    private Map<String, Object> firmarDocumento(String rootPath, Empresa empresa, InputStream inDocument, String fileName) {
         try {
             log.debug("GenerarDocumentosServiceImpl.firmarDocumento...Inicio de Firma");
             Map<String, Object> retorno = new HashMap<>();
 
-            String clavePrivateKey = "";
-            clavePrivateKey = FacturadorUtil.Desencriptar(empresa.getCertPass());
-            KeyStore ks = KeyStore.getInstance("JKS");
-
-            ks.load(new FileInputStream(rootPath + "/ALMCERT/" + "FacturadorKey.jks"), "SuN@TF4CT"
-                    .toCharArray());
-
-            PrivateKey privateKey = (PrivateKey) ks.getKey(Constantes.PRIVATE_KEY_ALIAS+empresa.getNumdoc(), clavePrivateKey.toCharArray());
-
-            X509Certificate cert = (X509Certificate) ks.getCertificate(Constantes.PRIVATE_KEY_ALIAS+empresa.getNumdoc());
-            ByteArrayOutputStream signatureFile = new ByteArrayOutputStream();
-
             log.debug("GenerarDocumentosServiceImpl.firmarDocumento...Crear Document");
             Document doc = buildDocument(inDocument);
-//            SignerXml.firmarXml(doc);
-            log.debug("GenerarDocumentosServiceImpl.firmarDocumento...Agregar Extension");
             Node parentNode = addExtensionContent(doc);
-//
-//            log.debug("GenerarDocumentosServiceImpl.firmarDocumento...Colocando ID de Firma");
-            String idReference = "SignSUNAT";
-//
-//            XMLSignatureFactory fac = XMLSignatureFactory.getInstance();
-//
-//            log.debug("GenerarDocumentosServiceImpl.firmarDocumento...Reference");
-//            Reference ref = fac.newReference("", fac.newDigestMethod("http://www.w3.org/2000/09/xmldsig#sha1", null),
-//                    Collections.singletonList(fac.newTransform("http://www.w3.org/2000/09/xmldsig#enveloped-signature", (TransformParameterSpec) null)), null, null);
-//
-//            SignedInfo si = fac.newSignedInfo(fac
-//                    .newCanonicalizationMethod("http://www.w3.org/TR/2001/REC-xml-c14n-20010315", (C14NMethodParameterSpec) null), fac
-//                    .newSignatureMethod("http://www.w3.org/2000/09/xmldsig#rsa-sha1", null), Collections.singletonList(ref));
-//            KeyInfoFactory kif = fac.getKeyInfoFactory();
-//            List<X509Certificate> x509Content = new ArrayList<>();
-//            x509Content.add(cert);
-//            X509Data xd = kif.newX509Data(x509Content);
-//            KeyInfo ki = kif.newKeyInfo(Collections.singletonList(xd));
-//
-//            DOMSignContext dsc = new DOMSignContext(privateKey, doc.getDocumentElement());
-//            XMLSignature signature = fac.newXMLSignature(si, ki);
-
-//            if (parentNode != null) {
-//                dsc.setParent(parentNode);
-//            }
-//            dsc.setDefaultNamespacePrefix("ds");
-//            signature.sign(dsc);
-//
-              
-              SignerXml.output(SignerXml.firmarXml(doc), rootPath +"/" +empresa.getNumdoc()+"/PARSE/"+fileName+".xml");
-//            String digestValue = "-";
-//            Element elementParent = (Element) dsc.getParent();
-//            if (idReference != null && elementParent.getElementsByTagName("ds:Signature") != null) {
-//                Element elementSignature = (Element) elementParent.getElementsByTagName("ds:Signature").item(0);
-//                elementSignature.setAttribute("Id", idReference);
-//
-//                NodeList nodeList = elementParent.getElementsByTagName("ds:DigestValue");
-//                for (int i = 0; i < nodeList.getLength(); i++) {
-//                    digestValue = obtenerNodo(nodeList.item(i));
-//                }
-//            }
-//            DOMUtils.outputDocToOutputStream(doc, signatureFile);
-//            signatureFile.close();
-//
-//            retorno.put("signatureFile", signatureFile);
-//            retorno.put("digestValue", digestValue);
-//
-//            log.debug("GenerarDocumentosServiceImpl.firmarDocumento...Final de Firma");
+            SignerXml.output(SignerXml.firmarXml(rootPath, empresa, doc), rootPath + "/" + empresa.getNumdoc() + "/PARSE/" + fileName + ".xml");
             return retorno;
         } catch (Exception e) {
 

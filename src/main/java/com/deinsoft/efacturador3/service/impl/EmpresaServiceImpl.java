@@ -49,4 +49,10 @@ public class EmpresaServiceImpl implements EmpresaService{
     public Empresa findByNumdoc(String numdoc){
         return empresaRepository.findByNumdoc(numdoc);
     }
+
+    @Override
+    public Empresa findByToken(String token) {
+        return empresaRepository.findByToken(token);
+    }
+    
 }

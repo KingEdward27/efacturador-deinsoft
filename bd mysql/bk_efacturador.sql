@@ -587,4 +587,7 @@ create table factura_electronica_cuota
     fecha_cuota_pago date
 )engine=innodb;
 
+ALTER TABLE `efacturador`.`empresa` 
+CHANGE COLUMN `token` `token` VARCHAR(900) NULL DEFAULT NULL ;
+
 select * from factura_electronica

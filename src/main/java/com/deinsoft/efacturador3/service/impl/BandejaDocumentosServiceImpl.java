@@ -83,7 +83,6 @@ public class BandejaDocumentosServiceImpl implements BandejaDocumentosService {
                 xsltCpeValidator.validarXMLYComprimir(rootpath,documento, rootpath + "/"+documento.getEmpresa().getNumdoc() + "/PARSE/", nomFile);
 
             }
-//            retorno = nomFile;
             return retorno;
         } catch (Exception e) {
 
@@ -128,6 +127,8 @@ public class BandejaDocumentosServiceImpl implements BandejaDocumentosService {
             log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...tipoComprobante: " + tipoComprobante);
             resultadoWebService = this.generarDocumentosService.enviarArchivoSunat(urlWebService,rootPath, filename, facturaElectronica);
 
+            retorno.put("resultadoWebService", resultadoWebService);
+        }else{
             retorno.put("resultadoWebService", resultadoWebService);
         }
 

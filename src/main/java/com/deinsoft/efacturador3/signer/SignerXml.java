@@ -4,6 +4,9 @@
  * and open the template in the editor.
  */
 package com.deinsoft.efacturador3.signer;
+import com.deinsoft.efacturador3.model.Empresa;
+import com.deinsoft.efacturador3.util.Constantes;
+import com.deinsoft.efacturador3.util.FacturadorUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,16 +35,16 @@ import org.w3c.dom.Node;
  * @author EDWARD-PC
  */
 public class SignerXml {
-    public static ByteArrayOutputStream firmarXml(Document doc) throws Exception {
+    public static ByteArrayOutputStream firmarXml(String rootPath, Empresa empresa, Document doc) throws Exception {
 
         System.out.println("/ INICIO.");
 
         // Obtenemos las propiedades para firmar el documento.
         String sTipoAlmacen = "jks";
-        String sAlmacen = "D:/DEFACT/ALMCERT/FacturadorKey.jks";
+        String sAlmacen = rootPath + "ALMCERT/FacturadorKey.jks";
         String sClaveAlmacen = "SuN@TF4CT";
-        String sClavePrivada = "123456";
-        String sAlias = "certContribuyente";
+        String sClavePrivada = FacturadorUtil.Desencriptar(empresa.getCertPass());
+        String sAlias = Constantes.PRIVATE_KEY_ALIAS + empresa.getNumdoc();
 
         org.apache.xml.security.Init.init();
 

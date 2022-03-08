@@ -19,4 +19,5 @@ public interface EmpresaService {
     public List<Empresa> getEmpresas();
     public Empresa save(Empresa empresa);
     public Empresa findByNumdoc(String numdoc);
+    public Empresa findByToken(String token);
 }

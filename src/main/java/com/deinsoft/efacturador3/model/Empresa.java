@@ -183,7 +183,8 @@ public class Empresa implements Serializable {
 
     @Override
     public String toString() {
-        return "com.deinsoft.efacturador3.bean.Empresa[ idempresa=" + idempresa + " ]";
+        return "Empresa{" + "idempresa=" + idempresa + ", razonSocial=" + razonSocial + ", tipodoc=" + tipodoc + ", numdoc=" + numdoc + ", serie=" + serie + ", usuariosol=" + usuariosol + ", clavesol=" + clavesol + ", certName=" + certName + ", certPass=" + certPass + ", token=" + token + ", estado=" + estado + '}';
     }
+    
     
 }

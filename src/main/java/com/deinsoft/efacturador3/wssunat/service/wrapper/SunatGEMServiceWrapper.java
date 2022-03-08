@@ -110,11 +110,6 @@ public class SunatGEMServiceWrapper
             
             throw new RuntimeException(e.getCause().getMessage(), e.getCause());
           } 
-
-
-
-
-          
           Response response = SOAPFaultToResponse(e2.getFault());
           return response;
         } 
