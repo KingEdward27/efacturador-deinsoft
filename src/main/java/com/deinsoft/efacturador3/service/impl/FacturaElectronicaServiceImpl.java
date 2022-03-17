@@ -134,7 +134,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 stream.read(bytes, 0, n);
 
                 retorno.put("pdf",bytes);
-                FileUtils.writeByteArrayToFile(new File("D:/report.pdf"), bytes);
+//                FileUtils.writeByteArrayToFile(new File("D:/report.pdf"), bytes);
                 facturaElectronicaResult.setFechaGenXml(new Date());
                 facturaElectronicaResult.setIndSituacion("02");
                 save(facturaElectronicaResult);
