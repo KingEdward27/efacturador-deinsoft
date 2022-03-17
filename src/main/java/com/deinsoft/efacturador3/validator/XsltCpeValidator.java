@@ -59,27 +59,27 @@ public class XsltCpeValidator {
         String XmlFullPath = rutaEntrada + nombreArchivo + ".xml";
 
         if ("RA".equals(tipoComprobante)) {
-            XsltFullPath = rootPath + "/VALI/" + this.xsltCpePath.getResumenAnulado();
+            XsltFullPath = rootPath + "VALI/" + this.xsltCpePath.getResumenAnulado();
 
         } else if ("03".equals(tipoComprobante)) {
-            XsltFullPath = rootPath + "/VALI/" + this.xsltCpePath.getBoleta();
+            XsltFullPath = rootPath + "VALI/" + this.xsltCpePath.getBoleta();
 
         } else if ("01".equals(tipoComprobante)) {
-            XsltFullPath = rootPath + "/VALI/" +  this.xsltCpePath.getFactura();
+            XsltFullPath = rootPath + "VALI/" +  this.xsltCpePath.getFactura();
         } else if ("07".equals(tipoComprobante)) {
-            XsltFullPath = rootPath + "/VALI/" + this.xsltCpePath.getNotaCredito();
+            XsltFullPath = rootPath + "VALI/" + this.xsltCpePath.getNotaCredito();
         } else if ("08".equals(tipoComprobante)) {
-            XsltFullPath = rootPath + "/VALI/" + this.xsltCpePath.getNotaDebito();
+            XsltFullPath = rootPath + "VALI/" + this.xsltCpePath.getNotaDebito();
         } else if ("RC".equals(tipoComprobante)) {
-            XsltFullPath = rootPath + "/VALI/" + this.xsltCpePath.getResumenBoleta();
+            XsltFullPath = rootPath + "VALI/" + this.xsltCpePath.getResumenBoleta();
         } else if ("RR".equals(tipoComprobante)) {
             XsltFullPath = rootPath + "/VALI/" + this.xsltCpePath.getResumenReversion();
         } else if ("20".equals(tipoComprobante)) {
-            XsltFullPath = rootPath + "/VALI/" + this.xsltCpePath.getRetencion();
+            XsltFullPath = rootPath + "VALI/" + this.xsltCpePath.getRetencion();
         } else if ("40".equals(tipoComprobante)) {
-            XsltFullPath = rootPath + "/VALI/" + this.xsltCpePath.getPercepcion();
+            XsltFullPath = rootPath + "VALI/" + this.xsltCpePath.getPercepcion();
         } else if ("09".equals(tipoComprobante)) {
-            XsltFullPath = rootPath + "/VALI/" + this.xsltCpePath.getGuia();
+            XsltFullPath = rootPath + "VALI/" + this.xsltCpePath.getGuia();
         }
         outputHTML =  rootPath +"/"+facturaElectronica.getEmpresa().getNumdoc() + "/FIRMA/" + nombreArchivo + ".xml";
         try {

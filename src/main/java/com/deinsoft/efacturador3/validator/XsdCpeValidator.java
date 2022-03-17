@@ -62,31 +62,31 @@ public class XsdCpeValidator
       if ("01".equals(tipoComprobante) || "03"
         .equals(tipoComprobante)) {
           //rootPath + "/VALI/" +
-        schemaValidador = rootPath + "/VALI/" +  xsltCpePath.getFacturaXsd();
+        schemaValidador = rootPath + "VALI/" +  xsltCpePath.getFacturaXsd();
       }
       if ("07".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getNotaCreditoXsd();
+        schemaValidador = rootPath + "VALI/" + xsltCpePath.getNotaCreditoXsd();
       }
       if ("08".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getNotaDebitoXsd();
+        schemaValidador = rootPath + "VALI/" + xsltCpePath.getNotaDebitoXsd();
       }
       if ("RA".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getResumenAnuladoXsd();
+        schemaValidador = rootPath + "VALI/" + xsltCpePath.getResumenAnuladoXsd();
       }
       if ("RC".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getResumenBoletaXsd();
+        schemaValidador = rootPath + "VALI/" + xsltCpePath.getResumenBoletaXsd();
       }
       if ("RR".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getResumenReversionXsd();
+        schemaValidador = rootPath + "VALI/" + xsltCpePath.getResumenReversionXsd();
       }
       if ("20".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getRetencionXsd();
+        schemaValidador = rootPath + "VALI/" + xsltCpePath.getRetencionXsd();
       }
       if ("40".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getPercepcionXsd();
+        schemaValidador = rootPath + "VALI/" + xsltCpePath.getPercepcionXsd();
       }
       if ("09".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "/VALI/" + xsltCpePath.getGuiaXsd();
+        schemaValidador = rootPath + "VALI/" + xsltCpePath.getGuiaXsd();
       }
       log.debug("validarSchemaXML...Asignando schemaValidador (" + schemaValidador + ")");
       log.debug("validarSchemaXML...Aplicando builderFactory");
