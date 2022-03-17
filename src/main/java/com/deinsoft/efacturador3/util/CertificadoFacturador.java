@@ -89,7 +89,7 @@ public class CertificadoFacturador {
         String rootPath = (obj.get("rootPath") != null) ? (String) obj.get("rootPath") : "";
         String companyPath = rootPath + "/" + numDoc;
         String rutaCertificado = companyPath + "/" + Constantes.CONSTANTE_CERT + "/" + nombreCertificado;
-        String certGenericPath = rootPath + "/ALMCERT/";
+        String certGenericPath = rootPath + "ALMCERT/";
         resultado.put("validacion", "EXITO");
         if ("".equals(rutaCertificado)) {
             resultado.put("validacion", "Debe ingresar la ruta del certificado");
