@@ -85,7 +85,7 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
 
     ConfigurationHolder config = ConfigurationHolder.getInstance();
 
-    public void formatoPlantillaXml(String rootPath, FacturaElectronica facturaElectronica, String nombreArchivo) throws TransferirArchivoException {
+    public byte[] formatoPlantillaXml(String rootPath, FacturaElectronica facturaElectronica, String nombreArchivo) throws TransferirArchivoException {
         String idXml = "";
         String tipoComprobante = facturaElectronica.getTipo();
         if ("01".equals(tipoComprobante) || "03"
@@ -113,7 +113,7 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
             }
 
             log.debug("SoftwareFacturadorController.formatoPlantillaXml...Final Procesamiento");
-
+            return myByteArray;
         } catch (Exception e) {
 
             log.info("formatoPlantillaXml: " + e.getMessage());
@@ -124,26 +124,24 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
         }
     }
 
-    public String firmarXml(String rootPath, FacturaElectronica facturaElectronica, String nombreArchivo) {
+    public Map<String,Object> firmarXml(String rootPath, FacturaElectronica facturaElectronica, String nombreArchivo) {
         String rutaNombreEntrada = rootPath + facturaElectronica.getEmpresa().getNumdoc() + "/TEMP/" + nombreArchivo + ".xml";
         String rutaNombreSalida = rootPath + facturaElectronica.getEmpresa().getNumdoc() + "/PARSE/" + nombreArchivo + ".xml";
 
         try {
             FileInputStream inDocument = new FileInputStream(rutaNombreEntrada);
-            FileOutputStream fout = new FileOutputStream(rutaNombreSalida);
-
-            Map<String, Object> firma = firmarDocumento(rootPath, facturaElectronica.getEmpresa(), inDocument, nombreArchivo);
+//            InputStream inDocument = new ByteArrayInputStream(bytes); 
+            return firmarDocumento(rootPath, facturaElectronica.getEmpresa(), inDocument, nombreArchivo);
 //            ByteArrayOutputStream outDocument = (ByteArrayOutputStream) firma.get("signatureFile");
 //            String digestValue = (String) firma.get("digestValue");
 //
 //            outDocument.writeTo(fout);
 //            fout.close();
 
-            return "";
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Error al firma archivo XML", e);
-        } catch (IOException e) {
-            throw new RuntimeException("Error al firma archivo XML", e);
+//        } catch (FileNotFoundException e) {
+//            throw new RuntimeException("Error al firma archivo XML", e);
+//        } catch (IOException e) {
+//            throw new RuntimeException("Error al firma archivo XML", e);
         } catch (Exception e) {
             throw new RuntimeException("Error al firma archivo XML", e);
         }
@@ -457,13 +455,13 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
     private Map<String, Object> firmarDocumento(String rootPath, Empresa empresa, InputStream inDocument, String fileName) {
         try {
             log.debug("GenerarDocumentosServiceImpl.firmarDocumento...Inicio de Firma");
-            Map<String, Object> retorno = new HashMap<>();
+//            Map<String, Object> retorno = new HashMap<>();
 
             log.debug("GenerarDocumentosServiceImpl.firmarDocumento...Crear Document");
             Document doc = buildDocument(inDocument);
-            Node parentNode = addExtensionContent(doc);
-            SignerXml.output(SignerXml.firmarXml(rootPath, empresa, doc), rootPath + "/" + empresa.getNumdoc() + "/PARSE/" + fileName + ".xml");
-            return retorno;
+            addExtensionContent(doc);
+            return SignerXml.firmarXml(rootPath, empresa, doc, rootPath + "/" + empresa.getNumdoc() + "/PARSE/" + fileName + ".xml");
+            
         } catch (Exception e) {
 
             throw new RuntimeException("Error al firmar documento: ", e);

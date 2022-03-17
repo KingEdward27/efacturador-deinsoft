@@ -17,6 +17,8 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.xml.security.c14n.Canonicalizer;
 
@@ -30,13 +32,14 @@ import org.apache.xml.security.utils.ElementProxy;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 /**
  *
  * @author EDWARD-PC
  */
 public class SignerXml {
-    public static ByteArrayOutputStream firmarXml(String rootPath, Empresa empresa, Document doc) throws Exception {
-
+    public static Map<String, Object> firmarXml(String rootPath, Empresa empresa, Document doc,String fileName) throws Exception {
+        Map<String, Object> retorno = new HashMap<>();
         System.out.println("/ INICIO.");
 
         // Obtenemos las propiedades para firmar el documento.
@@ -87,20 +90,57 @@ public class SignerXml {
 //        doc.getDocumentElement().appendChild(xmlSignature.getElement());
         Node node = doc.getDocumentElement().getElementsByTagName("ext:ExtensionContent").item(0);
         node.appendChild(xmlSignature.getElement());
+        
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         outputStream.write(Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS).canonicalizeSubtree(doc));
-        System.out.println("\\ FIN.");
-        return outputStream;
         
-//        return doc;
-    }
-    public static void output(ByteArrayOutputStream signedOutputStream, String fileName) throws IOException {
         final OutputStream fileOutputStream = new FileOutputStream(fileName);
         try {
-            fileOutputStream.write(signedOutputStream.toByteArray());
+            fileOutputStream.write(outputStream.toByteArray());
             fileOutputStream.flush();
         } finally {
             IOUtils.closeQuietly(fileOutputStream);
         }
+        
+        String digestValue = "-";
+        Element elementSignature = (Element) doc.getDocumentElement().getElementsByTagName("ds:Signature").item(0);
+        elementSignature.setAttribute("Id", "SignSUNAT");
+        
+        NodeList nodeList = doc.getDocumentElement().getElementsByTagName("ds:DigestValue");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            digestValue = obtenerNodo(nodeList.item(i));
+        }   
+        System.out.println("\\ FIN.");
+        retorno.put("file",outputStream.toByteArray());
+        retorno.put("digestValue",digestValue);
+        return retorno;
+        
+//        return doc;
     }
+    private static String obtenerNodo(Node node) throws Exception {
+        StringBuffer valorClave = new StringBuffer();
+        valorClave.setLength(0);
+
+        Integer tamano = Integer.valueOf(node.getChildNodes().getLength());
+
+        for (int i = 0; i < tamano.intValue(); i++) {
+            Node c = node.getChildNodes().item(i);
+            if (c.getNodeType() == 3) {
+                valorClave.append(c.getNodeValue());
+            }
+        }
+
+        String nodo = valorClave.toString().trim();
+
+        return nodo;
+    }
+//    public static void output(ByteArrayOutputStream signedOutputStream, String fileName) throws IOException {
+//        final OutputStream fileOutputStream = new FileOutputStream(fileName);
+//        try {
+//            fileOutputStream.write(signedOutputStream.toByteArray());
+//            fileOutputStream.flush();
+//        } finally {
+//            IOUtils.closeQuietly(fileOutputStream);
+//        }
+//    }
 }

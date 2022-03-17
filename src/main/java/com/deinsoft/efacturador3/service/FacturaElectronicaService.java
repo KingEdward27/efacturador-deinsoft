@@ -11,6 +11,7 @@ import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -23,5 +24,5 @@ public interface FacturaElectronicaService {
     public List<FacturaElectronica> getBySerieAndNumero(FacturaElectronica facturaElectronica);
     public List<FacturaElectronica> getByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(FacturaElectronica facturaElectronica);
     public FacturaElectronica toFacturaModel(ComprobanteCab documento) throws TransferirArchivoException, ParseException;
-    public String generarComprobantePagoSunat(String rootpath, FacturaElectronica documento) throws TransferirArchivoException;
+    public Map<String, Object> generarComprobantePagoSunat(String rootpath, FacturaElectronica documento) throws TransferirArchivoException;
 }

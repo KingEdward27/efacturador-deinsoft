@@ -590,4 +590,7 @@ create table factura_electronica_cuota
 ALTER TABLE `efacturador`.`empresa` 
 CHANGE COLUMN `token` `token` VARCHAR(900) NULL DEFAULT NULL ;
 
+ALTER TABLE `efacturador`.`factura_electronica` 
+drop column fechaEnvio;
+
 select * from factura_electronica

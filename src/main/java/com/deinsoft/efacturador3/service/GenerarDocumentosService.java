@@ -7,13 +7,13 @@ import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
 
 public interface GenerarDocumentosService {
 //  InputStream formatoPlantillaXml(Empresa empresa,FacturaElectronica facturaElectronica) throws TransferirArchivoException;
-  public void formatoPlantillaXml(String rootPath, FacturaElectronica facturaElectronica,String nombreArchivo) throws TransferirArchivoException;
+  public byte[] formatoPlantillaXml(String rootPath, FacturaElectronica facturaElectronica,String nombreArchivo) throws TransferirArchivoException;
 //  String firmarComprimirXml(String paramString);
   
 //  public String firmarXml(String rootPath,FacturaElectronica facturaElectronica, String nombreArchivo);
 //  
 //  ByteArrayOutputStream firmarXml(String path,String nomFile,Empresa empresa, InputStream inputStream);
-  public String firmarXml(String rootPath,FacturaElectronica facturaElectronica, String nombreArchivo);
+  public Map<String,Object> firmarXml(String rootPath,FacturaElectronica facturaElectronica, String nombreArchivo);
   
   HashMap<String, String> enviarArchivoSunat(String paramString1,String rootPath, String paramString2, FacturaElectronica paramString3);
   

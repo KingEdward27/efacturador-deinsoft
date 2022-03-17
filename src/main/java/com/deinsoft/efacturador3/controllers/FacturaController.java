@@ -87,11 +87,12 @@ public class FacturaController {
     
     @PostMapping(value = "/send-document")
     public ResponseEntity<?> sendDocument(@Valid @RequestBody ComprobanteCab documento, 
-            BindingResult result,HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException {
-        FacturaElectronica facturaElectronicaResult = null;
+            BindingResult bindingResult,HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException {
+//        FacturaElectronica facturaElectronicaResult = null;
+        Map<String,Object> result = null;
         try {
-            if (result.hasErrors()) {
-                return this.validar(result);
+            if (bindingResult.hasErrors()) {
+                return this.validar(bindingResult);
             }
             String mensajeValidacion = validarComprobante(documento);
             if (!mensajeValidacion.equals("")) {
@@ -117,22 +118,16 @@ public class FacturaController {
                 }
 
             }
-            facturaElectronicaResult = facturaElectronicaService.save(comprobante);
+//            facturaElectronicaResult = facturaElectronicaService.save(comprobante);
 
-            String docGene = this.facturaElectronicaService.generarComprobantePagoSunat(appConfig.getRootPath(), facturaElectronicaResult);
+            result = this.facturaElectronicaService.generarComprobantePagoSunat(appConfig.getRootPath(), comprobante);
 
-            if ("".equals(docGene)) {
-                facturaElectronicaResult.setFechaGenXml(new Date());
-                facturaElectronicaResult.setIndSituacion("02");
-                facturaElectronicaResult = facturaElectronicaService.save(facturaElectronicaResult);
-            }
-            log.info("docGene: " + facturaElectronicaResult.toString());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ocurrió un error inesperado: " + e.getMessage());
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(facturaElectronicaResult);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     @PostMapping(value = "/send-sunat")
