@@ -100,7 +100,7 @@ public class BandejaDocumentosServiceImpl implements BandejaDocumentosService {
         HashMap<String, Object> retorno = null;
         HashMap<String, String> resultadoWebService = null;
 
-        String nombreArchivo = "D:/DEFACT/VALI/" + "constantes.properties";
+        String nombreArchivo = rootPath + "VALI/" + "constantes.properties";
 
         if ("02".equals(facturaElectronica.getIndSituacion()) || "10"
                 .equals(facturaElectronica.getIndSituacion())|| "06"

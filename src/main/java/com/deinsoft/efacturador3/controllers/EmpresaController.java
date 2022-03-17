@@ -6,6 +6,7 @@
 package com.deinsoft.efacturador3.controllers;
 
 import com.deinsoft.efacturador3.bean.ComprobanteCab;
+import com.deinsoft.efacturador3.config.AppConfig;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.security.SecurityConstants;
 import com.deinsoft.efacturador3.service.BandejaDocumentosService;
@@ -50,11 +51,13 @@ public class EmpresaController {
     @Autowired
     EmpresaService empresaService;
 
+    @Autowired
+    AppConfig appConfig;
+    
     @PostMapping(value = "save")
     public ResponseEntity<?> save(@Valid @RequestBody Empresa empresa, BindingResult result,
             HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException {
         HashMap<String, Object> resultado = null;
-        String raiz = "D://DEFACT/";
 //        File directorio=new File(raiz + empresa.getNumdoc());
 //        directorio.mkdir();
         Empresa empresaResult = null;
@@ -77,7 +80,7 @@ public class EmpresaController {
                 param.put("nombreCertificado", empresa.getCertName());
                 param.put("passPrivateKey", empresa.getCertPass());
                 param.put("numDoc",empresa.getNumdoc());
-                param.put("rootPath",raiz);
+                param.put("rootPath",appConfig.getRootPath());
                 resultado = (new CertificadoFacturador()).importarCertificado(param);
             } catch (Exception e) {
                 resultado = new HashMap<>();
