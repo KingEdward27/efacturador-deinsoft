@@ -53,25 +53,27 @@ public class EmpresaController {
 
     @Autowired
     AppConfig appConfig;
-    
+
     @PostMapping(value = "save")
     public ResponseEntity<?> save(@Valid @RequestBody Empresa empresa, BindingResult result,
             HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException {
         HashMap<String, Object> resultado = null;
 //        File directorio=new File(raiz + empresa.getNumdoc());
 //        directorio.mkdir();
+        String userDirectory = new File("").getAbsolutePath();
+        log.info("userDirectory: " + userDirectory);
         Empresa empresaResult = null;
-        if(empresa.getIdempresa() != null && empresa.getIdempresa() > 0){
+        if (empresa.getIdempresa() != null && empresa.getIdempresa() > 0) {
             empresaResult = empresaService.save(empresa);
             resultado.put("message", "Empresa actualizada!");
             resultado.put("empresa", empresaResult);
-        }else{
+        } else {
             try {
                 Empresa foundEmpresa = empresaService.findByNumdoc(empresa.getNumdoc());
-                if(foundEmpresa != null || (foundEmpresa != null && foundEmpresa.getNumdoc() != null)){
+                if (foundEmpresa != null || (foundEmpresa != null && foundEmpresa.getNumdoc() != null)) {
                     return ResponseEntity.status(HttpStatus.FOUND).body("Ya se encuentra registrado el número de documento de la empresa");
                 }
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ocurrió un error inesperador al buscar la empresa");
             }
@@ -79,17 +81,17 @@ public class EmpresaController {
                 HashMap<String, Object> param = new HashMap<>();
                 param.put("nombreCertificado", empresa.getCertName());
                 param.put("passPrivateKey", empresa.getCertPass());
-                param.put("numDoc",empresa.getNumdoc());
-                param.put("rootPath",appConfig.getRootPath());
+                param.put("numDoc", empresa.getNumdoc());
+                param.put("rootPath", appConfig.getRootPath());
                 resultado = (new CertificadoFacturador()).importarCertificado(param);
             } catch (Exception e) {
                 resultado = new HashMap<>();
                 resultado.put("validacion", e.getMessage());
                 log.error(e.getMessage());
             }
-            if(resultado != null ){
+            if (resultado != null) {
                 String message = (resultado.get("validacion") != null) ? (String) resultado.get("validacion") : "";
-                if(!message.equalsIgnoreCase("EXITO")){
+                if (!message.equalsIgnoreCase("EXITO")) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
                 }
             }
@@ -103,50 +105,47 @@ public class EmpresaController {
 //				.setSigningKey(SecurityConstants.SUPER_SECRET_KEY)
 //				.parseClaimsJws(tokenold.replace(SecurityConstants.TOKEN_BEARER_PREFIX + " ", ""))
 //				.getBody().getIssuedAt();
-		
+
 //		String id = request.getSession().getId();
 //		List<String> authorities = util.getListAuthorities( updatedAuthorities );
-		
-		
 //		Session service = util.setSession( id, authorities, secRoleUser, usr );
 //		Session session = sessionService.save( service );
-		
-		String token = Jwts.builder()
-                                .setIssuedAt(new Date())
-                                .setIssuer(SecurityConstants.ISSUER_INFO)
-				.setId("DEFACT-JWT")
-				.setSubject(empresa.getNumdoc()+ "/" + empresa.getRazonSocial())
-				//.claim("prf", secRoleUser.getSecRole())
-				//.claim("cg", secRoleUser.getCnfTenant())
-				//.claim("session", id)
-				//.claim("cg", secRoleUser.getTenants())
-				//.claim("cia", secRoleUser.getCompanies())
-				//.claim("brn", secRoleUser.getOrgs())
-				//.claim("usrEmail", usr.getEmail())
-//				.claim("empresaId", empresa.getIdempresa())
-//                                .claim("empresaId", empresa.getIdempresa()) 
-				.claim("numDoc", empresa.getNumdoc()) //((User)auth.getPrincipal()).getAuthorities())
-//				.claim("authorities", empresa.getNumdoc())
-                                .claim("razonSocial", empresa.getRazonSocial()) //((User)auth.getPrincipal()).getAuthorities())
-				.claim("usuarioSol", empresa.getUsuariosol())
-                                .setIssuedAt(new Date())
-				.setExpiration(new Date(new Date().getTime() + SecurityConstants.TOKEN_EXPIRATION_TIME * 1000 * 60 * 1000))
-				.signWith(SignatureAlgorithm.HS512, SecurityConstants.SUPER_SECRET_KEY).compact();
-		
-		log.info( "********* TOKEN: {}" , SecurityConstants.TOKEN_BEARER_PREFIX + " " + token );
+            String token = Jwts.builder()
+                    .setIssuedAt(new Date())
+                    .setIssuer(SecurityConstants.ISSUER_INFO)
+                    .setId("DEFACT-JWT")
+                    .setSubject(empresa.getNumdoc() + "/" + empresa.getRazonSocial())
+                    //.claim("prf", secRoleUser.getSecRole())
+                    //.claim("cg", secRoleUser.getCnfTenant())
+                    //.claim("session", id)
+                    //.claim("cg", secRoleUser.getTenants())
+                    //.claim("cia", secRoleUser.getCompanies())
+                    //.claim("brn", secRoleUser.getOrgs())
+                    //.claim("usrEmail", usr.getEmail())
+                    //				.claim("empresaId", empresa.getIdempresa())
+                    //                                .claim("empresaId", empresa.getIdempresa()) 
+                    .claim("numDoc", empresa.getNumdoc()) //((User)auth.getPrincipal()).getAuthorities())
+                    //				.claim("authorities", empresa.getNumdoc())
+                    .claim("razonSocial", empresa.getRazonSocial()) //((User)auth.getPrincipal()).getAuthorities())
+                    .claim("usuarioSol", empresa.getUsuariosol())
+                    .setIssuedAt(new Date())
+                    .setExpiration(new Date(new Date().getTime() + SecurityConstants.TOKEN_EXPIRATION_TIME * 1000 * 60 * 1000))
+                    .signWith(SignatureAlgorithm.HS512, SecurityConstants.SUPER_SECRET_KEY).compact();
+
+            log.info("********* TOKEN: {}", SecurityConstants.TOKEN_BEARER_PREFIX + " " + token);
 //		LOGGER.info( "********* uuid mongodb: {}" , session.getId());
-		response.addHeader(SecurityConstants.HEADER_AUTHORIZACION_KEY, SecurityConstants.TOKEN_BEARER_PREFIX+" "+token);
+            response.addHeader(SecurityConstants.HEADER_AUTHORIZACION_KEY, SecurityConstants.TOKEN_BEARER_PREFIX + " " + token);
 //		response.addHeader("sessionId", session.getId());
-		response.addHeader("Access-Control-Expose-Headers", "Authorization");
-		response.addHeader("Access-Control-Allow-Headers", "Authorization, X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept, X-Custom-header");
-		
+            response.addHeader("Access-Control-Expose-Headers", "Authorization");
+            response.addHeader("Access-Control-Allow-Headers", "Authorization, X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept, X-Custom-header");
+
             empresa.setToken(token);
             empresa.setCertPass(FacturadorUtil.Encriptar(empresa.getCertPass()));
             empresaResult = empresaService.save(empresa);
             resultado.put("message", "Empresa creada!, se agregó correctamente la clave privada");
             resultado.put("empresa", empresaResult);
         }
-        
+
 //        // Falta validar si son todos los perfiles
 ////		boolean state;
 //		
@@ -218,7 +217,6 @@ public class EmpresaController {
 //		response.addHeader("Access-Control-Allow-Headers", "Authorization, X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept, X-Custom-header");
 //		
 ////		return new User(usr.getName(), usr.getPassword(), state, true, true, true, updatedAuthorities);
-		
         return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
     }
 }
