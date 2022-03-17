@@ -95,7 +95,7 @@ public class EmpresaController {
             try {
                 HashMap<String, Object> param = new HashMap<>();
                 param.put("nombreCertificado", empresa.getCertName());
-                param.put("passPrivateKey", FacturadorUtil.Encriptar(empresa.getCertPass()));
+                param.put("passPrivateKey", empresa.getCertPass());
                 param.put("numDoc", empresa.getNumdoc());
                 param.put("rootPath", appConfig.getRootPath());
                 resultado = (new CertificadoFacturador()).importarCertificado(param);
