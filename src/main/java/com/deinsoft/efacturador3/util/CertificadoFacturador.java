@@ -90,6 +90,8 @@ public class CertificadoFacturador {
         String companyPath = rootPath + "/" + numDoc;
         String rutaCertificado = companyPath + "/" + Constantes.CONSTANTE_CERT + "/" + nombreCertificado;
         String certGenericPath = rootPath + "ALMCERT/";
+        log.info(rutaCertificado);
+        log.info(certGenericPath+"FacturadorKey.jks");
         resultado.put("validacion", "EXITO");
         if ("".equals(rutaCertificado)) {
             resultado.put("validacion", "Debe ingresar la ruta del certificado");
@@ -125,11 +127,11 @@ public class CertificadoFacturador {
 
         if (error.intValue() == 0) {
 
-            String salida = FacturadorUtil.executeCommand("keytool -delete -alias "+Constantes.PRIVATE_KEY_ALIAS+numDoc+" -storepass SuN@TF4CT -keystore \"" + certGenericPath + "FacturadorKey.jks\"");
+            String salida = FacturadorUtil.executeCommand("keytool -delete -alias "+Constantes.PRIVATE_KEY_ALIAS+numDoc+" -storepass SuN@TF4CT -keystore " + certGenericPath + "FacturadorKey.jks");
 
             log.debug("Metodo importarCertificado: Salida de keytool -delete " + salida);
 
-            salida = FacturadorUtil.executeCommand("keytool -importkeystore -srcalias \"" + aliasPfx + "\" -srckeystore \"" + rutaCertificado + "\" -srcstoretype pkcs12 -srcstorepass \"" + passPrivateKey + "\" -destkeystore \"" + certGenericPath + "FacturadorKey.jks\" -deststoretype JKS -destalias "+Constantes.PRIVATE_KEY_ALIAS+numDoc+" -deststorepass SuN@TF4CT");
+            salida = FacturadorUtil.executeCommand("keytool -importkeystore -srcalias \"" + aliasPfx + "\" -srckeystore " + rutaCertificado + " -srcstoretype pkcs12 -srcstorepass \"" + passPrivateKey + "\" -destkeystore \"" + certGenericPath + "FacturadorKey.jks\" -deststoretype JKS -destalias "+Constantes.PRIVATE_KEY_ALIAS+numDoc+" -deststorepass SuN@TF4CT");
 
             log.debug("Metodo importarCertificado: Salida de keytool -importkeystore " + salida);
             if (!"".equals(salida)) {
