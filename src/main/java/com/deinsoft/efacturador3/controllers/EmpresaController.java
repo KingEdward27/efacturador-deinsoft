@@ -68,7 +68,7 @@ public class EmpresaController {
         String userDirectory = new File(".").getAbsolutePath();
         String userDirectory2 = new File(".").getPath();
         String userDirectory3 = new File(".").getCanonicalPath();
-        String[] wa = new File(".").list();
+        String[] wa = new File("/home/.").list();
         for (String string : wa) {
             log.info("string: " + string);
         }
