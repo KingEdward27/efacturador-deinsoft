@@ -59,7 +59,7 @@ public class Empresa implements Serializable {
     @Column(name = "cert_pass")
     private String certPass;
     
-    @Column(name = "token")
+    @Column(name = "token", length = 1000)
     private String token;
     
     @Column(name = "estado")
