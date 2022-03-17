@@ -30,6 +30,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,7 +39,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.core.io.Resource;
 /**
  *
  * @author EDWARD-PC
@@ -55,6 +56,9 @@ public class EmpresaController {
     @Autowired
     AppConfig appConfig;
 
+//    @Value("azure-blob://defact/ALMCERT/FacturadorKey.jks")
+//    private Resource blobFile;
+    
     @PostMapping(value = "save")
     public ResponseEntity<?> save(@Valid @RequestBody Empresa empresa, BindingResult result,
             HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException, IOException {
@@ -64,6 +68,10 @@ public class EmpresaController {
         String userDirectory = new File(".").getAbsolutePath();
         String userDirectory2 = new File(".").getPath();
         String userDirectory3 = new File(".").getCanonicalPath();
+        String[] wa = new File(".").list();
+        for (String string : wa) {
+            log.info("string: " + string);
+        }
         String dir = System.getProperty("user.dir");
         log.info("userDirectory: " + userDirectory);
         log.info("userDirectory2: " + userDirectory2);
