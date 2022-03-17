@@ -17,6 +17,7 @@ import com.deinsoft.efacturador3.util.FacturadorUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,12 +57,18 @@ public class EmpresaController {
 
     @PostMapping(value = "save")
     public ResponseEntity<?> save(@Valid @RequestBody Empresa empresa, BindingResult result,
-            HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException {
+            HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException, IOException {
         HashMap<String, Object> resultado = null;
 //        File directorio=new File(raiz + empresa.getNumdoc());
 //        directorio.mkdir();
-        String userDirectory = new File("").getAbsolutePath();
+        String userDirectory = new File(".").getAbsolutePath();
+        String userDirectory2 = new File(".").getPath();
+        String userDirectory3 = new File(".").getCanonicalPath();
+        String dir = System.getProperty("user.dir");
         log.info("userDirectory: " + userDirectory);
+        log.info("userDirectory2: " + userDirectory2);
+        log.info("userDirectory3: " + userDirectory3);
+        log.info("dir: " + dir);
         Empresa empresaResult = null;
         if (empresa.getIdempresa() != null && empresa.getIdempresa() > 0) {
             empresaResult = empresaService.save(empresa);
