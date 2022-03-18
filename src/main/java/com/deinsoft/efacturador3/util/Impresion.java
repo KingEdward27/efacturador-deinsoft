@@ -31,6 +31,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.JasperViewer;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ResourceUtils;
 //import sistventa.JDVisor;
 //import static sistventa.JIVentas.round;
 //import util.Constantes;
@@ -45,13 +46,20 @@ public class Impresion {
         try {
             JasperReport reporte = null;
             String ubicacion = "";
+//            if (tipo == 1) {
+//                ubicacion = "jasper/boleta.jasper";
+//            }else
+//            {
+//                ubicacion = "jasper/ticket.jasper";
+//            }
             if (tipo == 1) {
-                ubicacion = "jasper/boleta.jasper";
+                ubicacion = "classpath:boleta.jasper";
             }else
             {
-                ubicacion = "jasper/ticket.jasper";
+                ubicacion = "classpath:ticket.jasper";
             }
-            File fileNode = new ClassPathResource(ubicacion).getFile();
+//            File fileNode = new ClassPathResource(ubicacion).getFile();
+            File fileNode = ResourceUtils.getFile(ubicacion);
             reporte = (JasperReport) JRLoader.loadObject(fileNode);
             Map parametros;
             parametros = new HashMap<String, Object>();
