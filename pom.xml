@@ -172,6 +172,13 @@
             <artifactId>mssql-jdbc</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+           <groupId>local.jasperFont</groupId>
+           <artifactId>local.jasperFont</artifactId>
+           <version>1.0</version>
+           <scope>system</scope>
+           <systemPath>${basedir}/src/main/resources/jasper/Open-Sans.jar</systemPath>
+        </dependency>
     </dependencies>
     
 
