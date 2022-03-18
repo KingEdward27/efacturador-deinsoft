@@ -14,6 +14,7 @@ import java.awt.Toolkit;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,20 +47,20 @@ public class Impresion {
         try {
             JasperReport reporte = null;
             String ubicacion = "";
-//            if (tipo == 1) {
-//                ubicacion = "jasper/boleta.jasper";
-//            }else
-//            {
-//                ubicacion = "jasper/ticket.jasper";
-//            }
             if (tipo == 1) {
-                ubicacion = "classpath:boleta.jasper";
+                ubicacion = "jasper/boleta.jasper";
             }else
             {
-                ubicacion = "classpath:ticket.jasper";
+                ubicacion = "jasper/ticket.jasper";
             }
-//            File fileNode = new ClassPathResource(ubicacion).getFile();
-            File fileNode = ResourceUtils.getFile(ubicacion);
+//            if (tipo == 1) {
+//                ubicacion = "classpath:boleta.jasper";
+//            }else
+//            {
+//                ubicacion = "classpath:ticket.jasper";
+//            }
+            InputStream fileNode = new ClassPathResource(ubicacion).getInputStream();
+//            File fileNode = ResourceUtils.getFile(ubicacion);
             reporte = (JasperReport) JRLoader.loadObject(fileNode);
             Map parametros;
             parametros = new HashMap<String, Object>();
