@@ -58,35 +58,35 @@ public class XsdCpeValidator
     
     try {
       String schemaValidador = "";
-      
+      String validationBasePath = rootPath + "VALI/";
       if ("01".equals(tipoComprobante) || "03"
         .equals(tipoComprobante)) {
           //rootPath + "/VALI/" +
-        schemaValidador = rootPath + "VALI/" +  xsltCpePath.getFacturaXsd();
+        schemaValidador = validationBasePath +  xsltCpePath.getFacturaXsd();
       }
       if ("07".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "VALI/" + xsltCpePath.getNotaCreditoXsd();
+        schemaValidador = validationBasePath + xsltCpePath.getNotaCreditoXsd();
       }
       if ("08".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "VALI/" + xsltCpePath.getNotaDebitoXsd();
+        schemaValidador = validationBasePath + xsltCpePath.getNotaDebitoXsd();
       }
       if ("RA".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "VALI/" + xsltCpePath.getResumenAnuladoXsd();
+        schemaValidador = validationBasePath + xsltCpePath.getResumenAnuladoXsd();
       }
       if ("RC".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "VALI/" + xsltCpePath.getResumenBoletaXsd();
+        schemaValidador = validationBasePath + xsltCpePath.getResumenBoletaXsd();
       }
       if ("RR".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "VALI/" + xsltCpePath.getResumenReversionXsd();
+        schemaValidador = validationBasePath + xsltCpePath.getResumenReversionXsd();
       }
       if ("20".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "VALI/" + xsltCpePath.getRetencionXsd();
+        schemaValidador = validationBasePath + xsltCpePath.getRetencionXsd();
       }
       if ("40".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "VALI/" + xsltCpePath.getPercepcionXsd();
+        schemaValidador = validationBasePath + xsltCpePath.getPercepcionXsd();
       }
       if ("09".equals(tipoComprobante)) {
-        schemaValidador = rootPath + "VALI/" + xsltCpePath.getGuiaXsd();
+        schemaValidador = validationBasePath + xsltCpePath.getGuiaXsd();
       }
       log.debug("validarSchemaXML...Asignando schemaValidador (" + schemaValidador + ")");
       log.debug("validarSchemaXML...Aplicando builderFactory");
@@ -105,7 +105,8 @@ public class XsdCpeValidator
       log.debug("validarSchemaXML...Configurando ResourceResolver document (" + document + ")");
       
       SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
-      factory.setResourceResolver((LSResourceResolver)new ResourceResolver());
+      
+      factory.setResourceResolver((LSResourceResolver)new ResourceResolver(validationBasePath + "commons/xsd/2.1/"));
       
       log.debug("validarSchemaXML...Configurando SchemaFile");
       StreamSource schemaFile = new StreamSource(new File(schemaValidador));
@@ -144,97 +145,97 @@ public class XsdCpeValidator
     
     log.debug("Finalizando Validacion de Schema");
   }
-  public void validarSchemaXML(String tipoComprobante, InputStream file) throws XsdException {
-    log.debug("validarSchemaXML...Iniciando Validacion de Schema");
-    
-    ConfigurationHolder config = ConfigurationHolder.getInstance();
-    
-    
-    try {
-      String schemaValidador = "";
-      
-      if ("01".equals(tipoComprobante) || "03"
-        .equals(tipoComprobante)) {
-        schemaValidador = Constantes.CONSTANTE_PATH_FORMATOS_FTL + xsltCpePath.getFacturaXsd();
-      }
-//      if ("07".equals(tipoComprobante)) {
-//        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getNotaCreditoXsd();
+//  public void validarSchemaXML(String tipoComprobante, InputStream file) throws XsdException {
+//    log.debug("validarSchemaXML...Iniciando Validacion de Schema");
+//    
+//    ConfigurationHolder config = ConfigurationHolder.getInstance();
+//    
+//    
+//    try {
+//      String schemaValidador = "";
+//      
+//      if ("01".equals(tipoComprobante) || "03"
+//        .equals(tipoComprobante)) {
+//        schemaValidador = Constantes.CONSTANTE_PATH_FORMATOS_FTL + xsltCpePath.getFacturaXsd();
 //      }
-//      if ("08".equals(tipoComprobante)) {
-//        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getNotaDebitoXsd();
+////      if ("07".equals(tipoComprobante)) {
+////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getNotaCreditoXsd();
+////      }
+////      if ("08".equals(tipoComprobante)) {
+////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getNotaDebitoXsd();
+////      }
+////      if ("RA".equals(tipoComprobante)) {
+////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenAnuladoXsd();
+////      }
+////      if ("RC".equals(tipoComprobante)) {
+////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenBoletaXsd();
+////      }
+////      if ("RR".equals(tipoComprobante)) {
+////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenReversionXsd();
+////      }
+////      if ("20".equals(tipoComprobante)) {
+////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getRetencionXsd();
+////      }
+////      if ("40".equals(tipoComprobante)) {
+////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getPercepcionXsd();
+////      }
+////      if ("09".equals(tipoComprobante)) {
+////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getGuiaXsd();
+////      }
+//      log.debug("validarSchemaXML...Asignando schemaValidador (" + schemaValidador + ")");
+//      log.debug("validarSchemaXML...Aplicando builderFactory");
+//      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+//      builderFactory.setNamespaceAware(true);
+//      
+//      log.debug("validarSchemaXML...Parseando DocumentBuilder");
+//      DocumentBuilder parser = builderFactory.newDocumentBuilder();
+//      
+////      File file = new File(nombreArchivo);
+//      InputStream inputStream = file;
+//      Reader reader = new InputStreamReader(inputStream, "ISO-8859-1");
+//      log.debug("validarSchemaXML...Configurando reader (" + reader + ")");
+//      Document document = parser.parse(new InputSource(reader));
+//      
+//      log.debug("validarSchemaXML...Configurando ResourceResolver document (" + document + ")");
+//      
+//      SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+//      factory.setResourceResolver((LSResourceResolver)new ResourceResolver());
+//      
+//      log.debug("validarSchemaXML...Configurando SchemaFile");
+//      StreamSource schemaFile = new StreamSource(new File(schemaValidador));
+//      
+//      Schema schema = factory.newSchema(schemaFile);
+//      
+//      Validator validator = schema.newValidator();
+//      validator.validate(new DOMSource(document));
+//      log.debug("validarSchemaXML...Configurando Validator");
+//    }
+//    catch (ParserConfigurationException e) {
+//      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
+//          .getMessage() + " - Causa: " + e.getCause(), e);
+//    }
+//    catch (FileNotFoundException e) {
+//      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
+//          .getMessage() + " - Causa: " + e.getCause(), e);
+//    } catch (UnsupportedEncodingException e) {
+//      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
+//          .getMessage() + " - Causa: " + e.getCause(), e);
+//    } catch (SAXException e) {
+//      
+//      if (e.getMessage().contains("cvc-complex-type")) {
+//        throw new XsdException("No se puede leer (parsear) el archivo XML: " + e
+//            .getMessage());
 //      }
-//      if ("RA".equals(tipoComprobante)) {
-//        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenAnuladoXsd();
-//      }
-//      if ("RC".equals(tipoComprobante)) {
-//        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenBoletaXsd();
-//      }
-//      if ("RR".equals(tipoComprobante)) {
-//        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenReversionXsd();
-//      }
-//      if ("20".equals(tipoComprobante)) {
-//        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getRetencionXsd();
-//      }
-//      if ("40".equals(tipoComprobante)) {
-//        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getPercepcionXsd();
-//      }
-//      if ("09".equals(tipoComprobante)) {
-//        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getGuiaXsd();
-//      }
-      log.debug("validarSchemaXML...Asignando schemaValidador (" + schemaValidador + ")");
-      log.debug("validarSchemaXML...Aplicando builderFactory");
-      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-      builderFactory.setNamespaceAware(true);
-      
-      log.debug("validarSchemaXML...Parseando DocumentBuilder");
-      DocumentBuilder parser = builderFactory.newDocumentBuilder();
-      
-//      File file = new File(nombreArchivo);
-      InputStream inputStream = file;
-      Reader reader = new InputStreamReader(inputStream, "ISO-8859-1");
-      log.debug("validarSchemaXML...Configurando reader (" + reader + ")");
-      Document document = parser.parse(new InputSource(reader));
-      
-      log.debug("validarSchemaXML...Configurando ResourceResolver document (" + document + ")");
-      
-      SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
-      factory.setResourceResolver((LSResourceResolver)new ResourceResolver());
-      
-      log.debug("validarSchemaXML...Configurando SchemaFile");
-      StreamSource schemaFile = new StreamSource(new File(schemaValidador));
-      
-      Schema schema = factory.newSchema(schemaFile);
-      
-      Validator validator = schema.newValidator();
-      validator.validate(new DOMSource(document));
-      log.debug("validarSchemaXML...Configurando Validator");
-    }
-    catch (ParserConfigurationException e) {
-      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
-          .getMessage() + " - Causa: " + e.getCause(), e);
-    }
-    catch (FileNotFoundException e) {
-      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
-          .getMessage() + " - Causa: " + e.getCause(), e);
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
-          .getMessage() + " - Causa: " + e.getCause(), e);
-    } catch (SAXException e) {
-      
-      if (e.getMessage().contains("cvc-complex-type")) {
-        throw new XsdException("No se puede leer (parsear) el archivo XML: " + e
-            .getMessage());
-      }
-      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
-          .getMessage() + " - Causa: " + e.getCause(), e);
-
-    
-    }
-    catch (IOException e) {
-      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
-          .getMessage() + " - Causa: " + e.getCause(), e);
-    } 
-    
-    log.debug("Finalizando Validacion de Schema");
-  }
+//      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
+//          .getMessage() + " - Causa: " + e.getCause(), e);
+//
+//    
+//    }
+//    catch (IOException e) {
+//      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
+//          .getMessage() + " - Causa: " + e.getCause(), e);
+//    } 
+//    
+//    log.debug("Finalizando Validacion de Schema");
+//  }
 }

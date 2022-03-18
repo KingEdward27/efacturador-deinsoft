@@ -10,7 +10,21 @@ import org.w3c.dom.ls.LSResourceResolver;
 
 public class ResourceResolver implements LSResourceResolver {
   private static final Logger log = LoggerFactory.getLogger(ResourceResolver.class);
+  
+  public ResourceResolver(String path){
+    this.path = path;
+  }
+  private String path;
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+  
+  
 
   
   public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId, 
@@ -26,7 +40,7 @@ public class ResourceResolver implements LSResourceResolver {
     log.debug("rutaArchivo Segunda Depuracion: " + rutaArchivo);
     InputStream resourceAsStream = null;
       try {
-          resourceAsStream = new FileInputStream("D:/SFS_v1.3.2/sunat_archivos/sfs/VALI/commons/xsd/2.1/"+ rutaArchivo);
+          resourceAsStream = new FileInputStream(this.path+ rutaArchivo);
       } catch (Exception e) {
           e.printStackTrace();
       }
