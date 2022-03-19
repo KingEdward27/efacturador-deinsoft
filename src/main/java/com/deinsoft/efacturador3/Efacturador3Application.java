@@ -38,14 +38,14 @@ public class Efacturador3Application {
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(Efacturador3Application.class, args);
-        System.out.println(Encriptar("123456"));
-
-        final InputStream fileInputStream = new FileInputStream("C:/ServicioFacturacion/XML/20518964756-03-B001-00009614.xml");
-        try {
-            output(signFile(fileInputStream, new File("D:/DEFACT/ALMCERT/FacturadorKey.jks")), "D:/DEFACT/20518964756/TEMP/signed-test2.xml");
-        } finally {
-            IOUtils.closeQuietly(fileInputStream);
-        }
+//        System.out.println(Encriptar("123456"));
+//
+//        final InputStream fileInputStream = new FileInputStream("C:/ServicioFacturacion/XML/20518964756-03-B001-00009614.xml");
+//        try {
+//            output(signFile(fileInputStream, new File("D:/DEFACT/ALMCERT/FacturadorKey.jks")), "D:/DEFACT/20518964756/TEMP/signed-test2.xml");
+//        } finally {
+//            IOUtils.closeQuietly(fileInputStream);
+//        }
     }
 
     public static String Encriptar(String texto) {
