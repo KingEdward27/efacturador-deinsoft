@@ -25,6 +25,7 @@ jobs:
         run: |
           mvn clean install
           sudo apt install fonts-dejavu fontconfig
+          sudo apt install fonts-open-sans
           
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
