@@ -24,7 +24,8 @@ jobs:
       - name: Build with Maven
         run: |
           mvn clean install
-          sudo apt install fonts-dejavu fontconfig 
+          sudo apt install fonts-dejavu fontconfig
+          sudo apk --update add fontconfig ttf-dejavu
           
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
