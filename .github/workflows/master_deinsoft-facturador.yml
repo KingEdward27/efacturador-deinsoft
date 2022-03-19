@@ -22,9 +22,7 @@ jobs:
           java-version: '8'
 
       - name: Build with Maven
-        run: |
-          mvn clean install
-          sudo apt install fonts-dejavu fontconfig
+        run: mvn clean install
           
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
