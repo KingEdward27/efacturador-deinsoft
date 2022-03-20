@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy JAR app to Azure Web App - deinsoft-facturador
+name: Build and deploy JAR app to Azure Web App - deinsoft-facturador-w
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -19,14 +19,11 @@ jobs:
       - name: Set up Java version
         uses: actions/setup-java@v1
         with:
-          java-version: '8'
+          java-version: '11'
 
       - name: Build with Maven
-        run: |
-          mvn clean install
-          sudo apt install fonts-dejavu fontconfig
-          sudo apt install fonts-open-sans
-          
+        run: mvn clean install
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
@@ -34,12 +31,12 @@ jobs:
           path: '${{ github.workspace }}/target/*.jar'
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
@@ -50,7 +47,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'deinsoft-facturador'
+          app-name: 'deinsoft-facturador-w'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A177DE7C3A924F4CAF53692BF9770F92 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4B920814CE034B83B582F0AC6AFA5254 }}
           package: '*.jar'
