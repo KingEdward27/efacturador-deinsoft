@@ -63,35 +63,28 @@
 			<textField>
 				<reportElement x="0" y="29" width="359" height="20" uuid="ff55e809-d171-4c19-9871-2eba19c430f9"/>
 				<textElement>
-					<font fontName="Open Sans" size="11" isBold="true"/>
+					<font size="11" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{razon_social}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="49" width="359" height="20" uuid="37230b67-2af3-410a-95cf-1c583543675d"/>
-				<textElement>
-					<font fontName="Open Sans"/>
-				</textElement>
 				<textFieldExpression><![CDATA[$P{direccion}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="430" y="40" width="100" height="16" uuid="b12cf0b4-00dd-462d-98db-57f195d3b60b"/>
-				<textElement textAlignment="Center">
-					<font fontName="Open Sans"/>
-				</textElement>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$P{ruc}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="430" y="55" width="100" height="16" uuid="f988cba9-4cdc-4498-8fd7-318b3d238781"/>
-				<textElement textAlignment="Center">
-					<font fontName="Open Sans"/>
-				</textElement>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$P{numero}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="410" y="12" width="138" height="28" uuid="477e1a86-b084-448c-aeb9-35a13742f3d9"/>
 				<textElement textAlignment="Center">
-					<font fontName="Open Sans" size="11" isBold="true"/>
+					<font size="11" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{tipodoc}]]></textFieldExpression>
 			</textField>
@@ -104,86 +97,68 @@
 			</rectangle>
 			<textField>
 				<reportElement x="75" y="15" width="100" height="14" uuid="a8e2540c-3704-4f80-8c20-061b10b342d8"/>
-				<textElement>
-					<font fontName="Open Sans"/>
-				</textElement>
 				<textFieldExpression><![CDATA[$P{ruc_dniCliente}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="6" y="15" width="55" height="14" uuid="50a0433d-679e-4952-b624-4c11d26e763f"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[RUC/DNI]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="6" y="31" width="55" height="14" uuid="67851f97-f909-40a8-93b7-d880f734b3a9"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[CLIENTE]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="6" y="47" width="71" height="14" uuid="1540bcde-e2bd-436d-a4d8-554110325c5f"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[DIRECCION]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="77" y="31" width="198" height="14" uuid="4f90173f-4dcb-43b0-985e-8eccf20a734d"/>
-				<textElement>
-					<font fontName="Open Sans"/>
-				</textElement>
 				<textFieldExpression><![CDATA[$P{nombreCliente}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="77" y="47" width="198" height="14" uuid="fb057f01-5feb-4909-b66f-09984aaf291f"/>
-				<textElement>
-					<font fontName="Open Sans"/>
-				</textElement>
 				<textFieldExpression><![CDATA[$P{direccionCliente}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="285" y="15" width="108" height="14" uuid="49c889c5-ab31-4ab2-85d4-01dfd81a838b"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[FECHA DE EMISION]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="285" y="30" width="108" height="14" uuid="c0c6ef6b-2d44-4072-815a-579c12131891"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[FECHA DE VCTO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="285" y="45" width="108" height="14" uuid="53c9f892-9cfc-4fcc-8fb2-65ba39580200"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[MONEDA]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="400" y="15" width="100" height="14" uuid="048c0889-3797-4817-a5e5-3b7fc996b637"/>
-				<textElement>
-					<font fontName="Open Sans"/>
-				</textElement>
 				<textFieldExpression><![CDATA[$P{pFechaEmision}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="400" y="30" width="100" height="15" uuid="4861c1d9-84f6-4f2d-8c6d-1fbd644277e2"/>
-				<textElement>
-					<font fontName="Open Sans"/>
-				</textElement>
 				<textFieldExpression><![CDATA[$P{fechaVencimiento}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="400" y="47" width="100" height="14" uuid="87e47d77-0ff9-45cd-b300-27cd6d04ce96"/>
-				<textElement>
-					<font fontName="Open Sans"/>
-				</textElement>
 				<textFieldExpression><![CDATA[$P{moneda}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -193,70 +168,70 @@
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="0" width="23" height="14" forecolor="#FFFFFF" backcolor="#000000" uuid="00a5f901-b400-4795-8248-5d285cdcacf6"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[N°]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="23" y="0" width="54" height="14" forecolor="#FFFFFF" backcolor="#000000" uuid="6963353c-f54b-488c-97ea-ee9b1aa1b20b"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[CANTIDAD]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="77" y="0" width="23" height="14" forecolor="#FFFFFF" backcolor="#000000" uuid="3dfc414d-e0c0-4161-89d9-e5c8e62096e3"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[U.M.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="100" y="0" width="44" height="14" forecolor="#FFFFFF" backcolor="#000000" uuid="3578fa0a-27c1-4323-886d-f8ca239edbec"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[CODIGO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="144" y="0" width="207" height="14" forecolor="#FFFFFF" backcolor="#000000" uuid="bbd79e43-4253-45b6-929c-08e36f1deb44"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[DESCRIPCIÓN]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="351" y="0" width="32" height="14" forecolor="#FFFFFF" backcolor="#000000" uuid="11cd0dfb-4fe8-49f0-9fd9-1008c6cc0ca4"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[V/U]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="383" y="0" width="33" height="14" forecolor="#FFFFFF" backcolor="#000000" uuid="3700a22b-7976-4663-a89b-697cb2c7c89b"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[P/U]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="416" y="0" width="38" height="14" forecolor="#FFFFFF" backcolor="#000000" uuid="5b20bf25-4f7d-4e8a-af8b-6e23cf3be11a"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[T. IGV]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="454" y="0" width="49" height="14" forecolor="#FFFFFF" backcolor="#000000" uuid="8358a3ca-fcde-40b2-b6b5-cbd353283010"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[T. DSCTO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="503" y="0" width="53" height="14" forecolor="#FFFFFF" backcolor="#000000" uuid="c0ba6e89-c5d8-4b68-a489-2ce3e0318a4d"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[IMPORTE]]></text>
 			</staticText>
@@ -268,7 +243,7 @@
 				<reportElement x="24" y="0" width="50" height="16" uuid="45ca2465-8446-4413-b826-3e7ff3f85c63"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
 				<textElement textAlignment="Center">
-					<font fontName="Open Sans" size="9" isBold="false"/>
+					<font size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
 			</textField>
@@ -276,7 +251,7 @@
 				<reportElement x="75" y="0" width="25" height="16" uuid="c3c3f820-dcd8-4168-a5c8-e65f17dc06df"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
 				<textElement textAlignment="Center">
-					<font fontName="Open Sans" size="9" isBold="false"/>
+					<font size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{um}]]></textFieldExpression>
 			</textField>
@@ -284,7 +259,7 @@
 				<reportElement x="100" y="0" width="44" height="16" uuid="6bc59e19-9de9-4cf7-b429-d32357c9023e"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
 				<textElement textAlignment="Center">
-					<font fontName="Open Sans" size="9" isBold="false"/>
+					<font size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
 			</textField>
@@ -292,7 +267,7 @@
 				<reportElement x="144" y="0" width="207" height="16" uuid="7171b7d5-1d4b-4f17-b504-a6ffd1a9591d"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
 				<textElement>
-					<font fontName="Open Sans" size="9" isBold="false"/>
+					<font size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
 			</textField>
@@ -300,7 +275,7 @@
 				<reportElement x="351" y="0" width="32" height="16" uuid="00e31e2b-7ceb-4935-b556-152caaf3e16f"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
 				<textElement textAlignment="Right">
-					<font fontName="Open Sans" size="9" isBold="false"/>
+					<font size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{vu}]]></textFieldExpression>
 			</textField>
@@ -308,7 +283,7 @@
 				<reportElement x="383" y="0" width="33" height="16" uuid="0ca1fbdb-0938-48ca-b14d-764d6ac3488c"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
 				<textElement textAlignment="Right">
-					<font fontName="Open Sans" size="9" isBold="false"/>
+					<font size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{pu}]]></textFieldExpression>
 			</textField>
@@ -316,7 +291,7 @@
 				<reportElement x="416" y="0" width="38" height="16" uuid="1ae7c9e3-9028-4514-baa1-942deff93abd"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
 				<textElement textAlignment="Right">
-					<font fontName="Open Sans" size="9" isBold="false"/>
+					<font size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{igv}]]></textFieldExpression>
 			</textField>
@@ -324,7 +299,7 @@
 				<reportElement x="454" y="0" width="49" height="16" uuid="b5ae1a97-b8f9-49e5-a122-500f82192e7f"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
 				<textElement textAlignment="Right">
-					<font fontName="Open Sans" size="9" isBold="false"/>
+					<font size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{descuento}]]></textFieldExpression>
 			</textField>
@@ -332,7 +307,7 @@
 				<reportElement x="503" y="0" width="51" height="16" uuid="12c85544-f4f1-43d0-83f3-bd574cb177f5"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
 				<textElement textAlignment="Right">
-					<font fontName="Open Sans" size="9" isBold="false"/>
+					<font size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{importe}]]></textFieldExpression>
 			</textField>
@@ -340,7 +315,7 @@
 				<reportElement x="0" y="0" width="23" height="16" uuid="a5371f87-16c1-4a1f-990d-e65ddb72d771"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
 				<textElement textAlignment="Center">
-					<font fontName="Open Sans" size="9" isBold="false"/>
+					<font size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nro}]]></textFieldExpression>
 			</textField>
@@ -384,84 +359,84 @@
 			<staticText>
 				<reportElement x="394" y="26" width="78" height="14" uuid="9d3498a1-ce78-4e5a-abda-347c4af1c67b"/>
 				<textElement textAlignment="Right">
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[DESCUENTO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="401" y="54" width="71" height="14" uuid="d9a5be04-8b0a-49c0-a781-06a16c1a46c9"/>
 				<textElement textAlignment="Right">
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[IGV 18%]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="401" y="40" width="71" height="14" uuid="18b202b7-aed2-4392-90b7-aada36eed29c"/>
 				<textElement textAlignment="Right">
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[GRAVADO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="401" y="68" width="71" height="14" uuid="f12be1fa-49d2-44ac-8101-ce2f1a5b5441"/>
 				<textElement textAlignment="Right">
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[TOTAL]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="486" y="26" width="16" height="14" uuid="9c4257e3-e33d-46de-8be1-cfdcb8705cd5"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="false"/>
+					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[S/.]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="501" y="26" width="51" height="14" uuid="816fa0ec-cdd8-4ff2-b368-5f1d8ff8fb43"/>
 				<textElement textAlignment="Right">
-					<font fontName="Open Sans" size="9"/>
+					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pdescuento2}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="502" y="40" width="50" height="14" uuid="97cfb966-9cda-4495-9280-924c649c3e76"/>
 				<textElement textAlignment="Right">
-					<font fontName="Open Sans" size="9"/>
+					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pgravado}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="502" y="54" width="50" height="14" uuid="cccedc6d-0d2a-44e1-8d59-4afefe4f8a45"/>
 				<textElement textAlignment="Right">
-					<font fontName="Open Sans" size="9"/>
+					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pigv}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="502" y="68" width="50" height="14" uuid="e956ed14-4b36-455e-8923-9bb852e56fe0"/>
 				<textElement textAlignment="Right">
-					<font fontName="Open Sans" size="9" isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{ptotal}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="486" y="40" width="16" height="14" uuid="1f273c46-0ad3-441d-b2a1-7fedf2bdd7b2"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="false"/>
+					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[S/.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="486" y="54" width="16" height="14" uuid="d8079c44-a2fb-4c6f-b0c4-b787620deb9e"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="false"/>
+					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[S/.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="486" y="68" width="16" height="14" uuid="f9315cca-ebbb-4723-b343-6427274d1358"/>
 				<textElement>
-					<font fontName="Open Sans" isBold="false"/>
+					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[S/.]]></text>
 			</staticText>
@@ -470,15 +445,12 @@
 			</rectangle>
 			<textField>
 				<reportElement x="116" y="96" width="287" height="14" uuid="dd5fd9a4-ee61-428c-ab1d-bc321e7919bb"/>
-				<textElement>
-					<font fontName="Open Sans"/>
-				</textElement>
 				<textFieldExpression><![CDATA[$P{pusuario_fecha}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="6" y="96" width="93" height="14" uuid="6f201bb8-a96b-4e2a-a12e-f73ca22e6e6c"/>
 				<textElement textAlignment="Left">
-					<font fontName="Open Sans" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[ATENDIDO POR]]></text>
 			</staticText>
@@ -487,9 +459,6 @@
 			</rectangle>
 			<textField>
 				<reportElement x="3" y="3" width="447" height="15" uuid="8fa7d931-1ff3-4e32-bd4f-b7d2272dddd3"/>
-				<textElement>
-					<font fontName="Open Sans"/>
-				</textElement>
 				<textFieldExpression><![CDATA[$P{ptotal_letras}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -503,29 +472,20 @@
 			<staticText>
 				<reportElement x="7" y="55" width="68" height="14" uuid="d32f6dfd-65f7-40d7-b108-2c3688fbf7ab"/>
 				<textElement textAlignment="Left">
-					<font fontName="Open Sans" size="9" isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Resumen]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="78" y="55" width="282" height="14" uuid="e7769181-79e8-4d3a-84e2-615f91b03ecb"/>
-				<textElement>
-					<font fontName="Open Sans"/>
-				</textElement>
 				<textFieldExpression><![CDATA[$P{presumen}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="7" y="40" width="376" height="14" uuid="20345d27-b8bf-4996-abc2-bf94e0323c29"/>
-				<textElement>
-					<font fontName="Open Sans"/>
-				</textElement>
 				<textFieldExpression><![CDATA[$P{ppagina}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="7" y="9" width="397" height="14" uuid="59eaacb7-aa99-42a7-9b3e-91cb9291bd0b"/>
-				<textElement>
-					<font fontName="Open Sans"/>
-				</textElement>
 				<textFieldExpression><![CDATA[$P{presolucion}]]></textFieldExpression>
 			</textField>
 			<image>
@@ -534,9 +494,6 @@
 			</image>
 			<textField>
 				<reportElement x="7" y="24" width="376" height="14" uuid="ef12eb6e-4ff0-403a-b90e-add5e157f118"/>
-				<textElement>
-					<font fontName="Open Sans"/>
-				</textElement>
 				<textFieldExpression><![CDATA[$P{tipoDocFooter}]]></textFieldExpression>
 			</textField>
 		</band>
