@@ -140,7 +140,7 @@ public class PipeNotaDebitoParser
                 notaDebito.put("codOtr", "OTROS");
                 notaDebito.put("codExtOtr", "OTH");
                 notaDebito.put("tipoCodigoMonedaSwf", "01");
-                notaDebito.put("identificadorFacturadorSwf", "Elaborado por Sistema de Emision Electronica Facturador SUNAT (SEE-SFS) 1.3.2");
+                notaDebito.put("identificadorFacturadorSwf", "Elaborador por Sistema del contribuyente");
                 notaDebito.put("codigoFacturadorSwf", codigoFacturadorSwf.toString());
                 notaDebito.put("identificadorFirmaSwf", identificadorFirmaSwf);
 

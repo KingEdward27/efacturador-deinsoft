@@ -48,6 +48,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -94,13 +95,14 @@ public class FacturaController {
             if (bindingResult.hasErrors()) {
                 return this.validar(bindingResult);
             }
-            String mensajeValidacion = validarComprobante(documento);
+            String mensajeValidacion = facturaElectronicaService.validarComprobante(documento);
             if (!mensajeValidacion.equals("")) {
                 return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(mensajeValidacion);
             }
             Map<String,Object> map = JwtUtil.getJwtLoggedUserData((HttpServletRequest)request);
             String numDoc = (String)map.get("numDoc");
             Empresa empresa = empresaService.findByNumdoc(numDoc);
+            
             if(empresa == null || (empresa != null && empresa.getNumdoc() == null)){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("La empresa no tiene permiso de registrar documentos");
             }
@@ -121,7 +123,7 @@ public class FacturaController {
 //            facturaElectronicaResult = facturaElectronicaService.save(comprobante);
 
             result = this.facturaElectronicaService.generarComprobantePagoSunat(appConfig.getRootPath(), comprobante);
-
+            
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ocurrió un error inesperado: " + e.getMessage());
@@ -225,92 +227,5 @@ public class FacturaController {
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errores);
     }
 
-    protected String validarComprobante(ComprobanteCab documento) {
-        if (documento.getCliente_tipo().equals("1")
-                && String.format("%02d", Integer.parseInt(documento.getTipo())).equals("01")) {
-            return "El dato ingresado en el tipo de documento de identidad del receptor no esta permitido para el tipo de comprobante";
-        }
-        if (documento.getCliente_tipo().equals("1") && documento.getCliente_documento().length() != 8
-                || documento.getCliente_tipo().equals("6") && documento.getCliente_documento().length() != 11) {
-            return "El número de documento del cliente no cumple con el tamaño requerido para el tipo de comprobante";
-        }
-        if (CollectionUtils.isEmpty(documento.getLista_productos())) {
-            return "Debe indicar el detalle de productos del comprobante, campo: lista_productos";
-        }
-        if (documento.getTipo().equals("01") || documento.getTipo().equals("03")) {
-            if (!documento.getForma_pago().equals(Constantes.FORMA_PAGO_CONTADO) && !documento.getForma_pago().equals(Constantes.FORMA_PAGO_CREDITO)) {
-                return "El campo forma de pago solo acepta los valores Contado/Credito";
-            }
-            if (documento.getForma_pago().equals(Constantes.FORMA_PAGO_CREDITO) && CollectionUtils.isEmpty(documento.getLista_cuotas())) {
-                return "Si la forma de pago es Credito debe indicar al menos una cuota, campo: lista_cuotas";
-            }
-            if (documento.getForma_pago().equals(Constantes.FORMA_PAGO_CREDITO)
-                    && FacturadorUtil.isNullOrEmpty(documento.getMonto_neto_pendiente())) {
-                return "Si la forma de pago es Credito debe indicar el monto neto pendiente de pago";
-            }
-        }
-//        boolean est = FacturadorUtil.isNullOrEmpty(documento.getNota_tipo());
-
-        if ((documento.getTipo().equals("07") || documento.getTipo().equals("08"))
-                && FacturadorUtil.isNullOrEmpty(documento.getNota_tipo())) {
-            return "Para el tipo de documento debe indicar el código del motivo";
-        }
-        if ((documento.getTipo().equals("07") || documento.getTipo().equals("08"))
-                && FacturadorUtil.isNullOrEmpty(documento.getNota_motivo())) {
-            return "Para el tipo de documento debe indicar la descripción motivo";
-        }
-        if ((documento.getTipo().equals("07") || documento.getTipo().equals("08"))
-                && FacturadorUtil.isNullOrEmpty(documento.getNota_referencia_tipo())) {
-            return "Para el tipo de documento debe indicar el tipo de documento referenciado";
-        }
-        if ((documento.getTipo().equals("07") || documento.getTipo().equals("08"))
-                && FacturadorUtil.isNullOrEmpty(documento.getNota_referencia_serie())) {
-            return "Para el tipo de documento debe indicar la serie del documento referenciado";
-        }
-        if ((documento.getTipo().equals("07") || documento.getTipo().equals("08"))
-                && FacturadorUtil.isNullOrEmpty(documento.getNota_referencia_numero())) {
-            return "Para el tipo de documento debe indicar el número del documento referenciado";
-        }
-
-        //1. cambiar por clase catalogos
-        //2. externalizar archivo
-        List<String> listDocIds = Arrays.asList("0", "1", "4", "6", "7", "A");
-        if (!listDocIds.contains(documento.getCliente_tipo())) {
-            return "El tipo de documento de identidad no existe";
-        }
-        if (!(documento.getTipo().equals("07") || documento.getTipo().equals("08"))) {
-            if (documento.getForma_pago().equals(Constantes.FORMA_PAGO_CONTADO) && !CollectionUtils.isEmpty(documento.getLista_cuotas())) {
-                return "Si la forma de pago es Contado no es necesario indicar la lista de cuotas, campo: lista_cuotas";
-            }
-            for (ComprobanteCuotas detalle : documento.getLista_cuotas()) {
-                //                Date fechaPago = null;
-                try {
-                    Date fechaPago = new SimpleDateFormat("dd/MM/yyyy").parse(detalle.getFecha_pago());
-                } catch (Exception e) {
-                    return "Si la forma de pago es Credito la fecha de pago no debe estar vacía y debe tener formato correcto dd/MM/yyyy, campo: fecha_pago";
-                }
-                if (FacturadorUtil.isNullOrEmpty(detalle.getMonto_pago())) {
-                    return "Si la forma de pago es Credito debe indicar al monto de la cuota, campo: monto_pago";
-                }
-                if (FacturadorUtil.isNullOrEmpty(detalle.getTipo_moneda_pago())) {
-                    return "Si la forma de pago es Credito debe indicar el tipo de moneda de la cuota, campo: tipo_moneda_pago";
-                }
-            }
-            if (!CollectionUtils.isEmpty(documento.getLista_cuotas())) {
-
-                BigDecimal sumaCoutas = BigDecimal.ZERO;
-                for (ComprobanteCuotas detalle : documento.getLista_cuotas()) {
-
-                    sumaCoutas = sumaCoutas.add(detalle.getMonto_pago());
-
-                }
-                if (sumaCoutas.compareTo(documento.getMonto_neto_pendiente()) != 0) {
-                    return "La suma de las cuotas debe ser igual al Monto neto pendiente de pago";
-
-                }
-            }
-        }
-
-        return "";
-    }
+    
 }

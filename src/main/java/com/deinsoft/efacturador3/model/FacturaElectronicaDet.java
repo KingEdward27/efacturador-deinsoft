@@ -44,6 +44,9 @@ public class FacturaElectronicaDet implements Serializable {
     @JoinColumn(name="m_id")
     private FacturaElectronica facturaElectronica;
     
+    @Column(name = "codigo")
+    private String codigo;
+    
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "cantidad")
     private BigDecimal cantidad;
@@ -196,6 +199,14 @@ public class FacturaElectronicaDet implements Serializable {
 
     public void setCodTipTributoIgv(String codTipTributoIgv) {
         this.codTipTributoIgv = codTipTributoIgv;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     

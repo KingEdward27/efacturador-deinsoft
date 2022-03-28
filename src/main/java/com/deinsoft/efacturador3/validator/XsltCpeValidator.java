@@ -27,7 +27,6 @@ import net.sf.saxon.serialize.MessageEmitter;
 import net.sf.saxon.trans.XPathException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.deinsoft.efacturador3.ConfigurationHolder;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.config.XsltCpePath;
 //import com.deinsoft.efacturador3.dao.ErrorDao;
@@ -73,7 +72,7 @@ public class XsltCpeValidator {
         } else if ("RC".equals(tipoComprobante)) {
             XsltFullPath = rootPath + "VALI/" + this.xsltCpePath.getResumenBoleta();
         } else if ("RR".equals(tipoComprobante)) {
-            XsltFullPath = rootPath + "/VALI/" + this.xsltCpePath.getResumenReversion();
+            XsltFullPath = rootPath + "VALI/" + this.xsltCpePath.getResumenReversion();
         } else if ("20".equals(tipoComprobante)) {
             XsltFullPath = rootPath + "VALI/" + this.xsltCpePath.getRetencion();
         } else if ("40".equals(tipoComprobante)) {

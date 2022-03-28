@@ -142,6 +142,9 @@ public class FacturaElectronica implements Serializable {
     @Column(name = "porcentaje_igv")
     private BigDecimal porcentajeIGV;
     
+    @Column(name = "ticket_operacion")
+    private long ticketOperacion;
+    
 //    @Column(name = "nombre_Archivo")
 //    private String nombreArchivo;
 
@@ -658,6 +661,14 @@ public class FacturaElectronica implements Serializable {
 
     public void setListFacturaElectronicaCuotas(List<FacturaElectronicaCuotas> listFacturaElectronicaCuotas) {
         this.listFacturaElectronicaCuotas = listFacturaElectronicaCuotas;
+    }
+
+    public long getTicketOperacion() {
+        return ticketOperacion;
+    }
+
+    public void setTicketOperacion(long ticketOperacion) {
+        this.ticketOperacion = ticketOperacion;
     }
 
     @Override

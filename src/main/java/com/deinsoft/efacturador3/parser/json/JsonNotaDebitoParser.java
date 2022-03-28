@@ -171,7 +171,7 @@ public class JsonNotaDebitoParser
     nota.put("codExtOtr", "OTH");
     nota.put("tipoCodigoMonedaSwf", "01");
     
-    nota.put("identificadorFacturadorSwf", "Elaborado por Sistema de Emision Electronica Facturador SUNAT (SEE-SFS) 1.3.2");
+    nota.put("identificadorFacturadorSwf", "Elaborador por Sistema del contribuyente");
     nota.put("codigoFacturadorSwf", codigoFacturadorSwf.toString());
     nota.put("identificadorFirmaSwf", identificadorFirmaSwf);
     

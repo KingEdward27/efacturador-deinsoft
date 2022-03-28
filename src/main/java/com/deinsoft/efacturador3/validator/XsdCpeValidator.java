@@ -22,7 +22,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import com.deinsoft.efacturador3.ConfigurationHolder;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.config.XsltCpePath;
 //import com.deinsoft.efacturador3.dao.ErrorDao;
@@ -53,7 +52,7 @@ public class XsdCpeValidator
   public void validarSchemaXML(String rootPath, FacturaElectronica facturaElectronica, String nombreArchivo) throws XsdException {
     log.debug("validarSchemaXML...Iniciando Validacion de Schema");
     
-    ConfigurationHolder config = ConfigurationHolder.getInstance();
+//    ConfigurationHolder config = ConfigurationHolder.getInstance();
     String tipoComprobante = facturaElectronica.getTipo();
     
     try {

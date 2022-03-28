@@ -191,7 +191,7 @@ public class PipeFacturaParser
 //            linea = Integer.valueOf(linea.intValue() + 1);
                 detalle = new HashMap<>();
                 contadorItem++;
-                detalle.put("codProducto", item.getId());
+                detalle.put("codProducto", item.getCodigo());
                 detalle.put("desItem", item.getDescripcion());
                 detalle.put("mtoValorUnitario", item.getValorUnitario());
 

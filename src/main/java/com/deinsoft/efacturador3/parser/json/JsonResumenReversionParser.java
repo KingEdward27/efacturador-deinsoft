@@ -103,7 +103,7 @@ public class JsonResumenReversionParser
         resumenGeneral.put("idComunicacion", idComunicacion);
         resumenGeneral.put("CustomizationIdSwf", "1.0");
         
-        resumenGeneral.put("identificadorFacturadorSwf", "Elaborado por Sistema de Emision Electronica Facturador SUNAT (SEE-SFS) 1.3.2");
+        resumenGeneral.put("identificadorFacturadorSwf", "Elaborador por Sistema del contribuyente");
         resumenGeneral.put("codigoFacturadorSwf", codigoFacturadorSwf.toString());
         resumenGeneral.put("identificadorFirmaSwf", identificadorFirmaSwf);
         

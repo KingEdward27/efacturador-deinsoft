@@ -593,4 +593,10 @@ CHANGE COLUMN `token` `token` VARCHAR(900) NULL DEFAULT NULL ;
 ALTER TABLE `efacturador`.`factura_electronica` 
 drop column fechaEnvio;
 
+ALTER TABLE `efacturador`.`factura_electronica` 
+add ticket_operacion bigint;
+
+ALTER TABLE `efacturador`.`factura_electronica_Det` 
+add codigo varchar(100);
+
 select * from factura_electronica

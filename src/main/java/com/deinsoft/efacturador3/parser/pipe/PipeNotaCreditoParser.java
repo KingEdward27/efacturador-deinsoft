@@ -53,8 +53,6 @@ public class PipeNotaCreditoParser
 
     private FacturaElectronica cabecera;
 
-    /*     */
-
     public PipeNotaCreditoParser(Empresa contri, FacturaElectronica cabecera) {
         this.contri = contri;
         this.cabecera = cabecera;
@@ -63,8 +61,6 @@ public class PipeNotaCreditoParser
     public Map<String, Object> pipeToMap() throws ParserException {
         log.debug("SoftwareFacturadorController.formatoNotaCredito...Inicio Procesamiento");
 
-//        String[] datosArchivo = this.nombreArchivo.split("\\-");
-
         String identificadorFirmaSwf = "SIGN";
         Random calcularRnd = new Random();
         Integer codigoFacturadorSwf = Integer.valueOf((int) (calcularRnd.nextDouble() * 1000000.0D));
@@ -72,21 +68,6 @@ public class PipeNotaCreditoParser
         log.debug("SoftwareFacturadorController.formatoResumenBajas...Leyendo Archivo: " + this.archivoCabecera);
         Map<String, Object> notaCredito = new HashMap<>();
 
-//    Path fileCabecera = Paths.get(this.archivoCabecera, new String[0]);
-//    
-//    if (!Files.exists(fileCabecera, new java.nio.file.LinkOption[0]))
-//    {
-//      throw new ParserException("El archivo no existe: " + this.archivoCabecera);
-//    }
-//    try(InputStream in = Files.newInputStream(fileCabecera, new java.nio.file.OpenOption[0]); 
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-//      String cadena = null;
-//      
-//      while ((cadena = reader.readLine()) != null) {
-//        String[] registro = cadena.split("\\|");
-//        if (registro.length != 21) {
-//          throw new ParserException("El archivo cabecera no continene la cantidad de datos esperada (21 columnas).");
-//        }
         notaCredito = new HashMap<>();
         notaCredito.put("tipOperacion", cabecera.getTipoOperacion());
         notaCredito.put("fecEmision", new SimpleDateFormat("yyyy-MM-dd").format(cabecera.getFechaEmision()));
@@ -152,40 +133,17 @@ public class PipeNotaCreditoParser
         notaCredito.put("codigoFacturadorSwf", codigoFacturadorSwf.toString());
         notaCredito.put("identificadorFirmaSwf", identificadorFirmaSwf);
 
-//      }
-//
-//    
-//    }
-//    catch (IOException x) {
-//      throw new ParserException("No se pudo leer el archivo cabecera: " + this.archivoCabecera, x);
-//    } 
-//    Path fileDetalle = Paths.get(this.archivoDetalle, new String[0]);
-//    
-//    if (!Files.exists(fileDetalle, new java.nio.file.LinkOption[0]))
-//    {
-//      throw new ParserException("El archivo no existe: " + this.archivoDetalle);
-//    }
         List<Map<String, Object>> listaDetalle = new ArrayList<>();
         Map<String, Object> detalle = null;
 
-//    try(InputStream in = Files.newInputStream(fileDetalle, new java.nio.file.OpenOption[0]); 
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-//      String cadena = null;
-//      
         Integer linea = Integer.valueOf(0);
 //      
-//      while ((cadena = reader.readLine()) != null) {
-//        String[] registro = cadena.split("\\|");
-//        if (registro.length != 36) {
-//          throw new ParserException("El archivo detalle no continene la cantidad de datos esperada (30 columnas).");
-//        }
-
         for (FacturaElectronicaDet item : cabecera.getListFacturaElectronicaDet()) {
             linea = Integer.valueOf(linea.intValue() + 1);
             detalle = new HashMap<>();
             detalle.put("unidadMedida", item.getUnidadMedida());
             detalle.put("ctdUnidadItem", String.valueOf(item.getCantidad()));
-            detalle.put("codProducto", item.getId());
+            detalle.put("codProducto", item.getCodigo());
             //        detalle.put("codProductoSUNAT", registro[3]);
             detalle.put("desItem", item.getDescripcion());
             detalle.put("mtoValorUnitario", item.getValorUnitario());

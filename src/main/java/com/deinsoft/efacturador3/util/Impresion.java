@@ -16,10 +16,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
@@ -42,8 +45,8 @@ import org.springframework.util.ResourceUtils;
  * @author EDWARD
  */
 public class Impresion {
-
-    public static ByteArrayInputStream Imprimir(int tipo, FacturaElectronica comprobante) throws Exception {
+    public static DecimalFormat df = new DecimalFormat("0.00", DecimalFormatSymbols.getInstance(Locale.US));
+    public static ByteArrayInputStream Imprimir(String rootPath, int tipo, FacturaElectronica comprobante,String descripcionMoneda) throws Exception {
         try {
             JasperReport reporte = null;
             String ubicacion = "";
@@ -67,7 +70,7 @@ public class Impresion {
 
 //            float subTotal = round(comprobante.getTotalValorVenta()/ (ConfiguracionADN.Datos().get(0).getValorIGV()/100+ 1), 2);
 //            float igvTotal = round(comprobante.getVentatotal() - subTotal, 2);
-            parametros.put("tipodoc", Catalogos.tipoDocumento(comprobante.getTipo(), null)[1] );
+            parametros.put("tipodoc", Catalogos.tipoDocumento(comprobante.getTipo(), null)[1] + "ELECTRÓNICA" );
             parametros.put("razon_social", comprobante.getEmpresa().getRazonSocial());
             parametros.put("direccion", "-AQUI VA LA DIRECCION-");
             parametros.put("ruc", comprobante.getEmpresa().getNumdoc());
@@ -77,23 +80,23 @@ public class Impresion {
             parametros.put("nombreCliente", comprobante.getClienteNombre());
             parametros.put("direccionCliente", comprobante.getClienteDireccion());
             parametros.put("pFechaEmision", new SimpleDateFormat("dd/MM/yyyy").format(comprobante.getFechaEmision()));
-            parametros.put("fechaVencimiento", "");
-            parametros.put("moneda", "SOLES");
+            parametros.put("fechaVencimiento", comprobante.getFechaVencimiento());
+            parametros.put("moneda", descripcionMoneda);
 
-            parametros.put("pdescuento2",comprobante.getDescuentosGlobales());
+            parametros.put("pdescuento2",df.format(comprobante.getDescuentosGlobales()));
             parametros.put("pgravado",String.valueOf(comprobante.getTotalValorVenta().subtract(comprobante.getSumatoriaIGV())));
             parametros.put("pigv",String.valueOf(comprobante.getSumatoriaIGV()));
             parametros.put("ptotal", String.valueOf(comprobante.getTotalValorVenta()));
-            parametros.put("ptotal_letras", "SON "+ NumberToLetterConverter.convertNumberToLetter(comprobante.getTotalValorVenta().doubleValue()));
+            parametros.put("ptotal_letras", "SON "+ NumberToLetterConverter.convertNumberToLetter(comprobante.getTotalValorVenta().doubleValue(),descripcionMoneda));
 
             parametros.put("pusuario_fecha", "ADMIN el " + comprobante.getFechaEmision());
-            parametros.put("presolucion", "Autorizado mediantes resolución N° "+ "N° 034-005-0010431/SUNAT");
+            parametros.put("presolucion", "Autorizado mediantes resolución N° "+ Constantes.RESOLUCION);
             parametros.put("tipoDocFooter", "Representación impresa de la "+  Catalogos.tipoDocumento(comprobante.getTipo(), null)[1]);
             parametros.put("ppagina","Para consultar el comprobante visita www.opendeinsoft.com");
             parametros.put("presumen", comprobante.getXmlHash());
             parametros.put("idTipoDoc", String.valueOf(tipo));
 //            if (comprobante.getTipo() != Constantes.ID_TIPO_DOC_PROFORMA) {
-                String pathResult = CodigoQR.GenerarQR(comprobante.getEmpresa().getNumdoc()+"|"+
+                String pathResult = CodigoQR.GenerarQR(rootPath , comprobante.getEmpresa().getNumdoc()+"|"+
                         comprobante.getTipo()+"|"+
                         comprobante.getSerie()+"-"+comprobante.getNumero()+"|"+
                         String.valueOf(comprobante.getSumatoriaIGV())+"|"+
@@ -114,15 +117,15 @@ public class Impresion {
 //                float subtotalDet = round(item.getPrecioVentaUnitario().divide(comprobante.getPorcentajeIGV().divide(new BigDecimal(100))), 2);
 //                float igv = round(item.getPrecio() - subtotalDet, 2);
                 beanMap.put("nro", count.toString());
-                beanMap.put("cantidad", String.valueOf(item.getCantidad()));
+                beanMap.put("cantidad", df.format(item.getCantidad()));
                 beanMap.put("um", item.getUnidadMedida());
-                beanMap.put("codigo",String.valueOf(item.getId()));
+                beanMap.put("codigo",String.valueOf(item.getCodigo()));
                 beanMap.put("descripcion", item.getDescripcion());
-                beanMap.put("vu", String.valueOf(item.getValorUnitario()));
-                beanMap.put("pu", String.valueOf(item.getPrecioVentaUnitario()));
-                beanMap.put("igv", String.valueOf(item.getAfectacionIgv()));
-                beanMap.put("descuento", String.valueOf(item.getDescuento()));
-                beanMap.put("importe", String.valueOf(item.getValorVentaItem()));
+                beanMap.put("vu", df.format(item.getValorUnitario()));
+                beanMap.put("pu", df.format(item.getPrecioVentaUnitario()));
+                beanMap.put("igv", df.format(item.getAfectacionIgv()));
+                beanMap.put("descuento", df.format(item.getDescuento()));
+                beanMap.put("importe", df.format(item.getValorVentaItem()));
 
                 listaBean.add(beanMap);
             }

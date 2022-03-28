@@ -161,7 +161,7 @@ public class JsonResumenBoletaParser
         resumenGeneral.put("idResumen", idResumen);
         resumenGeneral.put("CustomizationIdSwf", "1.1");
         
-        resumenGeneral.put("identificadorFacturadorSwf", "Elaborado por Sistema de Emision Electronica Facturador SUNAT (SEE-SFS) 1.3.2");
+        resumenGeneral.put("identificadorFacturadorSwf", "Elaborador por Sistema del contribuyente");
         
         resumenGeneral.put("identificadorFirmaSwf", identificadorFirmaSwf);
         

@@ -151,7 +151,7 @@ public class JsonPercepcionParser
     Percepcion.put("paisDomFiscalSwf", "PE");
     Percepcion.put("tipoCodigoMonedaSwf", "01");
     
-    Percepcion.put("identificadorFacturadorSwf", "Elaborado por Sistema de Emision Electronica Facturador SUNAT (SEE-SFS) 1.3.2");
+    Percepcion.put("identificadorFacturadorSwf", "Elaborador por Sistema del contribuyente");
     Percepcion.put("codigoFacturadorSwf", codigoFacturadorSwf.toString());
     Percepcion.put("identificadorFirmaSwf", identificadorFirmaSwf);
     

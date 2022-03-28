@@ -166,7 +166,7 @@ public class JsonGuiaParser
     guia.put("distrSwf", this.contri.getDireccion().getDistr());
     guia.put("urbanizaSwf", this.contri.getDireccion().getUrbaniza());
     guia.put("paisDomFiscalSwf", "PE");
-    guia.put("identificadorFacturadorSwf", "Elaborado por Sistema de Emision Electronica Facturador SUNAT (SEE-SFS) 1.3.2");
+    guia.put("identificadorFacturadorSwf", "Elaborador por Sistema del contribuyente");
     guia.put("identificadorFirmaSwf", identificadorFirmaSwf);
     
     log.debug("JsonGuiaParser.pipeToMap...Detalle de guia");

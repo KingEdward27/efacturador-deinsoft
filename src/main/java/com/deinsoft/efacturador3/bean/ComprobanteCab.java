@@ -75,8 +75,8 @@ public class ComprobanteCab {
     private String nota_referencia_tipo;
     private String nota_referencia_serie;
     private String nota_referencia_numero;
-    private String incluir_pdf;
-    private String incluir_xml;
+//    private String incluir_pdf;
+//    private String incluir_xml;
     
     private BigDecimal sumatoriaIGV;
     private BigDecimal sumatoriaISC;
@@ -289,21 +289,21 @@ public class ComprobanteCab {
         this.nota_referencia_numero = nota_referencia_numero;
     }
 
-    public String getIncluir_pdf() {
-        return incluir_pdf;
-    }
-
-    public void setIncluir_pdf(String incluir_pdf) {
-        this.incluir_pdf = incluir_pdf;
-    }
-
-    public String getIncluir_xml() {
-        return incluir_xml;
-    }
-
-    public void setIncluir_xml(String incluir_xml) {
-        this.incluir_xml = incluir_xml;
-    }
+//    public String getIncluir_pdf() {
+//        return incluir_pdf;
+//    }
+//
+//    public void setIncluir_pdf(String incluir_pdf) {
+//        this.incluir_pdf = incluir_pdf;
+//    }
+//
+//    public String getIncluir_xml() {
+//        return incluir_xml;
+//    }
+//
+//    public void setIncluir_xml(String incluir_xml) {
+//        this.incluir_xml = incluir_xml;
+//    }
 
     public Set<ComprobanteDet> getLista_productos() {
         return lista_productos;

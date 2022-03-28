@@ -9,7 +9,7 @@ package com.deinsoft.efacturador3.service.impl;
  *
  * @author EDWARD-PC
  */
-import com.deinsoft.efacturador3.ConfigurationHolder;
+import com.deinsoft.efacturador3.config.AppConfig;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.model.Parametro;
@@ -67,6 +67,7 @@ import com.deinsoft.efacturador3.wssunat.service.wrapper.Response;
 import com.deinsoft.efacturador3.wssunat.service.wrapper.SunatGEMServiceWrapper;
 import com.deinsoft.efacturador3.wssunat.ws.client.WebServiceConsultaWrapper;
 import java.io.ByteArrayInputStream;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @ManagedBean
@@ -82,8 +83,10 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
 
     @Autowired
     private ComunesService comunesService;
-
-    ConfigurationHolder config = ConfigurationHolder.getInstance();
+    
+    @Autowired
+    AppConfig appConfig;
+//    ConfigurationHolder config = ConfigurationHolder.getInstance();
 
     public byte[] formatoPlantillaXml(String rootPath, FacturaElectronica facturaElectronica, String nombreArchivo) throws TransferirArchivoException {
         String idXml = "";
@@ -124,7 +127,7 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
         }
     }
 
-    public Map<String,Object> firmarXml(String rootPath, FacturaElectronica facturaElectronica, String nombreArchivo) {
+    public Map<String, Object> firmarXml(String rootPath, FacturaElectronica facturaElectronica, String nombreArchivo) {
         String rutaNombreEntrada = rootPath + facturaElectronica.getEmpresa().getNumdoc() + "/TEMP/" + nombreArchivo + ".xml";
         String rutaNombreSalida = rootPath + facturaElectronica.getEmpresa().getNumdoc() + "/PARSE/" + nombreArchivo + ".xml";
 
@@ -411,6 +414,31 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
         }
     }
 
+    public void validarPlazo2(String path, String fecEmision) {
+//        String fecEmision = (String) expr.evaluate(document, XPathConstants.STRING);
+        Integer fecEmisionInt = Integer.valueOf(Integer.parseInt(fecEmision.replaceAll("-", "")));
+        log.debug("fecEmision: " + fecEmision + ", " + fecEmisionInt);
+        try {
+            if (fecEmisionInt.intValue() >= 20200107) {
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                Date fecEmisionDate = null;
+                fecEmisionDate = df.parse(fecEmision);
+                Date today = new Date();
+                long diff = today.getTime() - fecEmisionDate.getTime();
+                long days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+                Integer nroDias = Integer.valueOf(Integer.parseInt(this.appConfig.getPlazoBoleta()));
+                if (days > nroDias.intValue()) {
+                    log.debug("El XML fue generado, pero el Comprobante tiene mas de " + nroDias + " dís. Emisión: " + fecEmision + ". Use el resumen diario para generar y enviar.");
+
+                    throw new Exception("El XML fue generado, pero el Comprobante tiene mas de " + nroDias + " días. Emisión: " + fecEmision + ". Use el resumen diario para generar y enviar.");
+                }
+
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     public void validarPlazo(String nombreArchivoXml) {
         try {
             String serie = nombreArchivoXml.substring(15, 16);
@@ -437,7 +465,7 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
                     Date today = new Date();
                     long diff = today.getTime() - fecEmisionDate.getTime();
                     long days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-                    Integer nroDias = Integer.valueOf(Integer.parseInt(this.config.getXsltCpePath().getPlazoBoleta()));
+                    Integer nroDias = Integer.valueOf(Integer.parseInt(this.appConfig.getPlazoBoleta()));
                     if (days > nroDias.intValue()) {
                         log.debug("El XML fue generado, pero el Comprobante tiene mas de " + nroDias + " dÃ­as. EmisiÃ³n: " + fecEmision + ". Use el resumen diario para generar y enviar.");
 
@@ -455,13 +483,10 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
     private Map<String, Object> firmarDocumento(String rootPath, Empresa empresa, InputStream inDocument, String fileName) {
         try {
             log.debug("GenerarDocumentosServiceImpl.firmarDocumento...Inicio de Firma");
-//            Map<String, Object> retorno = new HashMap<>();
-
             log.debug("GenerarDocumentosServiceImpl.firmarDocumento...Crear Document");
             Document doc = buildDocument(inDocument);
             addExtensionContent(doc);
             return SignerXml.firmarXml(rootPath, empresa, doc, rootPath + "/" + empresa.getNumdoc() + "/PARSE/" + fileName + ".xml");
-            
         } catch (Exception e) {
 
             throw new RuntimeException("Error al firmar documento: ", e);

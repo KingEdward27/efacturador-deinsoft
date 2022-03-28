@@ -172,7 +172,7 @@ public class JsonFacturaParser
     factura.put("codExtOtr", "OTH");
     factura.put("tipoCodigoMonedaSwf", "01");
     
-    factura.put("identificadorFacturadorSwf", "Elaborado por Sistema de Emision Electronica Facturador SUNAT (SEE-SFS) 1.3.2");
+    factura.put("identificadorFacturadorSwf", "Elaborador por Sistema del contribuyente");
     factura.put("codigoFacturadorSwf", codigoFacturadorSwf.toString());
     factura.put("identificadorFirmaSwf", identificadorFirmaSwf);
     

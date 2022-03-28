@@ -15,6 +15,14 @@ public class AppConfig
   @Value("${app.rootPath}")
   private String rootPath;
   
+  @NotEmpty
+  @Value("${plazoBoleta}")
+  private String plazoBoleta;
+  
+  @NotEmpty
+  @Value("${app.environment}")
+  private String environment;
+  
   @JsonProperty
   public String getRootPath() {
     return this.rootPath;
@@ -24,6 +32,22 @@ public class AppConfig
   public void setRootPath(String rootPath) {
     this.rootPath = rootPath;
   }
+
+    public String getPlazoBoleta() {
+        return plazoBoleta;
+    }
+
+    public void setPlazoBoleta(String plazoBoleta) {
+        this.plazoBoleta = plazoBoleta;
+    }
+
+    public String getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(String environment) {
+        this.environment = environment;
+    }
   
   
 }
