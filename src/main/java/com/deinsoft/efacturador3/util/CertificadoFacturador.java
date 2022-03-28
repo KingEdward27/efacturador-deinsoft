@@ -87,7 +87,7 @@ public class CertificadoFacturador {
         String passPrivateKey = (obj.get("passPrivateKey") != null) ? (String) obj.get("passPrivateKey") : "";
         String numDoc = (obj.get("numDoc") != null) ? (String) obj.get("numDoc") : "";
         String rootPath = (obj.get("rootPath") != null) ? (String) obj.get("rootPath") : "";
-        String companyPath = rootPath + "/" + numDoc;
+        String companyPath = rootPath + numDoc;
         String rutaCertificado = companyPath + "/" + Constantes.CONSTANTE_CERT + "/" + nombreCertificado;
         String certGenericPath = rootPath + "ALMCERT/";
         log.info(rutaCertificado);
