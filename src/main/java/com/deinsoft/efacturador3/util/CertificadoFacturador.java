@@ -131,7 +131,7 @@ public class CertificadoFacturador {
 
             log.debug("Metodo importarCertificado: Salida de keytool -delete " + salida);
             
-            String command = "keytool -importkeystore -srcalias '" + aliasPfx + "' -srckeystore " + rutaCertificado + " -srcstoretype pkcs12 -srcstorepass " + passPrivateKey + " -destkeystore " + certGenericPath + "FacturadorKey.jks -deststoretype JKS -destalias "+Constantes.PRIVATE_KEY_ALIAS+numDoc+" -deststorepass SuN@TF4CT";
+            String command = "keytool -importkeystore -srcalias \"" + aliasPfx + "\" -srckeystore " + rutaCertificado + " -srcstoretype pkcs12 -srcstorepass " + passPrivateKey + " -destkeystore " + certGenericPath + "FacturadorKey.jks -deststoretype JKS -destalias "+Constantes.PRIVATE_KEY_ALIAS+numDoc+" -deststorepass SuN@TF4CT";
             log.debug("command: "+command);
             salida = FacturadorUtil.executeCommand(command);
 
