@@ -32,9 +32,9 @@ public class ComprobanteDet {
     private String tipo_igv;
 
     @NotNull
-    private BigDecimal afectacionIGV;
+    private BigDecimal afectacion_igv;
     
-    private BigDecimal afectacionISC;
+    private BigDecimal afectacion_isc;
     
     private BigDecimal recargo;
     public String getCodigo() {
@@ -104,21 +104,22 @@ public class ComprobanteDet {
         this.descuento_porcentaje = descuento_porcentaje;
     }
 
-    public BigDecimal getAfectacionIGV() {
-        return afectacionIGV;
+    public BigDecimal getAfectacion_igv() {
+        return afectacion_igv;
     }
 
-    public void setAfectacionIGV(BigDecimal afectacionIGV) {
-        this.afectacionIGV = afectacionIGV;
+    public void setAfectacion_igv(BigDecimal afectacion_igv) {
+        this.afectacion_igv = afectacion_igv;
     }
 
-    public BigDecimal getAfectacionISC() {
-        return afectacionISC;
+    public BigDecimal getAfectacion_isc() {
+        return afectacion_isc;
     }
 
-    public void setAfectacionISC(BigDecimal afectacionISC) {
-        this.afectacionISC = afectacionISC;
+    public void setAfectacion_isc(BigDecimal afectacion_isc) {
+        this.afectacion_isc = afectacion_isc;
     }
+
 
     public BigDecimal getRecargo() {
         return recargo;

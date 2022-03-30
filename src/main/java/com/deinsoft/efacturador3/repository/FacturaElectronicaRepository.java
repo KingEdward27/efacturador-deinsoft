@@ -24,6 +24,8 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
 		    }
 		  )
     List<FacturaElectronica> findBySerieAndNumero(String serie,String numero);
+
+    List<FacturaElectronica> findByIndSituacion(String situacion);
     
     @Query(value="select p from facturaElectronica p where p.tipo = :#{#facturaElectronica.notaReferenciaTipo} "
             + "and p.serie = :#{#facturaElectronica.notaReferenciaSerie} "

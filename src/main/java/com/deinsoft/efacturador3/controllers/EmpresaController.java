@@ -68,10 +68,10 @@ public class EmpresaController {
         String userDirectory = new File(".").getAbsolutePath();
         String userDirectory2 = new File(".").getPath();
         String userDirectory3 = new File(".").getCanonicalPath();
-        String[] wa = new File("/home/.").list();
-        for (String string : wa) {
-            log.info("string: " + string);
-        }
+//        String[] wa = new File("/home/.").list();
+//        for (String string : wa) {
+//            log.info("string: " + string);
+//        }
         String dir = System.getProperty("user.dir");
         log.info("userDirectory: " + userDirectory);
         log.info("userDirectory2: " + userDirectory2);
@@ -80,7 +80,7 @@ public class EmpresaController {
         Empresa empresaResult = null;
         if (empresa.getIdempresa() != null && empresa.getIdempresa() > 0) {
             empresaResult = empresaService.save(empresa);
-            resultado.put("message", "Empresa actualizada!");
+//            resultado.put("message", "Empresa actualizada!");
             resultado.put("empresa", empresaResult);
         } else {
             try {

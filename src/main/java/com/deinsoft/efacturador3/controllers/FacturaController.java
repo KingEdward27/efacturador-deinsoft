@@ -93,11 +93,19 @@ public class FacturaController {
         Map<String,Object> result = null;
         try {
             if (bindingResult.hasErrors()) {
-                return this.validar(bindingResult);
+                
+                Map<String,Object> errors = this.validar(bindingResult);
+                result  = new HashMap<>();
+                result.put("code","001");
+                result.put("message",errors);
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(result);
             }
             String mensajeValidacion = facturaElectronicaService.validarComprobante(documento);
             if (!mensajeValidacion.equals("")) {
-                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(mensajeValidacion);
+                result  = new HashMap<>();
+                result.put("code","002");
+                result.put("message",mensajeValidacion);
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(result);
             }
             Map<String,Object> map = JwtUtil.getJwtLoggedUserData((HttpServletRequest)request);
             String numDoc = (String)map.get("numDoc");
@@ -111,12 +119,18 @@ public class FacturaController {
 
             List<FacturaElectronica> listFact = facturaElectronicaService.getBySerieAndNumero(comprobante);
             if (listFact == null || (listFact != null && listFact.size() > 0)) {
-                return ResponseEntity.status(HttpStatus.FOUND).body("El documento ya existe");
+                result  = new HashMap<>();
+                result.put("code","002");
+                result.put("message","El documento ya existe");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(result);
             }
             if (comprobante.getTipo().equals("07") || comprobante.getTipo().equals("08")) {
                 listFact = facturaElectronicaService.getByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(comprobante);
                 if (listFact == null || (listFact != null && listFact.size() == 0)) {
-                    return ResponseEntity.status(HttpStatus.FOUND).body("El documento referenciado no existe");
+                    result  = new HashMap<>();
+                result.put("code","002");
+                result.put("message","El documento referenciado no existe");
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(result);
                 }
 
             }
@@ -126,7 +140,10 @@ public class FacturaController {
             
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ocurrió un error inesperado: " + e.getMessage());
+            result  = new HashMap<>();
+            result.put("code","003");
+            result.put("message",e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
@@ -147,9 +164,9 @@ public class FacturaController {
 
             String nombreArchivo = appConfig.getRootPath() + "VALI/" + "constantes.properties";
 
-            if ("02".equals(facturaElectronica.getIndSituacion()) || "10"
-                    .equals(facturaElectronica.getIndSituacion()) || "06"
-                    .equals(facturaElectronica.getIndSituacion())) {
+            if ("02".equals(facturaElectronica.getIndSituacion()) || 
+                "10".equals(facturaElectronica.getIndSituacion()) || 
+                "06".equals(facturaElectronica.getIndSituacion())) {
 
                 Properties prop = this.comunesService.getProperties(nombreArchivo);
 
@@ -219,12 +236,12 @@ public class FacturaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
     }
 
-    protected ResponseEntity<?> validar(BindingResult result) {
+    protected Map<String, Object> validar(BindingResult result) {
         Map<String, Object> errores = new HashMap<>();
         result.getFieldErrors().forEach(err -> {
             errores.put(err.getField(), " El campo " + err.getField() + " " + err.getDefaultMessage());
         });
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errores);
+        return errores;
     }
 
     

@@ -172,7 +172,11 @@
             <artifactId>mssql-jdbc</artifactId>
             <scope>runtime</scope>
         </dependency>
-<!--        <dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
+        <!--        <dependency>
            <groupId>local.jasperFont</groupId>
            <artifactId>local.jasperFont</artifactId>
            <version>1.0</version>

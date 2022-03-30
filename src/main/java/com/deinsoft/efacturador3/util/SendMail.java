@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.mail.Message;
 import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -32,8 +33,7 @@ public class SendMail {
 
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(SendMail.class);
 
-    public static boolean validaCorreo(String correo)
-    {
+    public static boolean validaCorreo(String correo) {
         boolean result = false;
         if (correo.equals("")) {
             result = true;
@@ -46,20 +46,27 @@ public class SendMail {
         result = mather.find();
         return result;
     }
+
     public static boolean sendEmail(MailBean mail) {
 
         boolean result = false;
         Session mailSession = null;
         try {
             Properties props = new Properties();
-            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.host", "mail.privateemail.com");
             props.put("mail.smtp.socketFactory.port", "465");
-            props.put("mail.smtp.mail.sender", mail.getCorreoElectronicoFrom());
-            props.put("mail.smtp.auth", "false");
+            props.put("mail.smtp.socketFactory.class",
+                    "javax.net.ssl.SSLSocketFactory");
+            props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.port", "465");
-
-            mailSession = Session.getDefaultInstance(props);
-
+            final String username = mail.getCorreoElectronicoFrom();
+            final String password = "opendeinsoft1";
+            mailSession = Session.getInstance(props,
+                    new javax.mail.Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password);
+                }
+            });
             MimeMessage m = new MimeMessage(mailSession);
             InternetAddress from = new InternetAddress(mail.getCorreoElectronicoFrom());
             InternetAddress[] to = new InternetAddress[]{new InternetAddress(mail.getCorreoElectronicoTo())};
@@ -67,7 +74,7 @@ public class SendMail {
             m.setRecipients(Message.RecipientType.TO, to);
             m.setSubject(mail.getAsunto());
             m.setSentDate(new java.util.Date());
-            m.setContent(mail.getContenido(), "text/html");
+//            m.setContent(mail.getContenido(), "text/html");
 
             Multipart multipart = new MimeMultipart();
 
@@ -76,16 +83,16 @@ public class SendMail {
             MimeBodyPart textPart = null;
 
             try {
+                
+                textPart = new MimeBodyPart();
+                textPart.setText(mail.getContenido());
+                multipart.addBodyPart(textPart);
                 for (String object : mail.getAdjuntos()) {
                     attachmentPart = new MimeBodyPart();
-                    textPart = new MimeBodyPart();
                     File f = new File(object);
-
                     attachmentPart.attachFile(f);
-                    textPart.setText("This is text");
-                    multipart.addBodyPart(textPart);
                     multipart.addBodyPart(attachmentPart);
-                    
+
                 }
 
             } catch (IOException e) {

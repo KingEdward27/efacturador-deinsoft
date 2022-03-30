@@ -13,6 +13,7 @@ public class MailBean {
     private String asunto;
     private String contenido;
     private String correoElectronicoFrom;
+    private String correoElectronicoFromPass;
     private String correoElectronicoTo;
     private String[] adjuntos;
     
@@ -20,10 +21,11 @@ public class MailBean {
 
     }
 
-    public MailBean(String asunto, String contenido, String correoElectronicoFrom, String correoElectronicoTo, String[] adjuntos) {
+    public MailBean(String asunto, String contenido, String correoElectronicoFrom,String correoElectronicoFromPass, String correoElectronicoTo, String[] adjuntos) {
         this.asunto = asunto;
         this.contenido = contenido;
         this.correoElectronicoFrom = correoElectronicoFrom;
+        this.correoElectronicoFromPass = correoElectronicoFromPass;
         this.correoElectronicoTo = correoElectronicoTo;
         this.adjuntos = adjuntos;
     }
@@ -58,6 +60,14 @@ public class MailBean {
 
     public void setCorreoElectronicoTo(String correoElectronicoTo) {
         this.correoElectronicoTo = correoElectronicoTo;
+    }
+
+    public String getCorreoElectronicoFromPass() {
+        return correoElectronicoFromPass;
+    }
+
+    public void setCorreoElectronicoFromPass(String correoElectronicoFromPass) {
+        this.correoElectronicoFromPass = correoElectronicoFromPass;
     }
 
     public String[] getAdjuntos() {

@@ -643,6 +643,6 @@ public class Catalogos {
         String[] tipoLeyenda = {codigo, descripcion};
         return tipoLeyenda;
     }
-            
+       
     
 }

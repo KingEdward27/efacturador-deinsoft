@@ -26,4 +26,5 @@ public interface FacturaElectronicaService {
     public FacturaElectronica toFacturaModel(ComprobanteCab documento) throws TransferirArchivoException, ParseException;
     public Map<String, Object> generarComprobantePagoSunat(String rootpath, FacturaElectronica documento) throws TransferirArchivoException;
     public String validarComprobante(ComprobanteCab documento);
+    public void sendToSUNAT();
 }

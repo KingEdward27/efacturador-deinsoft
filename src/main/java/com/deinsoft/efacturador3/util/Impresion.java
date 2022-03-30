@@ -70,9 +70,9 @@ public class Impresion {
 
 //            float subTotal = round(comprobante.getTotalValorVenta()/ (ConfiguracionADN.Datos().get(0).getValorIGV()/100+ 1), 2);
 //            float igvTotal = round(comprobante.getVentatotal() - subTotal, 2);
-            parametros.put("tipodoc", Catalogos.tipoDocumento(comprobante.getTipo(), null)[1] + "ELECTRÓNICA" );
-            parametros.put("razon_social", comprobante.getEmpresa().getRazonSocial());
-            parametros.put("direccion", "-AQUI VA LA DIRECCION-");
+            parametros.put("tipodoc", Catalogos.tipoDocumento(comprobante.getTipo(), null)[1].toUpperCase() + " ELECTRÓNICA" );
+            parametros.put("razon_social", comprobante.getEmpresa().getNombreComercial() == null ? comprobante.getEmpresa().getRazonSocial() : comprobante.getEmpresa().getNombreComercial());
+            parametros.put("direccion", comprobante.getEmpresa().getDireccion());
             parametros.put("ruc", comprobante.getEmpresa().getNumdoc());
 
             parametros.put("numero", comprobante.getSerie() + "-" + comprobante.getNumero());

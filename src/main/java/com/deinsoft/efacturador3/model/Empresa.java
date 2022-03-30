@@ -36,6 +36,14 @@ public class Empresa implements Serializable {
     @Column(name = "razon_social")
     private String razonSocial;
     
+    @Size(max = 300)
+    @Column(name = "nombre_comercial")
+    private String nombreComercial;
+    
+    @Size(max = 300)
+    @Column(name = "direccion")
+    private String direccion;
+    
     @Column(name = "tipodoc")
     private Integer tipodoc;
     
@@ -160,6 +168,22 @@ public class Empresa implements Serializable {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getNombreComercial() {
+        return nombreComercial;
+    }
+
+    public void setNombreComercial(String nombreComercial) {
+        this.nombreComercial = nombreComercial;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
     
     @Override

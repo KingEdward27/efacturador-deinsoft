@@ -23,6 +23,14 @@ public class AppConfig
   @Value("${app.environment}")
   private String environment;
   
+  @NotEmpty
+  @Value("${app.sendEmail.email}")
+  private String sendEmailEmail;
+
+  @NotEmpty
+  @Value("${app.sendEmail.password}")
+  private String sendEmailPassword;
+  
   @JsonProperty
   public String getRootPath() {
     return this.rootPath;
@@ -47,6 +55,22 @@ public class AppConfig
 
     public void setEnvironment(String environment) {
         this.environment = environment;
+    }
+
+    public String getSendEmailEmail() {
+        return sendEmailEmail;
+    }
+
+    public void setSendEmailEmail(String sendEmailEmail) {
+        this.sendEmailEmail = sendEmailEmail;
+    }
+
+    public String getSendEmailPassword() {
+        return sendEmailPassword;
+    }
+
+    public void setSendEmailPassword(String sendEmailPassword) {
+        this.sendEmailPassword = sendEmailPassword;
     }
   
   

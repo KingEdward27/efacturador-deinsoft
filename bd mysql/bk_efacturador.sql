@@ -593,10 +593,33 @@ CHANGE COLUMN `token` `token` VARCHAR(900) NULL DEFAULT NULL ;
 ALTER TABLE `efacturador`.`factura_electronica` 
 drop column fechaEnvio;
 
+ALTER TABLE `efacturador`.`empresa` 
+add nombre_comercial varchar(300);
+
+ALTER TABLE `efacturador`.`empresa` 
+add direccion varchar(300);
+
 ALTER TABLE `efacturador`.`factura_electronica` 
 add ticket_operacion bigint;
 
 ALTER TABLE `efacturador`.`factura_electronica_Det` 
 add codigo varchar(100);
 
-select * from factura_electronica
+select * from empresa
+select * from EFACTURADOR.factura_electronica_det
+
+select facturaele0_.m_id as m_id1_2_0_, facturaele0_.fecha_gen_xml as fecha_ge2_2_0_, facturaele0_.cliente_direccion as cliente_3_2_0_, facturaele0_.cliente_documento as cliente_4_2_0_, 
+facturaele0_.cliente_email as cliente_5_2_0_, facturaele0_.cliente_nombre as cliente_6_2_0_, 
+facturaele0_.cliente_telefono as cliente_7_2_0_, facturaele0_.cliente_tipo as cliente_8_2_0_, facturaele0_.cod_local as cod_loca9_2_0_, 
+facturaele0_.customization_id as customi10_2_0_, facturaele0_.descuento_global_porcentaje as descuen11_2_0_, 
+facturaele0_.descuentos_globales as descuen12_2_0_, facturaele0_.empresa_id as empresa53_2_0_, 
+facturaele0_.fecha_emision as fecha_e13_2_0_, facturaele0_.fecha_envio as fecha_e14_2_0_, 
+facturaele0_.fecha_vencimiento as fecha_v15_2_0_, facturaele0_.forma_pago as forma_p16_2_0_, 
+facturaele0_.guia_remision as guia_re17_2_0_, facturaele0_.importe_total as importe18_2_0_, facturaele0_.incluir_pdf as incluir19_2_0_,
+facturaele0_.incluir_xml as incluir20_2_0_, facturaele0_.ind_situacion as ind_sit21_2_0_, facturaele0_.leyenda1 as leyenda22_2_0_, facturaele0_.leyenda2 as leyenda23_2_0_, facturaele0_.leyenda3 as leyenda24_2_0_, facturaele0_.moneda as moneda25_2_0_, facturaele0_.monto_neto_pendiente as monto_n26_2_0_, facturaele0_.nota_motivo as nota_mo27_2_0_, facturaele0_.nota_referencia_numero as nota_re28_2_0_, facturaele0_.nota_referencia_serie as nota_re29_2_0_, facturaele0_.nota_referencia_tipo as nota_re30_2_0_, facturaele0_.nota_tipo as nota_ti31_2_0_, facturaele0_.numero as numero32_2_0_, facturaele0_.observacion_envio as observa33_2_0_, facturaele0_.observaciones as observa34_2_0_, facturaele0_.orden_compra as orden_c35_2_0_, facturaele0_.placa_vehiculo as placa_v36_2_0_, facturaele0_.porcentaje_igv as porcent37_2_0_, facturaele0_.serie as serie38_2_0_, 
+facturaele0_.sumatoriaigv as sumator39_2_0_, facturaele0_.sumatoriaisc as sumator40_2_0_, facturaele0_.sumatoria_otros_cargos as sumator41_2_0_, facturaele0_.sumatoria_otros_tributos as sumator42_2_0_, facturaele0_.ticket_operacion as ticket_43_2_0_, facturaele0_.tipo as tipo44_2_0_, facturaele0_.tipo_moneda_monto_neto_pendiente as tipo_mo45_2_0_, facturaele0_.tipo_operacion as tipo_op46_2_0_, facturaele0_.total_valor_venta as total_v47_2_0_, facturaele0_.total_valor_ventas_exoneradas as total_v48_2_0_, facturaele0_.total_valor_ventas_gravadas as total_v49_2_0_, facturaele0_.total_valor_ventas_inafectas as total_v50_2_0_, facturaele0_.vendedor_nombre as vendedo51_2_0_, 
+facturaele0_.xml_hash as xml_has52_2_0_, empresa1_.idempresa as idempres1_0_1_, 
+empresa1_.cert_name as cert_nam2_0_1_, empresa1_.cert_pass as cert_pas3_0_1_, empresa1_.clavesol as clavesol4_0_1_, empresa1_.estado as estado5_0_1_, empresa1_.numdoc as numdoc6_0_1_, empresa1_.razon_social as razon_so7_0_1_, empresa1_.serie as serie8_0_1_, empresa1_.tipodoc as tipodoc9_0_1_, empresa1_.token as token10_0_1_, empresa1_.usuariosol as usuario11_0_1_ 
+from EFACTURADOR.factura_electronica facturaele0_ 
+inner join EFACTURADOR.empresa empresa1_ on facturaele0_.empresa_id=empresa1_.idempresa 
+where facturaele0_.m_id=209

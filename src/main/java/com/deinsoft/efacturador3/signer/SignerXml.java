@@ -111,8 +111,8 @@ public class SignerXml {
             digestValue = obtenerNodo(nodeList.item(i));
         }   
         System.out.println("\\ FIN.");
-        retorno.put("xml",outputStream.toByteArray());
-        retorno.put("digestValue",digestValue);
+        retorno.put("xmlBase64",outputStream.toByteArray());
+        retorno.put("xmlHash",digestValue);
         return retorno;
         
 //        return doc;
