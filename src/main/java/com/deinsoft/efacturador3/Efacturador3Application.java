@@ -23,7 +23,7 @@ public class Efacturador3Application {
         SpringApplication.run(Efacturador3Application.class, args);
     }
 
-    @Scheduled(fixedDelay = 2000)
+    @Scheduled(fixedDelay = 10000)
     void sendSunat() {
         facturaElectronicaService.sendToSUNAT();
     }
