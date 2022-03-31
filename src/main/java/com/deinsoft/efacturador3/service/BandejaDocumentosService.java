@@ -29,8 +29,6 @@ public interface BandejaDocumentosService {
   
 //  void actualizarEstadoBandejaCdp(Documento paramDocumento);
   
-  HashMap<String, Object> enviarComprobantePagoSunat(String rootPath,FacturaElectronica paramDocumento) throws Exception;
-  
 //  HashMap<String, String> grabarOtrosParametros(HashMap<String, Object> paramHashMap) throws Exception;
   
 //  Map<String, Object> obtenerOtrosParametros() throws Exception;

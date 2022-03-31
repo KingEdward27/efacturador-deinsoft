@@ -6,26 +6,13 @@
 package com.deinsoft.efacturador3.controllers;
 
 import com.deinsoft.efacturador3.bean.ComprobanteCab;
-import com.deinsoft.efacturador3.bean.ComprobanteCuotas;
-import com.deinsoft.efacturador3.bean.ComprobanteDet;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
-import com.deinsoft.efacturador3.model.FacturaElectronicaDet;
-import com.deinsoft.efacturador3.model.FacturaElectronicaTax;
-import com.deinsoft.efacturador3.commons.controllers.CommonController;
-import com.deinsoft.efacturador3.commons.service.CommonService;
-import com.deinsoft.efacturador3.commons.service.CommonServiceImpl;
 import com.deinsoft.efacturador3.config.AppConfig;
-import com.deinsoft.efacturador3.model.FacturaElectronicaCuotas;
-//import com.deinsoft.efacturador3.model.Documento;
 import com.deinsoft.efacturador3.service.BandejaDocumentosService;
 import com.deinsoft.efacturador3.service.ComunesService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,26 +21,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.deinsoft.efacturador3.repository.FacturaElectronicaRepository;
 import com.deinsoft.efacturador3.security.JwtUtil;
 import com.deinsoft.efacturador3.service.EmpresaService;
 import com.deinsoft.efacturador3.service.FacturaElectronicaService;
 import com.deinsoft.efacturador3.service.GenerarDocumentosService;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
-import com.deinsoft.efacturador3.util.Constantes;
-import com.deinsoft.efacturador3.util.FacturadorUtil;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,9 +45,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class FacturaController {
 
     private static final Logger log = LoggerFactory.getLogger(FacturaController.class);
-
-    @Autowired
-    private BandejaDocumentosService bandejaDocumentosService;
 
     @Autowired
     FacturaElectronicaService facturaElectronicaService;
@@ -158,7 +133,7 @@ public class FacturaController {
         FacturaElectronica facturaElectronica = facturaElectronicaService.getById(Long.parseLong(id));
         try {
             log.debug("FacturaController.enviarXML...Enviar Comprobante");
-            log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...enviarComprobantePagoSunat Inicio");
+            log.debug("FacturaController.enviarXML...enviarComprobantePagoSunat Inicio");
             HashMap<String, Object> retorno = new HashMap<>();
             HashMap<String, String> resultadoWebService = null;
 
@@ -168,24 +143,24 @@ public class FacturaController {
                 "10".equals(facturaElectronica.getIndSituacion()) || 
                 "06".equals(facturaElectronica.getIndSituacion())) {
 
-                Properties prop = this.comunesService.getProperties(nombreArchivo);
-
-                String urlWebService = (prop.getProperty("RUTA_SERV_CDP") != null) ? prop.getProperty("RUTA_SERV_CDP") : "XX";
-
+//                Properties prop = this.comunesService.getProperties(nombreArchivo);
+//
+//                String urlWebService = (prop.getProperty("RUTA_SERV_CDP") != null) ? prop.getProperty("RUTA_SERV_CDP") : "XX";
+                String urlWebService = (appConfig.getUrlServiceCDP() != null) ? appConfig.getUrlServiceCDP() : "XX";
                 String tipoComprobante = facturaElectronica.getTipo();
                 String filename = facturaElectronica.getEmpresa().getNumdoc()
                         + "-" + String.format("%02d", Integer.parseInt(facturaElectronica.getTipo()))
                         + "-" + facturaElectronica.getSerie()
                         + "-" + String.format("%08d", Integer.parseInt(facturaElectronica.getNumero()));
-                log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...Validando Conexión a Internet");
+                log.debug("FacturaController.enviarXML...Validando Conexión a Internet");
                 String[] rutaUrl = urlWebService.split("\\/");
-                log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...tokens: " + rutaUrl[2]);
+                log.debug("FacturaController.enviarXML...tokens: " + rutaUrl[2]);
                 this.comunesService.validarConexion(rutaUrl[2], 443);
 
-                log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...Enviando Documento");
-                log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...urlWebService: " + urlWebService);
-                log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...filename: " + filename);
-                log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...tipoComprobante: " + tipoComprobante);
+                log.debug("FacturaController.enviarXML...Enviando Documento");
+                log.debug("FacturaController.enviarXML...urlWebService: " + urlWebService);
+                log.debug("FacturaController.enviarXML...filename: " + filename);
+                log.debug("FacturaController.enviarXML...tipoComprobante: " + tipoComprobante);
                 resultadoWebService = this.generarDocumentosService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica);
 
                 retorno.put("resultadoWebService", resultadoWebService);
@@ -194,8 +169,8 @@ public class FacturaController {
                 resultadoProceso = "-1";
             }
 
-            log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...enviarComprobantePagoSunat Final");
-            //HashMap<String, Object> envioBandeja = retorno;//this.bandejaDocumentosService.enviarComprobantePagoSunat(rootPath, facturaElectronica);
+            log.debug("FacturaController.enviarXML...enviarComprobantePagoSunat Final");
+            
             if (retorno != null) {
 
                 resultadoWebService = (HashMap<String, String>) retorno.get("resultadoWebService");

@@ -206,9 +206,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     @Override
     public void sendToSUNAT() {
         List<FacturaElectronica> list = facturaElectronicaRepository.findByIndSituacion(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
-        String nombreArchivo = appConfig.getRootPath() + "VALI/" + "constantes.properties";
-        Properties prop = this.comunesService.getProperties(nombreArchivo);
-        String urlWebService = (prop.getProperty("RUTA_SERV_CDP") != null) ? prop.getProperty("RUTA_SERV_CDP") : "XX";
+//        String nombreArchivo = appConfig.getRootPath() + "VALI/" + "constantes.properties";
+//        Properties prop = this.comunesService.getProperties(nombreArchivo);
+        String urlWebService = (appConfig.getUrlServiceCDP() != null) ? appConfig.getUrlServiceCDP() : "XX";
         list.forEach((facturaElectronica) -> {
             try {
                 HashMap<String, String> resultadoWebService = null;
@@ -216,13 +216,13 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                         + "-" + String.format("%02d", Integer.parseInt(facturaElectronica.getTipo()))
                         + "-" + facturaElectronica.getSerie()
                         + "-" + String.format("%08d", Integer.parseInt(facturaElectronica.getNumero()));
-                log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...Validando Conexión a Internet");
+                log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...Validando Conexión a Internet");
                 String[] rutaUrl = urlWebService.split("\\/");
-                log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...tokens: " + rutaUrl[2]);
+                log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...tokens: " + rutaUrl[2]);
                 this.comunesService.validarConexion(rutaUrl[2], 443);
-                log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...filename: " + filename);
+                log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...filename: " + filename);
                 resultadoWebService = this.generarDocumentosService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica);
-                log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...enviarComprobantePagoSunat Final");
+                log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...enviarComprobantePagoSunat Final");
                 if (resultadoWebService != null) {
                     String estadoRetorno = (resultadoWebService.get("situacion") != null) ? (String) resultadoWebService.get("situacion") : "";
                     String mensaje = (resultadoWebService.get("mensaje") != null) ? (String) resultadoWebService.get("mensaje") : "-";

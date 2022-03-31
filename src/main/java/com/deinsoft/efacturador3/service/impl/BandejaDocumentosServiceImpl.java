@@ -94,47 +94,6 @@ public class BandejaDocumentosServiceImpl implements BandejaDocumentosService {
             throw new TransferirArchivoException(e.getMessage(), exceptionDetail);
         }
     }
-    
-    public HashMap<String, Object> enviarComprobantePagoSunat(String rootPath, FacturaElectronica facturaElectronica) {
-        log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...enviarComprobantePagoSunat Inicio");
-        HashMap<String, Object> retorno = null;
-        HashMap<String, String> resultadoWebService = null;
-
-        String nombreArchivo = rootPath + "VALI/" + "constantes.properties";
-
-        if ("02".equals(facturaElectronica.getIndSituacion()) || "10"
-                .equals(facturaElectronica.getIndSituacion())|| "06"
-                .equals(facturaElectronica.getIndSituacion())) {
-            retorno = new HashMap<>();
-
-            Properties prop = this.comunesService.getProperties(nombreArchivo);
-
-            String urlWebService = (prop.getProperty("RUTA_SERV_CDP") != null) ? prop.getProperty("RUTA_SERV_CDP") : "XX";
-
-            String tipoComprobante = facturaElectronica.getTipo();
-            String filename = facturaElectronica.getEmpresa().getNumdoc()
-                    +"-"+String.format("%02d", Integer.parseInt(facturaElectronica.getTipo()))
-                    +"-"+facturaElectronica.getSerie()
-                    +"-"+String.format("%08d", Integer.parseInt(facturaElectronica.getNumero()));
-            log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...Validando Conexión a Internet");
-            String[] rutaUrl = urlWebService.split("\\/");
-            log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...tokens: " + rutaUrl[2]);
-            this.comunesService.validarConexion(rutaUrl[2], Integer.valueOf(443));
-
-            log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...Enviando Documento");
-            log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...urlWebService: " + urlWebService);
-            log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...filename: " + filename);
-            log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...tipoComprobante: " + tipoComprobante);
-            resultadoWebService = this.generarDocumentosService.enviarArchivoSunat(urlWebService,rootPath, filename, facturaElectronica);
-
-            retorno.put("resultadoWebService", resultadoWebService);
-        }else{
-            retorno.put("resultadoWebService", resultadoWebService);
-        }
-
-        log.debug("BandejaDocumentosServiceImpl.enviarComprobantePagoSunat...enviarComprobantePagoSunat Final");
-        return retorno;
-    }
 
     public HashMap<String, Object> listarCertificados() throws Exception {
         HashMap<String, Object> resultado = new HashMap<>();

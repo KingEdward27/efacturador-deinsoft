@@ -31,6 +31,15 @@ public class AppConfig
   @Value("${app.sendEmail.password}")
   private String sendEmailPassword;
   
+  @NotEmpty
+  @Value("${app.urlServiceCDR}")
+  private String urlServiceCDR;
+  
+  @NotEmpty
+  @Value("${app.urlServiceCDP}")
+  private String urlServiceCDP;
+  
+  
   @JsonProperty
   public String getRootPath() {
     return this.rootPath;
@@ -71,6 +80,22 @@ public class AppConfig
 
     public void setSendEmailPassword(String sendEmailPassword) {
         this.sendEmailPassword = sendEmailPassword;
+    }
+
+    public String getUrlServiceCDR() {
+        return urlServiceCDR;
+    }
+
+    public void setUrlServiceCDR(String urlServiceCDR) {
+        this.urlServiceCDR = urlServiceCDR;
+    }
+
+    public String getUrlServiceCDP() {
+        return urlServiceCDP;
+    }
+
+    public void setUrlServiceCDP(String urlServiceCDP) {
+        this.urlServiceCDP = urlServiceCDP;
     }
   
   
