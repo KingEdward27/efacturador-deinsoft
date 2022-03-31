@@ -233,7 +233,7 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
             log.debug("Enviando archivo a SUNAT, numeroRUC:  " + numeroRUC);
             log.debug("Enviando archivo a SUNAT, usuarioSOL:  " + usuarioSOL);
             log.debug("Enviando archivo a SUNAT, password:  " + password);
-            UsuarioSol usuarioSol = new UsuarioSol(numeroRUC, usuarioSOL, password);
+            UsuarioSol usuarioSol = new UsuarioSol(numeroRUC, numeroRUC+usuarioSOL, password);
             SunatGEMServiceWrapper client = new SunatGEMServiceWrapper(usuarioSol, wsUrl);
             Response respon = null;
 
