@@ -21,7 +21,7 @@ public interface FacturaElectronicaService {
     public FacturaElectronica getById(long id);
     public List<FacturaElectronica> getListFacturaElectronica();
     FacturaElectronica save(FacturaElectronica facturaElectronica);
-    public List<FacturaElectronica> getBySerieAndNumero(FacturaElectronica facturaElectronica);
+    public List<FacturaElectronica> getBySerieAndNumeroAndEmpresaId(FacturaElectronica facturaElectronica);
     public List<FacturaElectronica> getByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(FacturaElectronica facturaElectronica);
     public FacturaElectronica toFacturaModel(ComprobanteCab documento) throws TransferirArchivoException, ParseException;
     public Map<String, Object> generarComprobantePagoSunat(String rootpath, FacturaElectronica documento) throws TransferirArchivoException;

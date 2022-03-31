@@ -607,6 +607,7 @@ add codigo varchar(100);
 
 select * from empresa
 select * from EFACTURADOR.factura_electronica_det
+update EFACTURADOR.factura_electronica set ind_situacion = '06'
 
 select facturaele0_.m_id as m_id1_2_0_, facturaele0_.fecha_gen_xml as fecha_ge2_2_0_, facturaele0_.cliente_direccion as cliente_3_2_0_, facturaele0_.cliente_documento as cliente_4_2_0_, 
 facturaele0_.cliente_email as cliente_5_2_0_, facturaele0_.cliente_nombre as cliente_6_2_0_, 

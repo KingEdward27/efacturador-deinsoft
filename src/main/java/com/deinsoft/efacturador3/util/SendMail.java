@@ -60,7 +60,7 @@ public class SendMail {
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.port", "465");
             final String username = mail.getCorreoElectronicoFrom();
-            final String password = "opendeinsoft1";
+            final String password = mail.getCorreoElectronicoFromPass();
             mailSession = Session.getInstance(props,
                     new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {

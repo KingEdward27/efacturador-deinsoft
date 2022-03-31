@@ -30,7 +30,7 @@ public class Empresa implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idempresa")
-    private Integer idempresa;
+    private Integer id;
     
     @Size(max = 300)
     @Column(name = "razon_social")
@@ -77,17 +77,18 @@ public class Empresa implements Serializable {
     public Empresa() {
     }
 
-    public Empresa(Integer idempresa) {
-        this.idempresa = idempresa;
+    public Empresa(Integer id) {
+        this.id = id;
     }
 
-    public Integer getIdempresa() {
-        return idempresa;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdempresa(Integer idempresa) {
-        this.idempresa = idempresa;
+    public void setId(Integer id) {
+        this.id = id;
     }
+
 
     public String getRazonSocial() {
         return razonSocial;
@@ -189,7 +190,7 @@ public class Empresa implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idempresa != null ? idempresa.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -200,7 +201,7 @@ public class Empresa implements Serializable {
             return false;
         }
         Empresa other = (Empresa) object;
-        if ((this.idempresa == null && other.idempresa != null) || (this.idempresa != null && !this.idempresa.equals(other.idempresa))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -208,7 +209,7 @@ public class Empresa implements Serializable {
 
     @Override
     public String toString() {
-        return "Empresa{" + "idempresa=" + idempresa + ", razonSocial=" + razonSocial + ", tipodoc=" + tipodoc + ", numdoc=" + numdoc + ", serie=" + serie + ", usuariosol=" + usuariosol + ", clavesol=" + clavesol + ", certName=" + certName + ", certPass=" + certPass + ", token=" + token + ", estado=" + estado + '}';
+        return "Empresa{" + "id=" + id + ", razonSocial=" + razonSocial + ", tipodoc=" + tipodoc + ", numdoc=" + numdoc + ", serie=" + serie + ", usuariosol=" + usuariosol + ", clavesol=" + clavesol + ", certName=" + certName + ", certPass=" + certPass + ", token=" + token + ", estado=" + estado + '}';
     }
     
     

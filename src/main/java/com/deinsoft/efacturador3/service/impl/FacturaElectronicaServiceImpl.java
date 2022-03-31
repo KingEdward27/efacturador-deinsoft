@@ -97,16 +97,14 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     }
 
     @Override
-    public List<FacturaElectronica> getBySerieAndNumero(FacturaElectronica facturaElectronica) {
-        return facturaElectronicaRepository.findBySerieAndNumero(facturaElectronica.getSerie(), facturaElectronica.getNumero());
+    public List<FacturaElectronica> getBySerieAndNumeroAndEmpresaId(FacturaElectronica facturaElectronica) {
+        return facturaElectronicaRepository.findBySerieAndNumeroAndEmpresaId(facturaElectronica.getSerie(), facturaElectronica.getNumero(), facturaElectronica.getEmpresa().getId());
     }
 
     @Override
     public List<FacturaElectronica> getByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(FacturaElectronica facturaElectronica) {
         return facturaElectronicaRepository.findByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(facturaElectronica);
     }
-
-    
 
     @Override
     @Transactional
@@ -177,16 +175,16 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                             + (documento.getEmpresa().getNombreComercial() == null ? documento.getEmpresa().getRazonSocial() : documento.getEmpresa().getNombreComercial());
                     try {
                         SendMail.sendEmail(new MailBean("Comprobante electrónico",
-                            cuerpo,
-                            appConfig.getSendEmailEmail(),
-                            appConfig.getSendEmailPassword(),
-                            facturaElectronicaResult.getClienteEmail(),
-                            adjuntos));
+                                cuerpo,
+                                appConfig.getSendEmailEmail(),
+                                appConfig.getSendEmailPassword(),
+                                facturaElectronicaResult.getClienteEmail(),
+                                adjuntos));
                     } catch (Exception e) {
                         e.printStackTrace();
                         log.debug("BandejaDocumentosServiceImpl.generarComprobantePagoSunat...SendMail: Correo no enviado" + e.getMessage());
                     }
-                    
+
                 }
                 facturaElectronicaResult.setFechaGenXml(new Date());
                 facturaElectronicaResult.setIndSituacion(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
@@ -204,6 +202,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             throw new TransferirArchivoException(e.getMessage(), exceptionDetail);
         }
     }
+
     @Override
     public void sendToSUNAT() {
         List<FacturaElectronica> list = facturaElectronicaRepository.findByIndSituacion(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
@@ -253,6 +252,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
         });
     }
+
     @Override
     public FacturaElectronica toFacturaModel(ComprobanteCab documento) throws TransferirArchivoException, ParseException {
         BigDecimal totalValorVentasGravadas = BigDecimal.ZERO, totalValorVentasInafectas = BigDecimal.ZERO,
@@ -356,13 +356,13 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
             baseamt = baseamt.add(comprobanteDet.getPrecio_unitario().subtract(comprobanteDet.getAfectacion_igv()));
             taxtotal = taxtotal.add(comprobanteDet.getAfectacion_igv());
-            FacturaElectronicaTax facturaElectronicaTax = new FacturaElectronicaTax();
-            facturaElectronicaTax.setTaxId(1000);
-            facturaElectronicaTax.setBaseamt(baseamt);
-            facturaElectronicaTax.setTaxtotal(taxtotal);
-            listTax.add(facturaElectronicaTax);
-        }
 
+        }
+        FacturaElectronicaTax facturaElectronicaTax = new FacturaElectronicaTax();
+        facturaElectronicaTax.setTaxId(1000);
+        facturaElectronicaTax.setBaseamt(baseamt);
+        facturaElectronicaTax.setTaxtotal(taxtotal);
+        listTax.add(facturaElectronicaTax);
         if (!CollectionUtils.isEmpty(documento.getLista_cuotas())) {
 
 //                BigDecimal sumaCoutas = BigDecimal.ZERO;
@@ -457,23 +457,26 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             return "El tipo de documento de identidad no existe";
         }
         if (!(documento.getTipo().equals("07") || documento.getTipo().equals("08") || documento.getTipo().equals("03"))) {
-            if (documento.getForma_pago().equals(Constantes.FORMA_PAGO_CONTADO) && !CollectionUtils.isEmpty(documento.getLista_cuotas())) {
+            if (documento.getForma_pago().equalsIgnoreCase(Constantes.FORMA_PAGO_CONTADO) && !CollectionUtils.isEmpty(documento.getLista_cuotas())) {
                 return "Si la forma de pago es Contado no es necesario indicar la lista de cuotas, campo: lista_cuotas";
             }
-            for (ComprobanteCuotas detalle : documento.getLista_cuotas()) {
-                //                Date fechaPago = null;
-                try {
-                    Date fechaPago = new SimpleDateFormat("dd/MM/yyyy").parse(detalle.getFecha_pago());
-                } catch (Exception e) {
-                    return "Si la forma de pago es Credito la fecha de pago no debe estar vacía y debe tener formato correcto dd/MM/yyyy, campo: fecha_pago";
-                }
-                if (FacturadorUtil.isNullOrEmpty(detalle.getMonto_pago())) {
-                    return "Si la forma de pago es Credito debe indicar al monto de la cuota, campo: monto_pago";
-                }
-                if (FacturadorUtil.isNullOrEmpty(detalle.getTipo_moneda_pago())) {
-                    return "Si la forma de pago es Credito debe indicar el tipo de moneda de la cuota, campo: tipo_moneda_pago";
+            if (documento.getForma_pago().equalsIgnoreCase(Constantes.FORMA_PAGO_CREDITO)) {
+                for (ComprobanteCuotas detalle : documento.getLista_cuotas()) {
+                    //                Date fechaPago = null;
+                    try {
+                        Date fechaPago = new SimpleDateFormat("dd/MM/yyyy").parse(detalle.getFecha_pago());
+                    } catch (Exception e) {
+                        return "Si la forma de pago es Credito la fecha de pago no debe estar vacía y debe tener formato correcto dd/MM/yyyy, campo: fecha_pago";
+                    }
+                    if (FacturadorUtil.isNullOrEmpty(detalle.getMonto_pago())) {
+                        return "Si la forma de pago es Credito debe indicar al monto de la cuota, campo: monto_pago";
+                    }
+                    if (FacturadorUtil.isNullOrEmpty(detalle.getTipo_moneda_pago())) {
+                        return "Si la forma de pago es Credito debe indicar el tipo de moneda de la cuota, campo: tipo_moneda_pago";
+                    }
                 }
             }
+
             if (!CollectionUtils.isEmpty(documento.getLista_cuotas())) {
 
                 BigDecimal sumaCoutas = BigDecimal.ZERO;

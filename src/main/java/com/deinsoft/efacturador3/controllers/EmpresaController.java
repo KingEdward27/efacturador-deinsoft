@@ -78,7 +78,7 @@ public class EmpresaController {
         log.info("userDirectory3: " + userDirectory3);
         log.info("dir: " + dir);
         Empresa empresaResult = null;
-        if (empresa.getIdempresa() != null && empresa.getIdempresa() > 0) {
+        if (empresa.getId() != null && empresa.getId()> 0) {
             empresaResult = empresaService.save(empresa);
 //            resultado.put("message", "Empresa actualizada!");
             resultado.put("empresa", empresaResult);

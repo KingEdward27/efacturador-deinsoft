@@ -23,13 +23,13 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
 		      "empresa"
 		    }
 		  )
-    List<FacturaElectronica> findBySerieAndNumero(String serie,String numero);
+    List<FacturaElectronica> findBySerieAndNumeroAndEmpresaId(String serie,String numero,int empresaId);
 
     List<FacturaElectronica> findByIndSituacion(String situacion);
     
     @Query(value="select p from facturaElectronica p where p.tipo = :#{#facturaElectronica.notaReferenciaTipo} "
             + "and p.serie = :#{#facturaElectronica.notaReferenciaSerie} "
             + "and p.numero = :#{#facturaElectronica.notaReferenciaNumero} "
-            + "and p.empresa.idempresa = :#{#facturaElectronica.empresa.idempresa} ")
+            + "and p.empresa.id = :#{#facturaElectronica.empresa.id} ")
     List<FacturaElectronica> findByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(@Param("facturaElectronica") FacturaElectronica facturaElectronica);
 }

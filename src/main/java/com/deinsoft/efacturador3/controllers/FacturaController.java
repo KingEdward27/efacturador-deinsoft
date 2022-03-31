@@ -117,7 +117,7 @@ public class FacturaController {
             FacturaElectronica comprobante = facturaElectronicaService.toFacturaModel(documento);
             comprobante.setEmpresa(empresa);
 
-            List<FacturaElectronica> listFact = facturaElectronicaService.getBySerieAndNumero(comprobante);
+            List<FacturaElectronica> listFact = facturaElectronicaService.getBySerieAndNumeroAndEmpresaId(comprobante);
             if (listFact == null || (listFact != null && listFact.size() > 0)) {
                 result  = new HashMap<>();
                 result.put("code","002");

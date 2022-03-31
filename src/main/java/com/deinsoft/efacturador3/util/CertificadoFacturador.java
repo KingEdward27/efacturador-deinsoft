@@ -130,8 +130,13 @@ public class CertificadoFacturador {
             String salida = FacturadorUtil.executeCommand("keytool -delete -alias "+Constantes.PRIVATE_KEY_ALIAS+numDoc+" -storepass SuN@TF4CT -keystore " + certGenericPath + "FacturadorKey.jks");
 
             log.debug("Metodo importarCertificado: Salida de keytool -delete " + salida);
+            String command;
+            if(aliasPfx.contains(" ")){
+                command = "keytool -importkeystore -srcalias \"" + aliasPfx + "\" -srckeystore " + rutaCertificado + " -srcstoretype pkcs12 -srcstorepass " + passPrivateKey + " -destkeystore " + certGenericPath + "FacturadorKey.jks -deststoretype JKS -destalias "+Constantes.PRIVATE_KEY_ALIAS+numDoc+" -deststorepass SuN@TF4CT";
+            }else{
+                command = "keytool -importkeystore -srcalias " + aliasPfx + " -srckeystore " + rutaCertificado + " -srcstoretype pkcs12 -srcstorepass " + passPrivateKey + " -destkeystore " + certGenericPath + "FacturadorKey.jks -deststoretype JKS -destalias "+Constantes.PRIVATE_KEY_ALIAS+numDoc+" -deststorepass SuN@TF4CT";
+            }
             
-            String command = "keytool -importkeystore -srcalias \"" + aliasPfx + "\" -srckeystore " + rutaCertificado + " -srcstoretype pkcs12 -srcstorepass " + passPrivateKey + " -destkeystore " + certGenericPath + "FacturadorKey.jks -deststoretype JKS -destalias "+Constantes.PRIVATE_KEY_ALIAS+numDoc+" -deststorepass SuN@TF4CT";
             log.debug("command: "+command);
             salida = FacturadorUtil.executeCommand(command);
 
