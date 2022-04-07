@@ -30,8 +30,12 @@ import com.deinsoft.efacturador3.util.Impresion;
 import com.deinsoft.efacturador3.util.SendMail;
 import com.deinsoft.efacturador3.validator.XsdCpeValidator;
 import com.deinsoft.efacturador3.validator.XsltCpeValidator;
+import io.github.project.openubl.xmlsenderws.webservices.managers.BillServiceManager;
+import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
+import io.github.project.openubl.xmlsenderws.webservices.wrappers.ServiceConfig;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -45,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -61,7 +66,7 @@ import org.springframework.util.CollectionUtils;
 @Service
 public class FacturaElectronicaServiceImpl implements FacturaElectronicaService {
 
-    private static final Logger log = LoggerFactory.getLogger(BandejaDocumentosServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(FacturaElectronicaServiceImpl.class);
 
     @Autowired
     FacturaElectronicaRepository facturaElectronicaRepository;
@@ -109,8 +114,8 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     @Override
     @Transactional
     public Map<String, Object> generarComprobantePagoSunat(String rootpath, FacturaElectronica documento) throws TransferirArchivoException {
-        XsltCpeValidator xsltCpeValidator = new XsltCpeValidator(this.comunesService, this.errorDao, this.xsltCpePath);
-        XsdCpeValidator xsdCpeValidator = new XsdCpeValidator(this.comunesService, this.errorDao, this.xsltCpePath);
+        XsltCpeValidator xsltCpeValidator = new XsltCpeValidator(this.xsltCpePath);
+        XsdCpeValidator xsdCpeValidator = new XsdCpeValidator(this.xsltCpePath);
         Map<String, Object> retorno = new HashMap<>();
         FacturaElectronica facturaElectronicaResult = null;
         long ticket = Calendar.getInstance().getTimeInMillis();
@@ -137,11 +142,11 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                         + "-" + String.format("%08d", Integer.parseInt(documento.getNumero()));
                 this.generarDocumentosService.formatoPlantillaXml(rootpath, documento, nomFile);
 
-                retorno.putAll(this.generarDocumentosService.firmarXml(rootpath, documento, nomFile));
+                retorno.putAll(this.generarDocumentosService.firmarXml(rootpath, documento.getEmpresa(), nomFile));
 
-                xsdCpeValidator.validarSchemaXML(rootpath, documento, rootpath + "/" + documento.getEmpresa().getNumdoc() + "/PARSE/" + nomFile + ".xml");
+                xsdCpeValidator.validarSchemaXML(rootpath, documento.getTipo(), rootpath + "/" + documento.getEmpresa().getNumdoc() + "/PARSE/" + nomFile + ".xml");
 
-                xsltCpeValidator.validarXMLYComprimir(rootpath, documento, rootpath + "/" + documento.getEmpresa().getNumdoc() + "/PARSE/", nomFile);
+                xsltCpeValidator.validarXMLYComprimir(rootpath, documento.getEmpresa(), documento.getTipo(), rootpath + "/" + documento.getEmpresa().getNumdoc() + "/PARSE/", nomFile);
 
                 documento.setXmlHash(retorno.get("xmlHash").toString());
                 String tempDescripcionPluralMoneda = "SOLES";
@@ -205,13 +210,17 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
     @Override
     public void sendToSUNAT() {
-        List<FacturaElectronica> list = facturaElectronicaRepository.findByIndSituacion(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
+        List<String> listSituacion = new ArrayList<>();
+        listSituacion.add(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
+        listSituacion.add(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO);
+        listSituacion.add(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+        List<FacturaElectronica> list = facturaElectronicaRepository.findByIndSituacionIn(listSituacion);
 //        String nombreArchivo = appConfig.getRootPath() + "VALI/" + "constantes.properties";
 //        Properties prop = this.comunesService.getProperties(nombreArchivo);
         String urlWebService = (appConfig.getUrlServiceCDP() != null) ? appConfig.getUrlServiceCDP() : "XX";
         list.forEach((facturaElectronica) -> {
             try {
-                HashMap<String, String> resultadoWebService = null;
+                HashMap<String, Object> resultadoWebService = null;
                 String filename = facturaElectronica.getEmpresa().getNumdoc()
                         + "-" + String.format("%02d", Integer.parseInt(facturaElectronica.getTipo()))
                         + "-" + facturaElectronica.getSerie()
@@ -221,25 +230,34 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...tokens: " + rutaUrl[2]);
                 this.comunesService.validarConexion(rutaUrl[2], 443);
                 log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...filename: " + filename);
-                resultadoWebService = this.generarDocumentosService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica);
+                //resultadoWebService = this.generarDocumentosService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica);
+                BillServiceModel res = comunesService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica.getEmpresa());
+                log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getCode());
+                log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getDescription());
+                log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getTicket());
+                facturaElectronica.setFechaEnvio(new Date());
+                facturaElectronica.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+                facturaElectronica.setObservacionEnvio(res.getDescription());
+                facturaElectronica.setTicketSunat(res.getTicket());
+                save(facturaElectronica);
+//                if (resultadoWebService != null) {
+//                    String estadoRetorno = (resultadoWebService.get("situacion") != null) ? (String) resultadoWebService.get("situacion") : "";
+//                    String mensaje = (resultadoWebService.get("mensaje") != null) ? (String) resultadoWebService.get("mensaje") : "-";
+//                    if (!"".equals(estadoRetorno)) {
+//                        if (!Constantes.CONSTANTE_SITUACION_DESCARGA_CDR.equals(estadoRetorno)
+//                                && !Constantes.CONSTANTE_SITUACION_DESCARGA_CDR_OBSERVACIONES.equals(estadoRetorno)) {
+//                            facturaElectronica.setFechaEnvio(new Date());
+//                            facturaElectronica.setIndSituacion(estadoRetorno);
+//                            facturaElectronica.setObservacionEnvio(mensaje);
+//                            save(facturaElectronica);
+//                        } else {
+//                            facturaElectronica.setIndSituacion(estadoRetorno);
+//                            facturaElectronica.setObservacionEnvio(mensaje);
+//                            save(facturaElectronica);
+//                        }
+//                    }
+//                }
                 log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...enviarComprobantePagoSunat Final");
-                if (resultadoWebService != null) {
-                    String estadoRetorno = (resultadoWebService.get("situacion") != null) ? (String) resultadoWebService.get("situacion") : "";
-                    String mensaje = (resultadoWebService.get("mensaje") != null) ? (String) resultadoWebService.get("mensaje") : "-";
-                    if (!"".equals(estadoRetorno)) {
-                        if (!Constantes.CONSTANTE_SITUACION_DESCARGA_CDR.equals(estadoRetorno)
-                                && !Constantes.CONSTANTE_SITUACION_DESCARGA_CDR_OBSERVACIONES.equals(estadoRetorno)) {
-                            facturaElectronica.setFechaEnvio(new Date());
-                            facturaElectronica.setIndSituacion(estadoRetorno);
-                            facturaElectronica.setObservacionEnvio(mensaje);
-                            save(facturaElectronica);
-                        } else {
-                            facturaElectronica.setIndSituacion(estadoRetorno);
-                            facturaElectronica.setObservacionEnvio(mensaje);
-                            save(facturaElectronica);
-                        }
-                    }
-                }
             } catch (Exception e) {
                 String mensaje = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
                 e.printStackTrace();

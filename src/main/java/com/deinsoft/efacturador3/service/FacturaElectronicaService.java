@@ -9,6 +9,7 @@ import com.deinsoft.efacturador3.bean.ComprobanteCab;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
+import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;

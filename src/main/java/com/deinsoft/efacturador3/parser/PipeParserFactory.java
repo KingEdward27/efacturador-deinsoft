@@ -3,6 +3,8 @@ package com.deinsoft.efacturador3.parser;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.model.Contribuyente;
+import com.deinsoft.efacturador3.model.ResumenBaja;
+import com.deinsoft.efacturador3.model.ResumenDiario;
 import com.deinsoft.efacturador3.parser.pipe.PipeFacturaParser;
 import com.deinsoft.efacturador3.parser.pipe.PipeGuiaParser;
 import com.deinsoft.efacturador3.parser.pipe.PipeNotaCreditoParser;
@@ -12,6 +14,7 @@ import com.deinsoft.efacturador3.parser.pipe.PipeResumenBajaParser;
 import com.deinsoft.efacturador3.parser.pipe.PipeResumenBoletaParser;
 import com.deinsoft.efacturador3.parser.pipe.PipeResumenReversionParser;
 import com.deinsoft.efacturador3.parser.pipe.PipeRetencionParser;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,5 +86,11 @@ public class PipeParserFactory
 //    }
     
     throw new IllegalArgumentException("tipo de comprobante no soportado");
+  }
+  public Parser createParserResumenBaja(ResumenBaja resumenBaja) {
+      return (Parser)new PipeResumenBajaParser(resumenBaja);
+  }
+  public Parser createParserResumenDiario(ResumenDiario resumenDiario) {
+      return (Parser)new PipeResumenBoletaParser(resumenDiario);
   }
 }

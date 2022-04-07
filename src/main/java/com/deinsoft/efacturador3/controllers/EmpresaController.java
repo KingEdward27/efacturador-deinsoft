@@ -9,7 +9,6 @@ import com.deinsoft.efacturador3.bean.ComprobanteCab;
 import com.deinsoft.efacturador3.config.AppConfig;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.security.SecurityConstants;
-import com.deinsoft.efacturador3.service.BandejaDocumentosService;
 import com.deinsoft.efacturador3.util.CertificadoFacturador;
 import com.deinsoft.efacturador3.service.EmpresaService;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
@@ -55,9 +54,6 @@ public class EmpresaController {
 
     @Autowired
     AppConfig appConfig;
-
-//    @Value("azure-blob://defact/ALMCERT/FacturadorKey.jks")
-//    private Resource blobFile;
     
     @PostMapping(value = "save")
     public ResponseEntity<?> save(@Valid @RequestBody Empresa empresa, BindingResult result,

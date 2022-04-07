@@ -123,9 +123,9 @@ public final class Constantes
   public static final String CONSTANTE_SERIE_B = "B";
   public static final String CONSTANTE_SERIE_F = "F";
 
-  public static final String CONSTANTE_PATH_FORMATOS_FTL = "D:/Proyectos/facturacion/efacturador3/sunat_archivos/sfs/VALI/";
-  public static final String CONSTANTE_PATH_FORMATOS_PARS = "D:/Proyectos/facturacion/efacturador3/sunat_archivos/sfs/PARSE/";
-  public static final String CONSTANTE_PATH_FORMATOS_ALMC = "D:/Proyectos/facturacion/efacturador3/sunat_archivos/sfs/ALMCERT/";
+//  public static final String CONSTANTE_PATH_FORMATOS_FTL = "D:/Proyectos/facturacion/efacturador3/sunat_archivos/sfs/VALI/";
+//  public static final String CONSTANTE_PATH_FORMATOS_PARS = "D:/Proyectos/facturacion/efacturador3/sunat_archivos/sfs/PARSE/";
+//  public static final String CONSTANTE_PATH_FORMATOS_ALMC = "D:/Proyectos/facturacion/efacturador3/sunat_archivos/sfs/ALMCERT/";
   
   public static final String FORMA_PAGO_CONTADO = "Contado";
   public static final String FORMA_PAGO_CREDITO = "Credito";

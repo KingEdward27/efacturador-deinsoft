@@ -145,6 +145,9 @@ public class FacturaElectronica implements Serializable {
     @Column(name = "ticket_operacion")
     private long ticketOperacion;
     
+    @Column(name = "ticket_sunat")
+    private String ticketSunat;
+    
 //    @Column(name = "nombre_Archivo")
 //    private String nombreArchivo;
 
@@ -669,6 +672,14 @@ public class FacturaElectronica implements Serializable {
 
     public void setTicketOperacion(long ticketOperacion) {
         this.ticketOperacion = ticketOperacion;
+    }
+
+    public String getTicketSunat() {
+        return ticketSunat;
+    }
+
+    public void setTicketSunat(String ticketSunat) {
+        this.ticketSunat = ticketSunat;
     }
 
     @Override

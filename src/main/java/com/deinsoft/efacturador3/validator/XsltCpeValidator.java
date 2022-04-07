@@ -31,6 +31,7 @@ import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.config.XsltCpePath;
 //import com.deinsoft.efacturador3.dao.ErrorDao;
 import com.deinsoft.efacturador3.exception.XsltException;
+import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.repository.ErrorRepository;
 import com.deinsoft.efacturador3.model.Error;
 import com.deinsoft.efacturador3.service.ComunesService;
@@ -41,20 +42,14 @@ public class XsltCpeValidator {
 
     private static final Logger log = LoggerFactory.getLogger(XsltCpeValidator.class);
 
-    private ComunesService comunesService;
-
-    private ErrorRepository errorDao;
-
     private XsltCpePath xsltCpePath;
     
-    public XsltCpeValidator(ComunesService comunesService, ErrorRepository errorDao,XsltCpePath xsltCpePath) {
-        this.comunesService = comunesService;
-        this.errorDao = errorDao;
+    public XsltCpeValidator(XsltCpePath xsltCpePath) {
         this.xsltCpePath = xsltCpePath;
     }
-    public String validarXMLYComprimir(String rootPath, FacturaElectronica facturaElectronica, String rutaEntrada, String nombreArchivo) throws XsltException {
+    public String validarXMLYComprimir(String rootPath, Empresa empresa,String tipo, String rutaEntrada, String nombreArchivo) throws XsltException {
         String XsltFullPath = "", retorno = "", outputHTML = "";
-        String tipoComprobante = facturaElectronica.getTipo();
+        String tipoComprobante = tipo;
         String XmlFullPath = rutaEntrada + nombreArchivo + ".xml";
 
         if ("RA".equals(tipoComprobante)) {
@@ -80,11 +75,11 @@ public class XsltCpeValidator {
         } else if ("09".equals(tipoComprobante)) {
             XsltFullPath = rootPath + "VALI/" + this.xsltCpePath.getGuia();
         }
-        outputHTML =  rootPath +"/"+facturaElectronica.getEmpresa().getNumdoc() + "/FIRMA/" + nombreArchivo + ".xml";
+        outputHTML =  rootPath +"/"+empresa.getNumdoc() + "/FIRMA/" + nombreArchivo + ".xml";
         try {
 //            transform(XmlFullPath, XsltFullPath, outputHTML);
 
-            String rutaZipSalida = rootPath +"/"+facturaElectronica.getEmpresa().getNumdoc() + "/ENVIO/" + nombreArchivo + ".zip";
+            String rutaZipSalida = rootPath +"/"+empresa.getNumdoc() + "/ENVIO/" + nombreArchivo + ".zip";
             OutputStream archivoZip = new FileOutputStream(rutaZipSalida);
             InputStream archivoXml = new FileInputStream(XmlFullPath);
             FacturadorUtil.comprimirArchivo(archivoZip,archivoXml, nombreArchivo + ".xml");
@@ -100,22 +95,23 @@ public class XsltCpeValidator {
             log.error("Error en Transform: " + mensaje);
             nroObtenido = FacturadorUtil.obtenerNumeroEnCadena(mensaje);
             log.error("Error en Transform Numero de Linea: " + nroObtenido);
-            if ("".equals(nroObtenido)) {
-                retorno = mensaje;
-            } else {
-                String codError = FacturadorUtil.completarCeros(new Integer(nroObtenido).toString(), "I", Integer.valueOf(4));
-                Error errorParam = new Error();
-                errorParam.setCod_cataerro(codError);
-                Error error = this.errorDao.consultarErrorById(errorParam);
-                if (error != null) {
-                    mensajeError = error.getNom_cataerro();
-                } else {
-                    mensajeError = mensaje;
-                }
-                log.debug("Error Obtenido Descripcion: " + mensajeError + mensaje);
-
-                retorno = nroObtenido + " - " + mensajeError + " Detalle: " + mensaje;
-            }
+            retorno = mensaje;
+//            if ("".equals(nroObtenido)) {
+//                retorno = mensaje;
+//            } else {
+//                String codError = FacturadorUtil.completarCeros(new Integer(nroObtenido).toString(), "I", Integer.valueOf(4));
+//                Error errorParam = new Error();
+//                errorParam.setCod_cataerro(codError);
+//                Error error = this.errorDao.consultarErrorById(errorParam);
+//                if (error != null) {
+//                    mensajeError = error.getNom_cataerro();
+//                } else {
+//                    mensajeError = mensaje;
+//                }
+//                log.debug("Error Obtenido Descripcion: " + mensajeError + mensaje);
+//
+//                retorno = nroObtenido + " - " + mensajeError + " Detalle: " + mensaje;
+//            }
         }
 
         if (!"".equals(retorno)) {
@@ -124,92 +120,6 @@ public class XsltCpeValidator {
         }
 
         return retorno;
-    }
-    public InputStream validarXMLYComprimir( String rootPath, FacturaElectronica facturaElectronica,InputStream file,String nomFile) throws XsltException {
-        String XsltFullPath = "", retorno = "", outputHTML = "";
-        InputStream is = null;
-        String tipoComprobante = facturaElectronica.getTipo();
-//        String XmlFullPath = rutaEntrada + nombreArchivo + ".xml";
-
-//        ConfigurationHolder config = ConfigurationHolder.getInstance();
-
-//        if ("RA".equals(tipoComprobante)) {
-//            XsltFullPath = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenAnulado();
-//
-//        } else 
-            if ("03".equals(tipoComprobante)) {
-            XsltFullPath = Constantes.CONSTANTE_PATH_FORMATOS_FTL + this.xsltCpePath.getBoleta();
-
-        } else if ("01".equals(tipoComprobante)) {
-            XsltFullPath = Constantes.CONSTANTE_PATH_FORMATOS_FTL + this.xsltCpePath.getFactura();
-//        } else if ("07".equals(tipoComprobante)) {
-//            XsltFullPath = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getNotaCredito();
-//        } else if ("08".equals(tipoComprobante)) {
-//            XsltFullPath = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getNotaDebito();
-//        } else if ("RC".equals(tipoComprobante)) {
-//            XsltFullPath = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenBoleta();
-//        } else if ("RR".equals(tipoComprobante)) {
-//            XsltFullPath = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenReversion();
-//        } else if ("20".equals(tipoComprobante)) {
-//            XsltFullPath = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getRetencion();
-//        } else if ("40".equals(tipoComprobante)) {
-//            XsltFullPath = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getPercepcion();
-//        } else if ("09".equals(tipoComprobante)) {
-//            XsltFullPath = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getGuia();
-        }
-//        outputHTML = this.comunesService.obtenerRutaTrabajo("FIRM") + nombreArchivo + ".xml";
-        try {
-//            transform(XmlFullPath, XsltFullPath, outputHTML);
-
-            String nomFileZip = nomFile + ".zip";
-//            OutputStream archivoZip = new FileOutputStream(nomFileZip);
-            InputStream archivoXml = file;//new FileInputStream(XmlFullPath);
-            
-            is = FacturadorUtil.comprimirArchivo(archivoXml, nomFile + ".xml");
-            File fileZip = new File(rootPath + facturaElectronica.getEmpresa().getNumdoc() + "/ENVIO/" + nomFile + ".zip");
-            try (FileOutputStream outputStream = new FileOutputStream(fileZip, false)) {
-                int read;
-                byte[] bytes = new byte[8192];
-                while ((read = is.read(bytes)) != -1) {
-                    outputStream.write(bytes, 0, read);
-                }
-            }
-            is.close();
-//            archivoXml.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            String mensaje = "";
-
-            String mensajeError = "", nroObtenido = "";
-            mensaje = e.getMessage();
-            log.error("Error en Transform: " + mensaje);
-            nroObtenido = FacturadorUtil.obtenerNumeroEnCadena(mensaje);
-            log.error("Error en Transform Numero de Linea: " + nroObtenido);
-            if ("".equals(nroObtenido)) {
-                retorno = mensaje;
-            } else {
-                String codError = FacturadorUtil.completarCeros(new Integer(nroObtenido).toString(), "I", Integer.valueOf(4));
-                Error errorParam = new Error();
-                errorParam.setCod_cataerro(codError);
-                Error error = this.errorDao.consultarErrorById(errorParam);
-                if (error != null) {
-                    mensajeError = error.getNom_cataerro();
-                } else {
-                    mensajeError = mensaje;
-                }
-                log.debug("Error Obtenido Descripcion: " + mensajeError + mensaje);
-
-                retorno = nroObtenido + " - " + mensajeError + " Detalle: " + mensaje;
-            }
-        }
-
-        if (!"".equals(retorno)) {
-            log.error(retorno);
-            throw new XsltException("Error al validar XML: " + retorno);
-        }
-        return is;
-//        return retorno;
     }
 
     public List<Exception> transform(String XmlFullPath, String XsltFullPath, String outputHTML) throws TransformerException {

@@ -1,8 +1,10 @@
 package com.deinsoft.efacturador3.service;
 
+import com.deinsoft.efacturador3.model.Empresa;
 import java.util.List;
 import java.util.Properties;
 import com.deinsoft.efacturador3.model.Parametro;
+import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
 
 public interface ComunesService {
   String obtenerRutaTrabajo(String paramString);
@@ -22,6 +24,7 @@ public interface ComunesService {
   Parametro obtenerParametro(Parametro paramParametro);
   
   Properties getProperties(String paramString);
+  public BillServiceModel enviarArchivoSunat(String wsUrl, String rootPath, String filename, Empresa Empresa);
 }
 
 

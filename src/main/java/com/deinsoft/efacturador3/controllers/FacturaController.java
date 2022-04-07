@@ -9,7 +9,6 @@ import com.deinsoft.efacturador3.bean.ComprobanteCab;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.config.AppConfig;
-import com.deinsoft.efacturador3.service.BandejaDocumentosService;
 import com.deinsoft.efacturador3.service.ComunesService;
 import java.util.HashMap;
 import java.util.List;
@@ -21,11 +20,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import com.deinsoft.efacturador3.security.JwtUtil;
 import com.deinsoft.efacturador3.service.EmpresaService;
 import com.deinsoft.efacturador3.service.FacturaElectronicaService;
 import com.deinsoft.efacturador3.service.GenerarDocumentosService;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
+import com.deinsoft.efacturador3.util.Constantes;
+import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -42,7 +43,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @RestController
 @RequestMapping("document")
-public class FacturaController {
+public class FacturaController extends BaseController {
 
     private static final Logger log = LoggerFactory.getLogger(FacturaController.class);
 
@@ -61,6 +62,10 @@ public class FacturaController {
     @Autowired
     AppConfig appConfig;
     
+    @GetMapping(value = "/documents")
+    public ResponseEntity<?> getDocuments(){
+        return ResponseEntity.status(HttpStatus.OK).body(facturaElectronicaService.getListFacturaElectronica());
+    }
     @PostMapping(value = "/send-document")
     public ResponseEntity<?> sendDocument(@Valid @RequestBody ComprobanteCab documento, 
             BindingResult bindingResult,HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException {
@@ -82,9 +87,7 @@ public class FacturaController {
                 result.put("message",mensajeValidacion);
                 return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(result);
             }
-            Map<String,Object> map = JwtUtil.getJwtLoggedUserData((HttpServletRequest)request);
-            String numDoc = (String)map.get("numDoc");
-            Empresa empresa = empresaService.findByNumdoc(numDoc);
+            Empresa empresa = getEmpresa(request);
             
             if(empresa == null || (empresa != null && empresa.getNumdoc() == null)){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("La empresa no tiene permiso de registrar documentos");
@@ -135,9 +138,9 @@ public class FacturaController {
             log.debug("FacturaController.enviarXML...Enviar Comprobante");
             log.debug("FacturaController.enviarXML...enviarComprobantePagoSunat Inicio");
             HashMap<String, Object> retorno = new HashMap<>();
-            HashMap<String, String> resultadoWebService = null;
+            HashMap<String, Object> resultadoWebService = null;
 
-            String nombreArchivo = appConfig.getRootPath() + "VALI/" + "constantes.properties";
+//            String nombreArchivo = appConfig.getRootPath() + "VALI/" + "constantes.properties";
 
             if ("02".equals(facturaElectronica.getIndSituacion()) || 
                 "10".equals(facturaElectronica.getIndSituacion()) || 
@@ -161,9 +164,16 @@ public class FacturaController {
                 log.debug("FacturaController.enviarXML...urlWebService: " + urlWebService);
                 log.debug("FacturaController.enviarXML...filename: " + filename);
                 log.debug("FacturaController.enviarXML...tipoComprobante: " + tipoComprobante);
-                resultadoWebService = this.generarDocumentosService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica);
-
-                retorno.put("resultadoWebService", resultadoWebService);
+                BillServiceModel res = this.comunesService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica.getEmpresa());
+                
+                facturaElectronica.setFechaEnvio(new Date());
+                facturaElectronica.setIndSituacion(res.getCode().toString().equals("0")?Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO:Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+                facturaElectronica.setObservacionEnvio(res.getDescription());
+                facturaElectronica.setObservacionEnvio(res.getDescription());
+                facturaElectronica.setTicketSunat(res.getTicket());
+                facturaElectronicaService.save(facturaElectronica);
+                return ResponseEntity.status(HttpStatus.CREATED).body(res);
+//                retorno.put("resultadoWebService", resultadoWebService);
             }else {
                 mensajeValidacion = "El documento se encuentra en una situación incrrecta o ya fue enviado";
                 resultadoProceso = "-1";
@@ -171,29 +181,29 @@ public class FacturaController {
 
             log.debug("FacturaController.enviarXML...enviarComprobantePagoSunat Final");
             
-            if (retorno != null) {
-
-                resultadoWebService = (HashMap<String, String>) retorno.get("resultadoWebService");
-
-                String estadoRetorno = (resultadoWebService.get("situacion") != null) ? (String) resultadoWebService.get("situacion") : "";
-
-                String mensaje = (resultadoWebService.get("mensaje") != null) ? (String) resultadoWebService.get("mensaje") : "-";
-                if (!"".equals(estadoRetorno)) {
-                    if (!"11".equals(estadoRetorno)
-                            && !"12".equals(estadoRetorno)) {
-                        facturaElectronica.setFechaEnvio(new Date());
-                        facturaElectronica.setIndSituacion(estadoRetorno);
-                        facturaElectronica.setObservacionEnvio(mensaje);
-                        facturaElectronicaService.save(facturaElectronica);
-                    } else {
-                        facturaElectronica.setIndSituacion(estadoRetorno);
-                        facturaElectronica.setObservacionEnvio(mensaje);
-                        facturaElectronicaService.save(facturaElectronica);
-                    }
-                }
-                mensajeValidacion = mensaje;
-                resultadoProceso = estadoRetorno;
-            }
+//            if (retorno != null) {
+//
+//                resultadoWebService = (HashMap<String, Object>) retorno.get("resultadoWebService");
+//
+//                String estadoRetorno = (resultadoWebService.get("situacion") != null) ? (String) resultadoWebService.get("situacion") : "";
+//
+//                String mensaje = (resultadoWebService.get("mensaje") != null) ? (String) resultadoWebService.get("mensaje") : "-";
+//                if (!"".equals(estadoRetorno)) {
+//                    if (!"11".equals(estadoRetorno)
+//                            && !"12".equals(estadoRetorno)) {
+//                        facturaElectronica.setFechaEnvio(new Date());
+//                        facturaElectronica.setIndSituacion(estadoRetorno);
+//                        facturaElectronica.setObservacionEnvio(mensaje);
+//                        facturaElectronicaService.save(facturaElectronica);
+//                    } else {
+//                        facturaElectronica.setIndSituacion(estadoRetorno);
+//                        facturaElectronica.setObservacionEnvio(mensaje);
+//                        facturaElectronicaService.save(facturaElectronica);
+//                    }
+//                }
+//                mensajeValidacion = mensaje;
+//                resultadoProceso = estadoRetorno;
+//            }
         } catch (Exception e) {
             String mensaje = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
             e.printStackTrace();
@@ -211,13 +221,7 @@ public class FacturaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
     }
 
-    protected Map<String, Object> validar(BindingResult result) {
-        Map<String, Object> errores = new HashMap<>();
-        result.getFieldErrors().forEach(err -> {
-            errores.put(err.getField(), " El campo " + err.getField() + " " + err.getDefaultMessage());
-        });
-        return errores;
-    }
+    
 
     
 }

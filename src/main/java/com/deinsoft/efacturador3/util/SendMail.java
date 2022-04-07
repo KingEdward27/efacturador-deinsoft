@@ -6,12 +6,9 @@
 package com.deinsoft.efacturador3.util;
 
 import com.deinsoft.efacturador3.bean.MailBean;
-import com.deinsoft.efacturador3.service.impl.BandejaDocumentosServiceImpl;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.mail.Message;

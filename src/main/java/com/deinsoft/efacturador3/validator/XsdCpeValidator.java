@@ -34,207 +34,106 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 //import com.deinsoft.efacturador3.service.ResourceResolver;
 
-public class XsdCpeValidator
-{
-  private static final Logger log = LoggerFactory.getLogger(XsdCpeValidator.class);
+public class XsdCpeValidator {
 
+    private static final Logger log = LoggerFactory.getLogger(XsdCpeValidator.class);
 
-  
-  private ComunesService comunesService;
-  
-  private XsltCpePath xsltCpePath;
-  
-  public XsdCpeValidator(ComunesService comunesService, ErrorRepository errorDao,XsltCpePath xsltCpePath) {
-    this.comunesService = comunesService;
-    this.xsltCpePath = xsltCpePath;
-  }
+    private XsltCpePath xsltCpePath;
 
-  public void validarSchemaXML(String rootPath, FacturaElectronica facturaElectronica, String nombreArchivo) throws XsdException {
-    log.debug("validarSchemaXML...Iniciando Validacion de Schema");
-    
-//    ConfigurationHolder config = ConfigurationHolder.getInstance();
-    String tipoComprobante = facturaElectronica.getTipo();
-    
-    try {
-      String schemaValidador = "";
-      String validationBasePath = rootPath + "VALI/";
-      if ("01".equals(tipoComprobante) || "03"
-        .equals(tipoComprobante)) {
-          //rootPath + "/VALI/" +
-        schemaValidador = validationBasePath +  xsltCpePath.getFacturaXsd();
-      }
-      if ("07".equals(tipoComprobante)) {
-        schemaValidador = validationBasePath + xsltCpePath.getNotaCreditoXsd();
-      }
-      if ("08".equals(tipoComprobante)) {
-        schemaValidador = validationBasePath + xsltCpePath.getNotaDebitoXsd();
-      }
-      if ("RA".equals(tipoComprobante)) {
-        schemaValidador = validationBasePath + xsltCpePath.getResumenAnuladoXsd();
-      }
-      if ("RC".equals(tipoComprobante)) {
-        schemaValidador = validationBasePath + xsltCpePath.getResumenBoletaXsd();
-      }
-      if ("RR".equals(tipoComprobante)) {
-        schemaValidador = validationBasePath + xsltCpePath.getResumenReversionXsd();
-      }
-      if ("20".equals(tipoComprobante)) {
-        schemaValidador = validationBasePath + xsltCpePath.getRetencionXsd();
-      }
-      if ("40".equals(tipoComprobante)) {
-        schemaValidador = validationBasePath + xsltCpePath.getPercepcionXsd();
-      }
-      if ("09".equals(tipoComprobante)) {
-        schemaValidador = validationBasePath + xsltCpePath.getGuiaXsd();
-      }
-      log.debug("validarSchemaXML...Asignando schemaValidador (" + schemaValidador + ")");
-      log.debug("validarSchemaXML...Aplicando builderFactory");
-      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-      builderFactory.setNamespaceAware(true);
-      
-      log.debug("validarSchemaXML...Parseando DocumentBuilder");
-      DocumentBuilder parser = builderFactory.newDocumentBuilder();
-      
-      File file = new File(nombreArchivo);
-      InputStream inputStream = new FileInputStream(file);
-      Reader reader = new InputStreamReader(inputStream, "ISO-8859-1");
-      log.debug("validarSchemaXML...Configurando reader (" + reader + ")");
-      Document document = parser.parse(new InputSource(reader));
-      
-      log.debug("validarSchemaXML...Configurando ResourceResolver document (" + document + ")");
-      
-      SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
-      
-      factory.setResourceResolver((LSResourceResolver)new ResourceResolver(validationBasePath + "commons/xsd/2.1/"));
-      
-      log.debug("validarSchemaXML...Configurando SchemaFile");
-      StreamSource schemaFile = new StreamSource(new File(schemaValidador));
-      
-      Schema schema = factory.newSchema(schemaFile);
-      
-      Validator validator = schema.newValidator();
-      validator.validate(new DOMSource(document));
-      log.debug("validarSchemaXML...Configurando Validator");
+    public XsdCpeValidator(XsltCpePath xsltCpePath) {
+        this.xsltCpePath = xsltCpePath;
     }
-    catch (ParserConfigurationException e) {
-      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
-          .getMessage() + " - Causa: " + e.getCause(), e);
-    }
-    catch (FileNotFoundException e) {
-      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
-          .getMessage() + " - Causa: " + e.getCause(), e);
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
-          .getMessage() + " - Causa: " + e.getCause(), e);
-    } catch (SAXException e) {
-      
-      if (e.getMessage().contains("cvc-complex-type")) {
-        throw new XsdException("No se puede leer (parsear) el archivo XML: " + e
-            .getMessage());
-      }
-      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
-          .getMessage() + " - Causa: " + e.getCause(), e);
 
-    
+    public void validarSchemaXML(String rootPath, String tipoDocumento, String nombreArchivo) throws XsdException {
+        log.debug("validarSchemaXML...Iniciando Validacion de Schema");
+
+        String tipoComprobante = tipoDocumento;
+
+        try {
+            String schemaValidador = "", ubl = "2.1";
+            String validationBasePath = rootPath + "VALI/";
+            if ("01".equals(tipoComprobante) || "03"
+                    .equals(tipoComprobante)) {
+                //rootPath + "/VALI/" +
+                schemaValidador = validationBasePath + xsltCpePath.getFacturaXsd();
+            }
+            if ("07".equals(tipoComprobante)) {
+                schemaValidador = validationBasePath + xsltCpePath.getNotaCreditoXsd();
+            }
+            if ("08".equals(tipoComprobante)) {
+                schemaValidador = validationBasePath + xsltCpePath.getNotaDebitoXsd();
+            }
+            if ("RA".equals(tipoComprobante)) {
+                ubl = "2.0";
+                schemaValidador = validationBasePath + xsltCpePath.getResumenAnuladoXsd();
+            }
+            if ("RC".equals(tipoComprobante)) {
+                ubl = "2.0";
+                schemaValidador = validationBasePath + xsltCpePath.getResumenBoletaXsd();
+            }
+            if ("RR".equals(tipoComprobante)) {
+                schemaValidador = validationBasePath + xsltCpePath.getResumenReversionXsd();
+            }
+            if ("20".equals(tipoComprobante)) {
+                schemaValidador = validationBasePath + xsltCpePath.getRetencionXsd();
+            }
+            if ("40".equals(tipoComprobante)) {
+                schemaValidador = validationBasePath + xsltCpePath.getPercepcionXsd();
+            }
+            if ("09".equals(tipoComprobante)) {
+                schemaValidador = validationBasePath + xsltCpePath.getGuiaXsd();
+            }
+            log.debug("validarSchemaXML...Asignando schemaValidador (" + schemaValidador + ")");
+            log.debug("validarSchemaXML...Aplicando builderFactory");
+            DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+            builderFactory.setNamespaceAware(true);
+
+            log.debug("validarSchemaXML...Parseando DocumentBuilder");
+            DocumentBuilder parser = builderFactory.newDocumentBuilder();
+
+            File file = new File(nombreArchivo);
+            InputStream inputStream = new FileInputStream(file);
+            Reader reader = new InputStreamReader(inputStream, "ISO-8859-1");
+            log.debug("validarSchemaXML...Configurando reader (" + reader + ")");
+            Document document = parser.parse(new InputSource(reader));
+
+            log.debug("validarSchemaXML...Configurando ResourceResolver document (" + document + ")");
+
+            SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+
+            factory.setResourceResolver((LSResourceResolver) new ResourceResolver(validationBasePath + "commons/xsd/" + ubl + "/"));
+
+            log.debug("validarSchemaXML...Configurando SchemaFile");
+            StreamSource schemaFile = new StreamSource(new File(schemaValidador));
+
+            Schema schema = factory.newSchema(schemaFile);
+
+            Validator validator = schema.newValidator();
+            validator.validate(new DOMSource(document));
+            log.debug("validarSchemaXML...Configurando Validator");
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
+                    .getMessage() + " - Causa: " + e.getCause(), e);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
+                    .getMessage() + " - Causa: " + e.getCause(), e);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
+                    .getMessage() + " - Causa: " + e.getCause(), e);
+        } catch (SAXException e) {
+
+            if (e.getMessage().contains("cvc-complex-type")) {
+                throw new XsdException("No se puede leer (parsear) el archivo XML: " + e
+                        .getMessage());
+            }
+            throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
+                    .getMessage() + " - Causa: " + e.getCause(), e);
+
+        } catch (IOException e) {
+            throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
+                    .getMessage() + " - Causa: " + e.getCause(), e);
+        }
+
+        log.debug("Finalizando Validacion de Schema");
     }
-    catch (IOException e) {
-      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
-          .getMessage() + " - Causa: " + e.getCause(), e);
-    } 
-    
-    log.debug("Finalizando Validacion de Schema");
-  }
-//  public void validarSchemaXML(String tipoComprobante, InputStream file) throws XsdException {
-//    log.debug("validarSchemaXML...Iniciando Validacion de Schema");
-//    
-//    ConfigurationHolder config = ConfigurationHolder.getInstance();
-//    
-//    
-//    try {
-//      String schemaValidador = "";
-//      
-//      if ("01".equals(tipoComprobante) || "03"
-//        .equals(tipoComprobante)) {
-//        schemaValidador = Constantes.CONSTANTE_PATH_FORMATOS_FTL + xsltCpePath.getFacturaXsd();
-//      }
-////      if ("07".equals(tipoComprobante)) {
-////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getNotaCreditoXsd();
-////      }
-////      if ("08".equals(tipoComprobante)) {
-////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getNotaDebitoXsd();
-////      }
-////      if ("RA".equals(tipoComprobante)) {
-////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenAnuladoXsd();
-////      }
-////      if ("RC".equals(tipoComprobante)) {
-////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenBoletaXsd();
-////      }
-////      if ("RR".equals(tipoComprobante)) {
-////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getResumenReversionXsd();
-////      }
-////      if ("20".equals(tipoComprobante)) {
-////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getRetencionXsd();
-////      }
-////      if ("40".equals(tipoComprobante)) {
-////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getPercepcionXsd();
-////      }
-////      if ("09".equals(tipoComprobante)) {
-////        schemaValidador = this.comunesService.obtenerRutaTrabajo("VALI") + config.getXsltCpePath().getGuiaXsd();
-////      }
-//      log.debug("validarSchemaXML...Asignando schemaValidador (" + schemaValidador + ")");
-//      log.debug("validarSchemaXML...Aplicando builderFactory");
-//      DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-//      builderFactory.setNamespaceAware(true);
-//      
-//      log.debug("validarSchemaXML...Parseando DocumentBuilder");
-//      DocumentBuilder parser = builderFactory.newDocumentBuilder();
-//      
-////      File file = new File(nombreArchivo);
-//      InputStream inputStream = file;
-//      Reader reader = new InputStreamReader(inputStream, "ISO-8859-1");
-//      log.debug("validarSchemaXML...Configurando reader (" + reader + ")");
-//      Document document = parser.parse(new InputSource(reader));
-//      
-//      log.debug("validarSchemaXML...Configurando ResourceResolver document (" + document + ")");
-//      
-//      SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
-//      factory.setResourceResolver((LSResourceResolver)new ResourceResolver());
-//      
-//      log.debug("validarSchemaXML...Configurando SchemaFile");
-//      StreamSource schemaFile = new StreamSource(new File(schemaValidador));
-//      
-//      Schema schema = factory.newSchema(schemaFile);
-//      
-//      Validator validator = schema.newValidator();
-//      validator.validate(new DOMSource(document));
-//      log.debug("validarSchemaXML...Configurando Validator");
-//    }
-//    catch (ParserConfigurationException e) {
-//      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
-//          .getMessage() + " - Causa: " + e.getCause(), e);
-//    }
-//    catch (FileNotFoundException e) {
-//      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
-//          .getMessage() + " - Causa: " + e.getCause(), e);
-//    } catch (UnsupportedEncodingException e) {
-//      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
-//          .getMessage() + " - Causa: " + e.getCause(), e);
-//    } catch (SAXException e) {
-//      
-//      if (e.getMessage().contains("cvc-complex-type")) {
-//        throw new XsdException("No se puede leer (parsear) el archivo XML: " + e
-//            .getMessage());
-//      }
-//      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
-//          .getMessage() + " - Causa: " + e.getCause(), e);
-//
-//    
-//    }
-//    catch (IOException e) {
-//      throw new RuntimeException("No se puede leer (parsear) el archivo XML: " + e
-//          .getMessage() + " - Causa: " + e.getCause(), e);
-//    } 
-//    
-//    log.debug("Finalizando Validacion de Schema");
-//  }
 }
