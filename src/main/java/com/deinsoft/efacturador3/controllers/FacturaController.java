@@ -27,6 +27,7 @@ import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
 import com.deinsoft.efacturador3.util.Constantes;
 import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -166,7 +167,7 @@ public class FacturaController extends BaseController {
                 log.debug("FacturaController.enviarXML...tipoComprobante: " + tipoComprobante);
                 BillServiceModel res = this.comunesService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica.getEmpresa());
                 
-                facturaElectronica.setFechaEnvio(new Date());
+                facturaElectronica.setFechaEnvio(LocalDateTime.now());
                 facturaElectronica.setIndSituacion(res.getCode().toString().equals("0")?Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO:Constantes.CONSTANTE_SITUACION_CON_ERRORES);
                 facturaElectronica.setObservacionEnvio(res.getDescription());
                 facturaElectronica.setObservacionEnvio(res.getDescription());
@@ -208,7 +209,7 @@ public class FacturaController extends BaseController {
             String mensaje = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
             e.printStackTrace();
             log.error(mensaje);
-            facturaElectronica.setFechaEnvio(new Date());
+            facturaElectronica.setFechaEnvio(LocalDateTime.now());
             facturaElectronica.setIndSituacion("06");
             facturaElectronica.setObservacionEnvio(mensaje);
             facturaElectronicaService.save(facturaElectronica);

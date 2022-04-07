@@ -8,6 +8,8 @@ package com.deinsoft.efacturador3.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -48,7 +50,7 @@ public class FacturaElectronica implements Serializable {
     private Empresa empresa;
 
     @Column(name = "fecha_emision")
-    private Date fechaEmision;
+    private LocalDate fechaEmision;
 
     private String tipo;
 
@@ -120,9 +122,9 @@ public class FacturaElectronica implements Serializable {
     private String indSituacion;
     
     @Column(name = "fecha_envio")
-    private Date fechaEnvio;
+    private LocalDateTime fechaEnvio;
     
-    private Date FechaGenXml;
+    private LocalDateTime FechaGenXml;
     
     @Column(name = "observacion_envio")
     private String observacionEnvio;
@@ -179,7 +181,8 @@ public class FacturaElectronica implements Serializable {
         this.id = id;
     }
 
-    public FacturaElectronica(Long id, Date fechaEmision, String tipo, String serie, String numero, String fechaVencimiento, String tipoOperacion, String clienteTipo, String clienteDocumento, String clienteNombre, String clienteDireccion, String clienteEmail, String clienteTelefono, String vendedorNombre, String observaciones, String placaVehiculo, String ordenCompra, String guiaRemision, String descuentoGlobalPorcentaje, String moneda, String notaTipo, String notaMotivo, String notaReferenciaTipo, String notaReferenciaSerie, String notaReferenciaNumero, String incluirPdf, String incluirXml, BigDecimal sumatoriaIGV, BigDecimal sumatoriaISC, BigDecimal sumatoriaOtrosTributos, BigDecimal sumatoriaOtrosCargos, BigDecimal totalValorVentasGravadas, BigDecimal totalValorVentasInafectas, BigDecimal totalValorVentasExoneradas, BigDecimal descuentosGlobales, BigDecimal importeTotal, String leyenda1, String leyenda2, String leyenda3, String xmlHash, BigDecimal totalValorVenta, String customizationId, String indSituacion, List<FacturaElectronicaDet> listFacturaElectronicaDet) {
+    public FacturaElectronica(Long id, LocalDate fechaEmision, String tipo, String serie, String numero,
+            String fechaVencimiento, String tipoOperacion, String clienteTipo, String clienteDocumento, String clienteNombre, String clienteDireccion, String clienteEmail, String clienteTelefono, String vendedorNombre, String observaciones, String placaVehiculo, String ordenCompra, String guiaRemision, String descuentoGlobalPorcentaje, String moneda, String notaTipo, String notaMotivo, String notaReferenciaTipo, String notaReferenciaSerie, String notaReferenciaNumero, String incluirPdf, String incluirXml, BigDecimal sumatoriaIGV, BigDecimal sumatoriaISC, BigDecimal sumatoriaOtrosTributos, BigDecimal sumatoriaOtrosCargos, BigDecimal totalValorVentasGravadas, BigDecimal totalValorVentasInafectas, BigDecimal totalValorVentasExoneradas, BigDecimal descuentosGlobales, BigDecimal importeTotal, String leyenda1, String leyenda2, String leyenda3, String xmlHash, BigDecimal totalValorVenta, String customizationId, String indSituacion, List<FacturaElectronicaDet> listFacturaElectronicaDet) {
         this.id = id;
         this.fechaEmision = fechaEmision;
         this.tipo = tipo;
@@ -242,11 +245,11 @@ public class FacturaElectronica implements Serializable {
         this.empresa = empresa;
     }
 
-    public Date getFechaEmision() {
+    public LocalDate getFechaEmision() {
         return fechaEmision;
     }
 
-    public void setFechaEmision(Date fechaEmision) {
+    public void setFechaEmision(LocalDate fechaEmision) {
         this.fechaEmision = fechaEmision;
     }
 
@@ -578,11 +581,11 @@ public class FacturaElectronica implements Serializable {
         this.indSituacion = indSituacion;
     }
 
-    public Date getFechaGenXml() {
+    public LocalDateTime getFechaGenXml() {
         return FechaGenXml;
     }
 
-    public void setFechaGenXml(Date FechaGenXml) {
+    public void setFechaGenXml(LocalDateTime FechaGenXml) {
         this.FechaGenXml = FechaGenXml;
     }
 
@@ -594,11 +597,11 @@ public class FacturaElectronica implements Serializable {
         this.observacionEnvio = observacionEnvio;
     }
 
-    public Date getFechaEnvio() {
+    public LocalDateTime getFechaEnvio() {
         return fechaEnvio;
     }
 
-    public void setFechaEnvio(Date fechaEnvio) {
+    public void setFechaEnvio(LocalDateTime fechaEnvio) {
         this.fechaEnvio = fechaEnvio;
     }
 

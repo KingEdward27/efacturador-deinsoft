@@ -40,6 +40,8 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -191,7 +193,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                     }
 
                 }
-                facturaElectronicaResult.setFechaGenXml(new Date());
+                facturaElectronicaResult.setFechaGenXml(LocalDateTime.now());
                 facturaElectronicaResult.setIndSituacion(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
 
                 facturaElectronicaResult.setTicketOperacion(ticket);
@@ -235,7 +237,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getCode());
                 log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getDescription());
                 log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getTicket());
-                facturaElectronica.setFechaEnvio(new Date());
+                facturaElectronica.setFechaEnvio(LocalDateTime.now());
                 facturaElectronica.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
                 facturaElectronica.setObservacionEnvio(res.getDescription());
                 facturaElectronica.setTicketSunat(res.getTicket());
@@ -262,7 +264,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 String mensaje = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
                 e.printStackTrace();
                 log.error(mensaje);
-                facturaElectronica.setFechaEnvio(new Date());
+                facturaElectronica.setFechaEnvio( LocalDateTime.now());
                 facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
                 facturaElectronica.setObservacionEnvio(mensaje);
                 save(facturaElectronica);
@@ -304,7 +306,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         comprobante.setTipoOperacion(documento.getTipo_operacion());
         Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(documento.getFecha_emision());
         //	java.sql.Date dateSql = new java.sql.Date(date1.getTime());
-        comprobante.setFechaEmision(date1);
+        comprobante.setFechaEmision(LocalDate.parse(documento.getFecha_emision()));
         comprobante.setSerie(documento.getSerie());
         comprobante.setNumero(String.format("%08d", Integer.parseInt(documento.getNumero())));
         comprobante.setFechaVencimiento(documento.getFecha_vencimiento());
