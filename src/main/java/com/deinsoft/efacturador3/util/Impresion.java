@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +80,7 @@ public class Impresion {
             parametros.put("ruc_dniCliente", comprobante.getClienteDocumento());
             parametros.put("nombreCliente", comprobante.getClienteNombre());
             parametros.put("direccionCliente", comprobante.getClienteDireccion());
-            parametros.put("pFechaEmision", new SimpleDateFormat("dd/MM/yyyy").format(comprobante.getFechaEmision()));
+            parametros.put("pFechaEmision", comprobante.getFechaEmision().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             parametros.put("fechaVencimiento", comprobante.getFechaVencimiento());
             parametros.put("moneda", descripcionMoneda);
 

@@ -42,6 +42,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -193,7 +194,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                     }
 
                 }
-                facturaElectronicaResult.setFechaGenXml(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
+                LocalDateTime current = LocalDateTime.now().plusHours(appConfig.getDiferenceHours());
+                
+                facturaElectronicaResult.setFechaGenXml(current);
                 facturaElectronicaResult.setIndSituacion(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
 
                 facturaElectronicaResult.setTicketOperacion(ticket);
@@ -306,7 +309,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         comprobante.setTipoOperacion(documento.getTipo_operacion());
         Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(documento.getFecha_emision());
         //	java.sql.Date dateSql = new java.sql.Date(date1.getTime());
-        comprobante.setFechaEmision(LocalDate.parse(documento.getFecha_emision()));
+        comprobante.setFechaEmision(LocalDate.parse(documento.getFecha_emision(),DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         comprobante.setSerie(documento.getSerie());
         comprobante.setNumero(String.format("%08d", Integer.parseInt(documento.getNumero())));
         comprobante.setFechaVencimiento(documento.getFecha_vencimiento());
