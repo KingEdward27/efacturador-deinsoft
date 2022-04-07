@@ -193,7 +193,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                     }
 
                 }
-                facturaElectronicaResult.setFechaGenXml(LocalDateTime.now());
+                facturaElectronicaResult.setFechaGenXml(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
                 facturaElectronicaResult.setIndSituacion(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
 
                 facturaElectronicaResult.setTicketOperacion(ticket);
@@ -237,7 +237,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getCode());
                 log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getDescription());
                 log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getTicket());
-                facturaElectronica.setFechaEnvio(LocalDateTime.now());
+                facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
                 facturaElectronica.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
                 facturaElectronica.setObservacionEnvio(res.getDescription());
                 facturaElectronica.setTicketSunat(res.getTicket());
@@ -264,7 +264,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 String mensaje = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
                 e.printStackTrace();
                 log.error(mensaje);
-                facturaElectronica.setFechaEnvio( LocalDateTime.now());
+                facturaElectronica.setFechaEnvio( LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
                 facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
                 facturaElectronica.setObservacionEnvio(mensaje);
                 save(facturaElectronica);

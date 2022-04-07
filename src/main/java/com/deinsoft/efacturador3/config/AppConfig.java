@@ -40,6 +40,10 @@ public class AppConfig
   private String urlServiceCDP;
   
   
+  @NotEmpty
+  @Value("${app.timeZone.diferenceHours}")
+  private long diferenceHours;
+  
   @JsonProperty
   public String getRootPath() {
     return this.rootPath;
@@ -96,6 +100,14 @@ public class AppConfig
 
     public void setUrlServiceCDP(String urlServiceCDP) {
         this.urlServiceCDP = urlServiceCDP;
+    }
+
+    public long getDiferenceHours() {
+        return diferenceHours;
+    }
+
+    public void setDiferenceHours(long diferenceHours) {
+        this.diferenceHours = diferenceHours;
     }
   
   
