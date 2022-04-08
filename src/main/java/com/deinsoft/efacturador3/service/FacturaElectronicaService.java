@@ -19,13 +19,24 @@ import java.util.Map;
  * @author EDWARD-PC
  */
 public interface FacturaElectronicaService {
+
     public FacturaElectronica getById(long id);
+
     public List<FacturaElectronica> getListFacturaElectronica();
+
     FacturaElectronica save(FacturaElectronica facturaElectronica);
+
     public List<FacturaElectronica> getBySerieAndNumeroAndEmpresaId(FacturaElectronica facturaElectronica);
+
     public List<FacturaElectronica> getByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(FacturaElectronica facturaElectronica);
+
     public FacturaElectronica toFacturaModel(ComprobanteCab documento) throws TransferirArchivoException, ParseException;
+
     public Map<String, Object> generarComprobantePagoSunat(String rootpath, FacturaElectronica documento) throws TransferirArchivoException;
+    public Map<String, Object> generarComprobantePagoSunat(String rootpath, long comprobanteId) throws TransferirArchivoException;
     public String validarComprobante(ComprobanteCab documento);
+
+    public Map<String, Object> sendToSUNAT(long comprobante_id);
+
     public void sendToSUNAT();
 }

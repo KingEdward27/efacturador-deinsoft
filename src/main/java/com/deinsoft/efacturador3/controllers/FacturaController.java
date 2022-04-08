@@ -54,11 +54,11 @@ public class FacturaController extends BaseController {
     @Autowired
     EmpresaService empresaService;
 
-    @Autowired
-    private ComunesService comunesService;
-    
-    @Autowired
-    private GenerarDocumentosService generarDocumentosService;
+//    @Autowired
+//    private ComunesService comunesService;
+//    
+//    @Autowired
+//    private GenerarDocumentosService generarDocumentosService;
     
     @Autowired
     AppConfig appConfig;
@@ -70,7 +70,6 @@ public class FacturaController extends BaseController {
     @PostMapping(value = "/send-document")
     public ResponseEntity<?> sendDocument(@Valid @RequestBody ComprobanteCab documento, 
             BindingResult bindingResult,HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException {
-//        FacturaElectronica facturaElectronicaResult = null;
         Map<String,Object> result = null;
         try {
             if (bindingResult.hasErrors()) {
@@ -113,8 +112,6 @@ public class FacturaController extends BaseController {
                 }
 
             }
-//            facturaElectronicaResult = facturaElectronicaService.save(comprobante);
-
             result = this.facturaElectronicaService.generarComprobantePagoSunat(appConfig.getRootPath(), comprobante);
             
         } catch (Exception e) {
@@ -127,98 +124,35 @@ public class FacturaController extends BaseController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
+    @PostMapping(value = "/gen-xml")
+    public ResponseEntity<?> genXmlFromExistingData(@RequestParam(name = "id") String id, 
+            BindingResult bindingResult,HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException {
+        Map<String,Object> result = null;
+        try {
+            result = this.facturaElectronicaService.generarComprobantePagoSunat(appConfig.getRootPath(), new Long(id));
+        } catch (Exception e) {
+            e.printStackTrace();
+            result  = new HashMap<>();
+            result.put("code","003");
+            result.put("message",e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        }
 
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
     @PostMapping(value = "/send-sunat")
     public ResponseEntity<?> enviarXML(@RequestParam(name = "id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception {
         log.debug("FacturaController.send-sunat...Iniciando el procesamiento");
-        HashMap<String, Object> resultado = new HashMap<>();
-        String mensajeValidacion = "", resultadoProceso = "EXITO";
-        log.debug("FacturaController.enviarXML...Consultar Comprobante");
-        FacturaElectronica facturaElectronica = facturaElectronicaService.getById(Long.parseLong(id));
+        Map<String, Object> resultado = null;
         try {
-            log.debug("FacturaController.enviarXML...Enviar Comprobante");
-            log.debug("FacturaController.enviarXML...enviarComprobantePagoSunat Inicio");
-            HashMap<String, Object> retorno = new HashMap<>();
-            HashMap<String, Object> resultadoWebService = null;
-
-//            String nombreArchivo = appConfig.getRootPath() + "VALI/" + "constantes.properties";
-
-            if ("02".equals(facturaElectronica.getIndSituacion()) || 
-                "10".equals(facturaElectronica.getIndSituacion()) || 
-                "06".equals(facturaElectronica.getIndSituacion())) {
-
-//                Properties prop = this.comunesService.getProperties(nombreArchivo);
-//
-//                String urlWebService = (prop.getProperty("RUTA_SERV_CDP") != null) ? prop.getProperty("RUTA_SERV_CDP") : "XX";
-                String urlWebService = (appConfig.getUrlServiceCDP() != null) ? appConfig.getUrlServiceCDP() : "XX";
-                String tipoComprobante = facturaElectronica.getTipo();
-                String filename = facturaElectronica.getEmpresa().getNumdoc()
-                        + "-" + String.format("%02d", Integer.parseInt(facturaElectronica.getTipo()))
-                        + "-" + facturaElectronica.getSerie()
-                        + "-" + String.format("%08d", Integer.parseInt(facturaElectronica.getNumero()));
-                log.debug("FacturaController.enviarXML...Validando Conexión a Internet");
-                String[] rutaUrl = urlWebService.split("\\/");
-                log.debug("FacturaController.enviarXML...tokens: " + rutaUrl[2]);
-                this.comunesService.validarConexion(rutaUrl[2], 443);
-
-                log.debug("FacturaController.enviarXML...Enviando Documento");
-                log.debug("FacturaController.enviarXML...urlWebService: " + urlWebService);
-                log.debug("FacturaController.enviarXML...filename: " + filename);
-                log.debug("FacturaController.enviarXML...tipoComprobante: " + tipoComprobante);
-                BillServiceModel res = this.comunesService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica.getEmpresa());
-                
-                facturaElectronica.setFechaEnvio(LocalDateTime.now());
-                facturaElectronica.setIndSituacion(res.getCode().toString().equals("0")?Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO:Constantes.CONSTANTE_SITUACION_CON_ERRORES);
-                facturaElectronica.setObservacionEnvio(res.getDescription());
-                facturaElectronica.setObservacionEnvio(res.getDescription());
-                facturaElectronica.setTicketSunat(res.getTicket());
-                facturaElectronicaService.save(facturaElectronica);
-                return ResponseEntity.status(HttpStatus.CREATED).body(res);
-//                retorno.put("resultadoWebService", resultadoWebService);
-            }else {
-                mensajeValidacion = "El documento se encuentra en una situación incrrecta o ya fue enviado";
-                resultadoProceso = "-1";
-            }
-
-            log.debug("FacturaController.enviarXML...enviarComprobantePagoSunat Final");
-            
-//            if (retorno != null) {
-//
-//                resultadoWebService = (HashMap<String, Object>) retorno.get("resultadoWebService");
-//
-//                String estadoRetorno = (resultadoWebService.get("situacion") != null) ? (String) resultadoWebService.get("situacion") : "";
-//
-//                String mensaje = (resultadoWebService.get("mensaje") != null) ? (String) resultadoWebService.get("mensaje") : "-";
-//                if (!"".equals(estadoRetorno)) {
-//                    if (!"11".equals(estadoRetorno)
-//                            && !"12".equals(estadoRetorno)) {
-//                        facturaElectronica.setFechaEnvio(new Date());
-//                        facturaElectronica.setIndSituacion(estadoRetorno);
-//                        facturaElectronica.setObservacionEnvio(mensaje);
-//                        facturaElectronicaService.save(facturaElectronica);
-//                    } else {
-//                        facturaElectronica.setIndSituacion(estadoRetorno);
-//                        facturaElectronica.setObservacionEnvio(mensaje);
-//                        facturaElectronicaService.save(facturaElectronica);
-//                    }
-//                }
-//                mensajeValidacion = mensaje;
-//                resultadoProceso = estadoRetorno;
-//            }
-        } catch (Exception e) {
-            String mensaje = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
+            resultado =  facturaElectronicaService.sendToSUNAT(new Long(id));
+        }catch (Exception e) {
             e.printStackTrace();
-            log.error(mensaje);
-            facturaElectronica.setFechaEnvio(LocalDateTime.now());
-            facturaElectronica.setIndSituacion("06");
-            facturaElectronica.setObservacionEnvio(mensaje);
-            facturaElectronicaService.save(facturaElectronica);
+            resultado  = new HashMap<>();
+            resultado.put("code","003");
+            resultado.put("message",e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultado);
         }
-
-        resultado.put("mensaje", mensajeValidacion);
-        resultado.put("codigo", resultadoProceso);
-        log.debug("SoftwareFacturadorController.enviarXML...Terminando el procesamiento");
-
         return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
     }
 
