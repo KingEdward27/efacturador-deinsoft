@@ -177,7 +177,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     @Override
     public Map<String, Object> sendToSUNAT(long comprobanteId) {
         log.debug("FacturaController.enviarXML...Consultar Comprobante");
-        FacturaElectronica facturaElectronica = getById(comprobante_id);
+        FacturaElectronica facturaElectronica = getById(comprobanteId);
         HashMap<String, Object> resultado = new HashMap<>();
         String mensajeValidacion = "", resultadoProceso = "EXITO";
         try {
