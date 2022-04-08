@@ -141,7 +141,8 @@ public class FacturaController extends BaseController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
     @PostMapping(value = "/send-sunat")
-    public ResponseEntity<?> enviarXML(@RequestParam(name = "id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ResponseEntity<?> enviarXML(@RequestParam(name = "id") String id,
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
         log.debug("FacturaController.send-sunat...Iniciando el procesamiento");
         Map<String, Object> resultado = null;
         try {
