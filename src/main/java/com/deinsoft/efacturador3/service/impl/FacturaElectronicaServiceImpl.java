@@ -87,7 +87,6 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
 //    @Autowired
 //    private ErrorRepository errorDao;
-
     @Autowired
     private XsltCpePath xsltCpePath;
 
@@ -118,45 +117,28 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     public List<FacturaElectronica> getByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(FacturaElectronica facturaElectronica) {
         return facturaElectronicaRepository.findByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(facturaElectronica);
     }
+
     @Override
     @Transactional
     public Map<String, Object> generarComprobantePagoSunat(String rootpath, long comprobanteId) throws TransferirArchivoException {
-        
+        log.debug("FacturaController.generarComprobantePagoSunat...inicio/params: " + String.valueOf(comprobanteId));
         Map<String, Object> retorno = new HashMap<>();
         FacturaElectronica facturaElectronicaResult = null;
         long ticket = Calendar.getInstance().getTimeInMillis();
-        retorno.put("ticketOperacion", ticket);
+
         try {
 //            String retorno = "01";
 //            String tipoComprobante = null;
 //            String nomFile = "";
 
             facturaElectronicaResult = getById(comprobanteId);
-            retorno.putAll(genXmlAndSignAndValidate(rootpath,facturaElectronicaResult,ticket));
-            return retorno;
-        } catch (Exception e) {
-            log.info(e.getMessage());
-            e.printStackTrace();
-            ExceptionDetail exceptionDetail = new ExceptionDetail();
-            exceptionDetail.setMessage(e.getMessage());
-            throw new TransferirArchivoException(e.getMessage(), exceptionDetail);
-        }
-    }    
-    @Override
-    @Transactional
-    public Map<String, Object> generarComprobantePagoSunat(String rootpath, FacturaElectronica documento) throws TransferirArchivoException {
-        
-        Map<String, Object> retorno = new HashMap<>();
-        FacturaElectronica facturaElectronicaResult = null;
-        long ticket = Calendar.getInstance().getTimeInMillis();
-        retorno.put("ticketOperacion", ticket);
-        try {
-//            String retorno = "01";
-//            String tipoComprobante = null;
-//            String nomFile = "";
-
-            facturaElectronicaResult = save(documento);
-            retorno.putAll(genXmlAndSignAndValidate(rootpath,facturaElectronicaResult,ticket));
+            if (facturaElectronicaResult.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO)) {
+                retorno.put("code", "003");
+                retorno.put("message", "El comprobante se encuentra en estado ENVIADO y ACEPTADO");
+                return retorno;
+            }
+            retorno.put("ticketOperacion", ticket);
+            retorno.putAll(genXmlAndSignAndValidate(rootpath, facturaElectronicaResult, ticket));
             return retorno;
         } catch (Exception e) {
             log.info(e.getMessage());
@@ -168,7 +150,32 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     }
 
     @Override
-    public Map<String, Object> sendToSUNAT(long comprobante_id){
+    @Transactional
+    public Map<String, Object> generarComprobantePagoSunat(String rootpath, FacturaElectronica documento) throws TransferirArchivoException {
+        log.debug("FacturaController.generarComprobantePagoSunat...inicio/params: " + documento.toString());
+        Map<String, Object> retorno = new HashMap<>();
+        FacturaElectronica facturaElectronicaResult = null;
+        long ticket = Calendar.getInstance().getTimeInMillis();
+        retorno.put("ticketOperacion", ticket);
+        try {
+//            String retorno = "01";
+//            String tipoComprobante = null;
+//            String nomFile = "";
+
+            facturaElectronicaResult = save(documento);
+            retorno.putAll(genXmlAndSignAndValidate(rootpath, facturaElectronicaResult, ticket));
+            return retorno;
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            e.printStackTrace();
+            ExceptionDetail exceptionDetail = new ExceptionDetail();
+            exceptionDetail.setMessage(e.getMessage());
+            throw new TransferirArchivoException(e.getMessage(), exceptionDetail);
+        }
+    }
+
+    @Override
+    public Map<String, Object> sendToSUNAT(long comprobante_id) {
         log.debug("FacturaController.enviarXML...Consultar Comprobante");
         FacturaElectronica facturaElectronica = getById(comprobante_id);
         HashMap<String, Object> resultado = new HashMap<>();
@@ -176,10 +183,10 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         try {
             log.debug("FacturaController.enviarXML...Enviar Comprobante");
 
-            if (Constantes.CONSTANTE_SITUACION_XML_GENERADO.equals(facturaElectronica.getIndSituacion()) || 
-                Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO.equals(facturaElectronica.getIndSituacion()) || 
-                Constantes.CONSTANTE_SITUACION_CON_ERRORES.equals(facturaElectronica.getIndSituacion())) {
-                
+            if (Constantes.CONSTANTE_SITUACION_XML_GENERADO.equals(facturaElectronica.getIndSituacion())
+                    || Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO.equals(facturaElectronica.getIndSituacion())
+                    || Constantes.CONSTANTE_SITUACION_CON_ERRORES.equals(facturaElectronica.getIndSituacion())) {
+
                 String urlWebService = (appConfig.getUrlServiceCDP() != null) ? appConfig.getUrlServiceCDP() : "XX";
                 String tipoComprobante = facturaElectronica.getTipo();
                 String filename = facturaElectronica.getEmpresa().getNumdoc()
@@ -196,9 +203,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 log.debug("FacturaController.enviarXML...filename: " + filename);
                 log.debug("FacturaController.enviarXML...tipoComprobante: " + tipoComprobante);
                 BillServiceModel res = this.comunesService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica.getEmpresa());
-                
+
                 facturaElectronica.setFechaEnvio(LocalDateTime.now());
-                facturaElectronica.setIndSituacion(res.getCode().toString().equals("0")?Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO:Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+                facturaElectronica.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
                 facturaElectronica.setObservacionEnvio(res.getDescription());
                 facturaElectronica.setObservacionEnvio(res.getDescription());
                 facturaElectronica.setTicketSunat(res.getTicket());
@@ -206,13 +213,13 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 Map<String, Object> map = new ObjectMapper().convertValue(res, Map.class);
                 return map;
 //                retorno.put("resultadoWebService", resultadoWebService);
-            }else {
+            } else {
                 mensajeValidacion = "El documento se encuentra en una situación incrrecta o ya fue enviado";
                 resultadoProceso = "003";
             }
 
             log.debug("FacturaController.enviarXML...enviarComprobantePagoSunat Final");
-            
+
         } catch (Exception e) {
             mensajeValidacion = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
             e.printStackTrace();
@@ -227,8 +234,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         resultado.put("codigo", resultadoProceso);
         log.debug("SoftwareFacturadorController.enviarXML...Terminando el procesamiento");
         return resultado;
-        
+
     }
+
     @Override
     public void sendToSUNAT() {
         List<String> listSituacion = new ArrayList<>();
@@ -283,7 +291,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 String mensaje = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
                 e.printStackTrace();
                 log.error(mensaje);
-                facturaElectronica.setFechaEnvio( LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
+                facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
                 facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
                 facturaElectronica.setObservacionEnvio(mensaje);
                 save(facturaElectronica);
@@ -325,7 +333,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         comprobante.setTipoOperacion(documento.getTipo_operacion());
         Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(documento.getFecha_emision());
         //	java.sql.Date dateSql = new java.sql.Date(date1.getTime());
-        comprobante.setFechaEmision(LocalDate.parse(documento.getFecha_emision(),DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        comprobante.setFechaEmision(LocalDate.parse(documento.getFecha_emision(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         comprobante.setSerie(documento.getSerie());
         comprobante.setNumero(String.format("%08d", Integer.parseInt(documento.getNumero())));
         comprobante.setFechaVencimiento(documento.getFecha_vencimiento());
@@ -571,86 +579,86 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         }
         return result;
     }
-    
-    private Map<String, Object> genXmlAndSignAndValidate(String rootpath,FacturaElectronica documento,
-            long ticket) throws IOException, XsdException, TransferirArchivoException, XsltException, Exception{
+
+    private Map<String, Object> genXmlAndSignAndValidate(String rootpath, FacturaElectronica documento,
+            long ticket) throws IOException, XsdException, TransferirArchivoException, XsltException, Exception {
         Map<String, Object> retorno = new HashMap<>();
         XsltCpeValidator xsltCpeValidator = new XsltCpeValidator(this.xsltCpePath);
         XsdCpeValidator xsdCpeValidator = new XsdCpeValidator(this.xsltCpePath);
-        
-        if (Constantes.CONSTANTE_SITUACION_POR_GENERAR_XML.equals(documento.getIndSituacion())
-                    || Constantes.CONSTANTE_SITUACION_CON_ERRORES.equals(documento.getIndSituacion())
-                    || Constantes.CONSTANTE_SITUACION_XML_VALIDAR.equals(documento.getIndSituacion())
-                    || Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO.equals(documento.getIndSituacion())
-                    || Constantes.CONSTANTE_SITUACION_ENVIADO_ANULADO.equals(documento.getIndSituacion())) {
+
+//        if (Constantes.CONSTANTE_SITUACION_POR_GENERAR_XML.equals(documento.getIndSituacion())
+//                    || Constantes.CONSTANTE_SITUACION_CON_ERRORES.equals(documento.getIndSituacion())
+//                    || Constantes.CONSTANTE_SITUACION_XML_VALIDAR.equals(documento.getIndSituacion())
+//                    || Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO.equals(documento.getIndSituacion())
+//                    || Constantes.CONSTANTE_SITUACION_ENVIADO_ANULADO.equals(documento.getIndSituacion())) {
 //                retorno = "";
-                String tipoComprobante = documento.getTipo();
-                log.debug("BandejaDocumentosServiceImpl.generarComprobantePagoSunat...tipoComprobante: " + tipoComprobante);
+        String tipoComprobante = documento.getTipo();
+        log.debug("BandejaDocumentosServiceImpl.generarComprobantePagoSunat...tipoComprobante: " + tipoComprobante);
 
-                String nomFile = documento.getEmpresa().getNumdoc()
-                        + "-" + String.format("%02d", Integer.parseInt(documento.getTipo()))
-                        + "-" + documento.getSerie()
-                        + "-" + String.format("%08d", Integer.parseInt(documento.getNumero()));
-                this.generarDocumentosService.formatoPlantillaXml(rootpath, documento, nomFile);
+        String nomFile = documento.getEmpresa().getNumdoc()
+                + "-" + String.format("%02d", Integer.parseInt(documento.getTipo()))
+                + "-" + documento.getSerie()
+                + "-" + String.format("%08d", Integer.parseInt(documento.getNumero()));
+        this.generarDocumentosService.formatoPlantillaXml(rootpath, documento, nomFile);
 
-                retorno = this.generarDocumentosService.firmarXml(rootpath, documento.getEmpresa(), nomFile);
+        retorno = this.generarDocumentosService.firmarXml(rootpath, documento.getEmpresa(), nomFile);
 
-                xsdCpeValidator.validarSchemaXML(rootpath, documento.getTipo(), rootpath + "/" + documento.getEmpresa().getNumdoc() + "/PARSE/" + nomFile + ".xml");
+        xsdCpeValidator.validarSchemaXML(rootpath, documento.getTipo(), rootpath + "/" + documento.getEmpresa().getNumdoc() + "/PARSE/" + nomFile + ".xml");
 
-                xsltCpeValidator.validarXMLYComprimir(rootpath, documento.getEmpresa(), documento.getTipo(), rootpath + "/" + documento.getEmpresa().getNumdoc() + "/PARSE/", nomFile);
+        xsltCpeValidator.validarXMLYComprimir(rootpath, documento.getEmpresa(), documento.getTipo(), rootpath + "/" + documento.getEmpresa().getNumdoc() + "/PARSE/", nomFile);
 
-                documento.setXmlHash(retorno.get("xmlHash").toString());
-                String tempDescripcionPluralMoneda = "SOLES";
-                ByteArrayInputStream stream = Impresion.Imprimir(rootpath + "TEMP/", 1, documento, tempDescripcionPluralMoneda);
-                int n = stream.available();
-                byte[] bytes = new byte[n];
-                stream.read(bytes, 0, n);
+        documento.setXmlHash(retorno.get("xmlHash").toString());
+        String tempDescripcionPluralMoneda = "SOLES";
+        ByteArrayInputStream stream = Impresion.Imprimir(rootpath + "TEMP/", 1, documento, tempDescripcionPluralMoneda);
+        int n = stream.available();
+        byte[] bytes = new byte[n];
+        stream.read(bytes, 0, n);
 
-                retorno.put("pdfBase64", bytes);
+        retorno.put("pdfBase64", bytes);
 
-                FileUtils.writeByteArrayToFile(new File(rootpath + "TEMP/" + nomFile + ".pdf"), bytes);
+        FileUtils.writeByteArrayToFile(new File(rootpath + "TEMP/" + nomFile + ".pdf"), bytes);
 
-                if (!appConfig.getEnvironment().equals("PRODUCTION")) {
-                    FileUtils.writeByteArrayToFile(new File("D:/report.pdf"), bytes);
-                }
-                String[] adjuntos = {rootpath + "/" + documento.getEmpresa().getNumdoc() + "/PARSE/" + nomFile + ".xml",
-                    rootpath + "TEMP/" + nomFile + ".pdf"};
+        if (!appConfig.getEnvironment().equals("PRODUCTION")) {
+            FileUtils.writeByteArrayToFile(new File("D:/report.pdf"), bytes);
+        }
+        String[] adjuntos = {rootpath + "/" + documento.getEmpresa().getNumdoc() + "/PARSE/" + nomFile + ".xml",
+            rootpath + "TEMP/" + nomFile + ".pdf"};
 
-                if (!documento.getClienteEmail().equals("")) {
-                    if (SendMail.validaCorreo(nomFile)) {
-                        throw new Exception("Formato de correo inválido, si no se desea enviar correo al cliente dejar en blanco");
-                    }
-                    String nroDocumento = documento.getSerie() + "-" + String.format("%08d", Integer.parseInt(documento.getNumero()));
-                    String cuerpo = "Estimado Cliente, \n\n"
-                            + "Informamos a usted que el documento " + nroDocumento + " ya se encuentra disponible.  \n"
-                            + "Tipo	:	" + Catalogos.tipoDocumento(documento.getTipo(), "")[1].toUpperCase() + " ELECTRÓNICA" + " \n"
-                            + "Número	:	" + nroDocumento + "\n"
-                            + "Monto	:	S/ " + String.valueOf(documento.getTotalValorVenta()) + "\n"
-                            + "Fecha Emisión	:	" + documento.getFechaEmision() + "\n"
-                            + "Saluda atentamente, \n\n"
-                            + (documento.getEmpresa().getNombreComercial() == null ? documento.getEmpresa().getRazonSocial() : documento.getEmpresa().getNombreComercial());
-                    try {
-                        SendMail.sendEmail(new MailBean("Comprobante electrónico",
-                                cuerpo,
-                                appConfig.getSendEmailEmail(),
-                                appConfig.getSendEmailPassword(),
-                                documento.getClienteEmail(),
-                                adjuntos));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        log.debug("BandejaDocumentosServiceImpl.generarComprobantePagoSunat...SendMail: Correo no enviado" + e.getMessage());
-                    }
-
-                }
-                LocalDateTime current = LocalDateTime.now().plusHours(appConfig.getDiferenceHours());
-                
-                documento.setFechaGenXml(current);
-                documento.setIndSituacion(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
-
-                documento.setTicketOperacion(ticket);
-                save(documento);
-
+        if (!documento.getClienteEmail().equals("")) {
+            if (SendMail.validaCorreo(nomFile)) {
+                throw new Exception("Formato de correo inválido, si no se desea enviar correo al cliente dejar en blanco");
             }
-            return retorno;
+            String nroDocumento = documento.getSerie() + "-" + String.format("%08d", Integer.parseInt(documento.getNumero()));
+            String cuerpo = "Estimado Cliente, \n\n"
+                    + "Informamos a usted que el documento " + nroDocumento + " ya se encuentra disponible.  \n"
+                    + "Tipo	:	" + Catalogos.tipoDocumento(documento.getTipo(), "")[1].toUpperCase() + " ELECTRÓNICA" + " \n"
+                    + "Número	:	" + nroDocumento + "\n"
+                    + "Monto	:	S/ " + String.valueOf(documento.getTotalValorVenta()) + "\n"
+                    + "Fecha Emisión	:	" + documento.getFechaEmision() + "\n"
+                    + "Saluda atentamente, \n\n"
+                    + (documento.getEmpresa().getNombreComercial() == null ? documento.getEmpresa().getRazonSocial() : documento.getEmpresa().getNombreComercial());
+            try {
+                SendMail.sendEmail(new MailBean("Comprobante electrónico",
+                        cuerpo,
+                        appConfig.getSendEmailEmail(),
+                        appConfig.getSendEmailPassword(),
+                        documento.getClienteEmail(),
+                        adjuntos));
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.debug("BandejaDocumentosServiceImpl.generarComprobantePagoSunat...SendMail: Correo no enviado" + e.getMessage());
+            }
+
+        }
+        LocalDateTime current = LocalDateTime.now().plusHours(appConfig.getDiferenceHours());
+
+        documento.setFechaGenXml(current);
+        documento.setIndSituacion(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
+
+        documento.setTicketOperacion(ticket);
+        save(documento);
+
+//            }
+        return retorno;
     }
 }

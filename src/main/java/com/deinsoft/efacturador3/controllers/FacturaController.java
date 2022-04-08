@@ -126,7 +126,7 @@ public class FacturaController extends BaseController {
     }
     @PostMapping(value = "/gen-xml")
     public ResponseEntity<?> genXmlFromExistingData(@RequestParam(name = "id") String id, 
-            BindingResult bindingResult,HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException {
+            HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException {
         Map<String,Object> result = null;
         try {
             result = this.facturaElectronicaService.generarComprobantePagoSunat(appConfig.getRootPath(), new Long(id));
