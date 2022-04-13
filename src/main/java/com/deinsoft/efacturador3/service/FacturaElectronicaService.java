@@ -30,11 +30,11 @@ public interface FacturaElectronicaService {
 
     public List<FacturaElectronica> getByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(FacturaElectronica facturaElectronica);
 
-    public FacturaElectronica toFacturaModel(ComprobanteCab documento) throws TransferirArchivoException, ParseException;
+    public FacturaElectronica toFacturaModel(ComprobanteCab documento,Empresa e) throws TransferirArchivoException, ParseException;
 
     public Map<String, Object> generarComprobantePagoSunat(String rootpath, FacturaElectronica documento) throws TransferirArchivoException;
     public Map<String, Object> generarComprobantePagoSunat(String rootpath, long comprobanteId) throws TransferirArchivoException;
-    public String validarComprobante(ComprobanteCab documento);
+    public String validarComprobante(ComprobanteCab documento,Empresa e);
 
     public Map<String, Object> sendToSUNAT(long comprobante_id);
 

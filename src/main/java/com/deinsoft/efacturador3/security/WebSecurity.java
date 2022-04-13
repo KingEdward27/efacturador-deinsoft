@@ -19,13 +19,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
             .anyRequest().authenticated() //cualquier otra peticion requiere autenticacion
             .and()
             // Las peticiones /login pasaran previamente por este filtro
-//            .addFilterBefore(new LoginFilter("/empresa/save", authenticationManager()),
+//            .addFilterBefore(new LoginFilter("/cloud-deinsoft/*", authenticationManager()),
 //                    UsernamePasswordAuthenticationFilter.class)
 //
 //            // Las demás peticiones pasarán por este filtro para validar el token
 //            .addFilterBefore(new JwtFilter(),
 //                    UsernamePasswordAuthenticationFilter.class);
-            .addFilter((Filter) new JWTAuthenticationFilter(authenticationManager()))
+//            .addFilter((Filter) new JWTAuthenticationFilter(authenticationManager()))
 	    .addFilter(new JWTAuthorizationFilter(authenticationManager()));
     }
 

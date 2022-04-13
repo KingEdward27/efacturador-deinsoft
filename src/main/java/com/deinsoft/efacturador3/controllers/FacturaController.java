@@ -6,6 +6,7 @@
 package com.deinsoft.efacturador3.controllers;
 
 import com.deinsoft.efacturador3.bean.ComprobanteCab;
+import com.deinsoft.efacturador3.bean.ComprobanteDet;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.config.AppConfig;
@@ -43,7 +44,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author EDWARD-PC
  */
 @RestController
-@RequestMapping("document")
+@RequestMapping("api/v1/document")
 public class FacturaController extends BaseController {
 
     private static final Logger log = LoggerFactory.getLogger(FacturaController.class);
@@ -71,6 +72,13 @@ public class FacturaController extends BaseController {
     public ResponseEntity<?> sendDocument(@Valid @RequestBody ComprobanteCab documento, 
             BindingResult bindingResult,HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException {
         Map<String,Object> result = null;
+        log.debug("documento recibido: "+ documento.toString());
+        if(documento.getLista_productos() != null){
+            log.debug("items: "+ documento.toString());
+            documento.getLista_productos().forEach((lista_producto) -> {
+                log.debug("documento det recibido: "+ lista_producto.toString());
+            });
+        }
         try {
             if (bindingResult.hasErrors()) {
                 
@@ -80,19 +88,20 @@ public class FacturaController extends BaseController {
                 result.put("message",errors);
                 return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(result);
             }
-            String mensajeValidacion = facturaElectronicaService.validarComprobante(documento);
+            Empresa empresa = getEmpresa(request);
+            
+            if(empresa == null || (empresa != null && empresa.getNumdoc() == null)){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("La empresa no tiene permiso de registrar documentos");
+            }
+            String mensajeValidacion = facturaElectronicaService.validarComprobante(documento,empresa);
             if (!mensajeValidacion.equals("")) {
                 result  = new HashMap<>();
                 result.put("code","002");
                 result.put("message",mensajeValidacion);
                 return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(result);
             }
-            Empresa empresa = getEmpresa(request);
             
-            if(empresa == null || (empresa != null && empresa.getNumdoc() == null)){
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("La empresa no tiene permiso de registrar documentos");
-            }
-            FacturaElectronica comprobante = facturaElectronicaService.toFacturaModel(documento);
+            FacturaElectronica comprobante = facturaElectronicaService.toFacturaModel(documento,empresa);
             comprobante.setEmpresa(empresa);
 
             List<FacturaElectronica> listFact = facturaElectronicaService.getBySerieAndNumeroAndEmpresaId(comprobante);

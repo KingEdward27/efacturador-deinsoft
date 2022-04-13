@@ -19,11 +19,11 @@ public class ComprobanteDet {
     private String unidad_medida;
     
     @NotNull
-    @DecimalMin(value = "0.0", inclusive = false)
+    @DecimalMin(value = "0.0", inclusive = true)
     private BigDecimal cantidad;
    
     @NotNull
-    @DecimalMin(value = "0.0", inclusive = false)
+    @DecimalMin(value = "0.0", inclusive = true)
     private BigDecimal precio_unitario;
     
     private BigDecimal descuento_porcentaje;
@@ -32,11 +32,15 @@ public class ComprobanteDet {
     private String tipo_igv;
 
     @NotNull
+    @DecimalMin(value = "0.0", inclusive = true)
     private BigDecimal afectacion_igv;
     
     private BigDecimal afectacion_isc;
     
     private BigDecimal recargo;
+    
+    private BigDecimal monto_referencial_unitario;
+    
     public String getCodigo() {
         return codigo;
     }
@@ -129,6 +133,14 @@ public class ComprobanteDet {
         this.recargo = recargo;
     }
 
+    public BigDecimal getMonto_referencial_unitario() {
+        return monto_referencial_unitario;
+    }
+
+    public void setMonto_referencial_unitario(BigDecimal monto_referencial_unitario) {
+        this.monto_referencial_unitario = monto_referencial_unitario;
+    }
+
     
 
     public ComprobanteDet() {
@@ -153,4 +165,9 @@ public class ComprobanteDet {
 //            }
 //            return object;
 //        }
+
+    @Override
+    public String toString() {
+        return "ComprobanteDet{" + "codigo=" + codigo + ", descripcion=" + descripcion + ", detalle_adicional=" + detalle_adicional + ", unidad_medida=" + unidad_medida + ", cantidad=" + cantidad + ", precio_unitario=" + precio_unitario + ", descuento_porcentaje=" + descuento_porcentaje + ", tipo_igv=" + tipo_igv + ", afectacion_igv=" + afectacion_igv + ", afectacion_isc=" + afectacion_isc + ", recargo=" + recargo + ", monto_referencial_unitario=" + monto_referencial_unitario + '}';
+    }
 }

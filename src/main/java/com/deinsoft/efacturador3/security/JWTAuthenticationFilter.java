@@ -68,9 +68,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 		//Usuario usr = userService.getUserByUsername(usrname);
 		String token = Jwts.builder().setIssuedAt(new Date()).setIssuer(SecurityConstants.ISSUER_INFO)
-				.setId("OCS-JWT")
+				.setId("DEINSOFT-JWT")
 				.setSubject(((User)auth.getPrincipal()).getUsername())
-				.claim("authorities", "OCS")
+				.claim("authorities", "DEINSOFT")
 				.setIssuedAt(Date.from(currentTime.atZone(ZoneId.systemDefault()).toInstant()))
 				.setExpiration(expirationDate)
 				//.setExpiration(Date.from(ZonedDateTime.now().plusMinutes(TOKEN_EXPIRATION_TIME).toInstant()))

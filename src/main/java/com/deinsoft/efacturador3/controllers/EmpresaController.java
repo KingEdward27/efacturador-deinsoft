@@ -44,7 +44,7 @@ import org.springframework.core.io.Resource;
  * @author EDWARD-PC
  */
 @RestController
-@RequestMapping("empresa")
+@RequestMapping("api/v1/empresa")
 public class EmpresaController {
 
     private static final Logger log = LoggerFactory.getLogger(EmpresaController.class);

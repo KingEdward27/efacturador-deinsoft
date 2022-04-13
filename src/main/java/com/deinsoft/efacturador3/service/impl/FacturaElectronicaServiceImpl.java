@@ -40,6 +40,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,6 +60,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -301,7 +304,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     }
 
     @Override
-    public FacturaElectronica toFacturaModel(ComprobanteCab documento) throws TransferirArchivoException, ParseException {
+    public FacturaElectronica toFacturaModel(ComprobanteCab documento,Empresa e) throws TransferirArchivoException, ParseException {
         BigDecimal totalValorVentasGravadas = BigDecimal.ZERO, totalValorVentasInafectas = BigDecimal.ZERO,
                 totalValorVentasExoneradas = BigDecimal.ZERO,
                 SumatoriaIGV = BigDecimal.ZERO, SumatoriaISC = BigDecimal.ZERO,
@@ -311,6 +314,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         for (ComprobanteDet detalle : documento.getLista_productos()) {
             if (Integer.valueOf(detalle.getTipo_igv()) >= 10 && Integer.valueOf(detalle.getTipo_igv()) <= 20) {
                 totalValorVentasGravadas = totalValorVentasGravadas.add(detalle.getCantidad().multiply(detalle.getPrecio_unitario()));
+                System.out.println("totalValorVentasGravadas: "+totalValorVentasGravadas.toString());
             } else if (Integer.valueOf(detalle.getTipo_igv()) >= 30 && Integer.valueOf(detalle.getTipo_igv()) <= 36) {
                 totalValorVentasInafectas = totalValorVentasInafectas.add(detalle.getCantidad().multiply(detalle.getPrecio_unitario()));
             } else {
@@ -325,9 +329,11 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         documento.setSumatoriaISC(SumatoriaISC);
         documento.setSumatoriaOtrosCargos(BigDecimal.ZERO);
         documento.setSumatoriaOtrosTributos(BigDecimal.ZERO);
-        documento.setTotalValorVentasGravadas(totalValorVentasGravadas);
-        documento.setTotalValorVentasInafectas(totalValorVentasInafectas);
-        documento.setTotalValorVentasExoneradas(totalValorVentasExoneradas);
+        System.out.println("totalValorVentasGravadas: "+totalValorVentasGravadas.toString());
+        System.out.println("totalValorVentasGravadas: "+totalValorVentasGravadas.setScale(2, BigDecimal.ROUND_HALF_EVEN).toString());
+        documento.setTotalValorVentasGravadas(totalValorVentasGravadas.setScale(2, BigDecimal.ROUND_HALF_EVEN));
+        documento.setTotalValorVentasInafectas(totalValorVentasInafectas.setScale(2, BigDecimal.ROUND_HALF_EVEN));
+        documento.setTotalValorVentasExoneradas(totalValorVentasExoneradas.setScale(2, BigDecimal.ROUND_HALF_EVEN));
 
         comprobante.setTipo(documento.getTipo());
         comprobante.setTipoOperacion(documento.getTipo_operacion());
@@ -364,13 +370,28 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         comprobante.setTotalValorVentasGravadas(totalValorVentasGravadas);
         comprobante.setTotalValorVentasInafectas(totalValorVentasInafectas);
         comprobante.setTotalValorVentasExoneradas(totalValorVentasExoneradas);
-        comprobante.setTotalValorVenta(totalValorVenta);
+        comprobante.setTotalValorVenta(totalValorVenta.setScale(2, BigDecimal.ROUND_HALF_EVEN));
         comprobante.setCodLocal("0000");
         comprobante.setFormaPago(documento.getForma_pago());
         comprobante.setPorcentajeIGV(new BigDecimal(Constantes.PORCENTAJE_IGV));
         comprobante.setMontoNetoPendiente(documento.getMonto_neto_pendiente());
         comprobante.setTipoMonedaMontoNetoPendiente(documento.getMoneda_monto_neto_pendiente());
         comprobante.setDescuentosGlobales(BigDecimal.ZERO);
+
+        
+        if(documento.getSerie_ref() != null && documento.getSerie_ref().length() == 4){
+            comprobante.setDocrefSerie(documento.getSerie_ref());
+            comprobante.setDocrefNumero(String.format("%08d", Integer.parseInt( documento.getNumero_ref())));
+            comprobante.setDocrefMonto(new BigDecimal(documento.getMonto_ref()));
+            comprobante.setTotalValorVenta(totalValorVenta.subtract(comprobante.getDocrefMonto()));
+            comprobante.setEmpresa(e);
+            List<FacturaElectronica> comprobanteRel = facturaElectronicaRepository.findByDocrefSerieAndDocrefNumero(comprobante);
+//            comprobante.setSumatoriaIGV(SumatoriaIGV.add(comprobanteRel.get(0).getSumatoriaIGV()));
+        }
+        if (!StringUtils.isEmpty(documento.getFecha_ref())) {
+            comprobante.setDocrefFecha(LocalDate.parse(documento.getFecha_ref(), DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        }
+
         if (comprobante.getTipo().equals("07") || comprobante.getTipo().equals("08")) {
             comprobante.setNotaMotivo(documento.getNota_motivo());
             comprobante.setNotaTipo(documento.getNota_tipo());
@@ -391,25 +412,33 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             det.setUnidadMedida(comprobanteDet.getUnidad_medida());
             det.setCantidad(comprobanteDet.getCantidad());
             det.setPrecioVentaUnitario(comprobanteDet.getPrecio_unitario());
-            det.setValorVentaItem(comprobanteDet.getPrecio_unitario().subtract(comprobanteDet.getAfectacion_igv()));
-            det.setValorUnitario(comprobanteDet.getPrecio_unitario().subtract(comprobanteDet.getAfectacion_igv()));
-            det.setAfectacionIgv(comprobanteDet.getAfectacion_igv());
+            
+            BigDecimal afectacionIGVUnit = comprobanteDet.getAfectacion_igv().divide(comprobanteDet.getCantidad(), 2, RoundingMode.HALF_UP);
+            det.setValorVentaItem(comprobanteDet.getPrecio_unitario().subtract(afectacionIGVUnit).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+            det.setValorUnitario(comprobanteDet.getPrecio_unitario().subtract(afectacionIGVUnit).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+            det.setAfectacionIgv(comprobanteDet.getAfectacion_igv().setScale(2, BigDecimal.ROUND_HALF_EVEN));
             det.setAfectacionIGVCode(comprobanteDet.getTipo_igv());
             det.setDescuento(comprobanteDet.getDescuento_porcentaje().
                     divide(new BigDecimal(100)).
-                    multiply(comprobanteDet.getCantidad().multiply(comprobanteDet.getPrecio_unitario())));
+                    multiply(comprobanteDet.getCantidad().multiply(comprobanteDet.getPrecio_unitario())).setScale(2, BigDecimal.ROUND_HALF_EVEN));
             det.setRecargo(comprobanteDet.getRecargo());
+            det.setValorRefUnitario(comprobanteDet.getMonto_referencial_unitario());
             list.add(det);
 
-            baseamt = baseamt.add(comprobanteDet.getPrecio_unitario().subtract(comprobanteDet.getAfectacion_igv()));
+            baseamt = baseamt.add(comprobanteDet.getPrecio_unitario().multiply(comprobanteDet.getCantidad()).subtract(comprobanteDet.getAfectacion_igv()));
             taxtotal = taxtotal.add(comprobanteDet.getAfectacion_igv());
-
         }
         FacturaElectronicaTax facturaElectronicaTax = new FacturaElectronicaTax();
         facturaElectronicaTax.setTaxId(1000);
-        facturaElectronicaTax.setBaseamt(baseamt);
-        facturaElectronicaTax.setTaxtotal(taxtotal);
+        facturaElectronicaTax.setBaseamt(baseamt.setScale(2, BigDecimal.ROUND_HALF_EVEN));
+        facturaElectronicaTax.setTaxtotal(taxtotal.setScale(2, BigDecimal.ROUND_HALF_EVEN));
         listTax.add(facturaElectronicaTax);
+
+//        facturaElectronicaTax = new FacturaElectronicaTax();
+//        facturaElectronicaTax.setTaxId(9996);
+//        facturaElectronicaTax.setBaseamt(new BigDecimal("1"));
+//        facturaElectronicaTax.setTaxtotal(new BigDecimal("0"));
+//        listTax.add(facturaElectronicaTax);
         if (!CollectionUtils.isEmpty(documento.getLista_cuotas())) {
 
 //                BigDecimal sumaCoutas = BigDecimal.ZERO;
@@ -442,7 +471,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     }
 
     @Override
-    public String validarComprobante(ComprobanteCab documento) {
+    public String validarComprobante(ComprobanteCab documento,Empresa e) {
         if (documento.getCliente_tipo().equals("1")
                 && String.format("%02d", Integer.parseInt(documento.getTipo())).equals("01")) {
             return "El dato ingresado en el tipo de documento de identidad del receptor no esta permitido para el tipo de comprobante";
@@ -489,12 +518,23 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             return "Para el tipo de documento debe indicar el número del documento referenciado";
         }
         for (ComprobanteDet item : documento.getLista_productos()) {
+            if (item.getMonto_referencial_unitario() == null) {
+                item.setMonto_referencial_unitario(BigDecimal.ZERO);
+            }
             if (!(item.getUnidad_medida().equals("NIU") || item.getUnidad_medida().equals("ZZ"))) {
                 return "Código de unidad de medida no soportado";
             }
             if (Integer.valueOf(item.getTipo_igv()) >= 10 && Integer.valueOf(item.getTipo_igv()) <= 20
                     && item.getAfectacion_igv() == BigDecimal.ZERO) {
                 return "El monto de afectación de IGV por linea debe ser diferente a 0.00.";
+            }
+            if (item.getPrecio_unitario().compareTo(BigDecimal.ZERO) == 0
+                    && !item.getTipo_igv().equals("31")) {
+                return "El código de afectación igv del item no corresponde a una operación gratuita";
+            }
+            if (item.getPrecio_unitario().compareTo(BigDecimal.ZERO) == 0
+                    && item.getMonto_referencial_unitario().compareTo(BigDecimal.ZERO) == 0) {
+                return "El monto de valor referencial unitario debe ser mayor a 0.00 (Operaciones gratuitas)";
             }
         }
         //1. cambiar por clase catalogos
@@ -503,6 +543,19 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         if (!listDocIds.contains(documento.getCliente_tipo())) {
             return "El tipo de documento de identidad no existe";
         }
+        if(documento.getSerie_ref() != null){
+            if(!documento.getNumero_ref().isEmpty() && !documento.getNumero_ref().isEmpty()){
+                FacturaElectronica fact = new FacturaElectronica();
+                fact.setDocrefSerie(documento.getSerie_ref());
+                fact.setDocrefNumero(String.format("%08d", Integer.parseInt( documento.getNumero_ref())));
+                fact.setEmpresa(e);
+                List<FacturaElectronica> comprobanteRel = facturaElectronicaRepository.findByDocrefSerieAndDocrefNumero(fact);
+                if(comprobanteRel == null || (comprobanteRel != null && comprobanteRel.size() == 0)){
+                    return "Comprobante relacionado de anticipo no existe";
+                }
+            }
+        }
+        
         if (!(documento.getTipo().equals("07") || documento.getTipo().equals("08") || documento.getTipo().equals("03"))) {
             if (documento.getForma_pago().equalsIgnoreCase(Constantes.FORMA_PAGO_CONTADO) && !CollectionUtils.isEmpty(documento.getLista_cuotas())) {
                 return "Si la forma de pago es Contado no es necesario indicar la lista de cuotas, campo: lista_cuotas";
@@ -512,7 +565,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                     //                Date fechaPago = null;
                     try {
                         Date fechaPago = new SimpleDateFormat("dd/MM/yyyy").parse(detalle.getFecha_pago());
-                    } catch (Exception e) {
+                    } catch (Exception ex) {
                         return "Si la forma de pago es Credito la fecha de pago no debe estar vacía y debe tener formato correcto dd/MM/yyyy, campo: fecha_pago";
                     }
                     if (FacturadorUtil.isNullOrEmpty(detalle.getMonto_pago())) {

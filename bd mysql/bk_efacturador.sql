@@ -678,5 +678,63 @@ create table seg_acceso
 ALTER TABLE `efacturador`.`factura_electronica` 
 add ticket_sunat varchar(100);
 
-ALTER TABLE `efacturador`.`resumen_baja` 
-CHANGE COLUMN `observacion_envio` `observacion_envio` VARCHAR(500) NULL DEFAULT NULL ;
+ALTER TABLE factura_electronica
+CHANGE COLUMN observacion_envio observacion_envio VARCHAR(900) NULL DEFAULT NULL ;
+select * from empresa
+select * from factura_electronica_det
+select * from factura_electronica_tax
+ALTER TABLE `efacturador`.`factura_electronica_det` 
+add valor_ref_unitario decimal(19,2) default 0;
+
+alter table factura_electronica
+add docref_serie varchar(4);
+
+alter table factura_electronica
+add docref_numero varchar(11);
+
+alter table factura_electronica
+add docref_monto decimal(19,2) default 0;
+
+alter table factura_electronica
+add docref_fecha date;
+select * from efacturador.factura_electronica_tax
+select * from efacturador.factura_electronica_Det
+select * from dblavanderia.ventas 49397
+select * from dblavanderia.ingresos
+select * from detalleventas where idventa = 49397
+
+select i.idingreso,v.seriedoc,v.numdoc,
+trim(concat(ifnull(cli.nombres,''))) cliente,
+i.fecha_pago,
+i.monto-ifnull(i.descuento,0) importe,
+ifnull(v.tipo_pago,'Contado') forma_pago,
+case when cli.dni= '11111111' then '00000000' 
+else cli.dni end nrodocumento,
+cli.direccion,
+f_descripcion_monto(i.monto-ifnull(i.descuento,0),'SOLES') descripcion_monto,
+ifnull(i.descuento,0) descuento ,
+'10' tipo_igv,
+cli.tipo,
+ifnull(cli.correo,''),
+ifnull(i.codigoqr,''),
+ifnull(i.xmlhash,''),
+td.tipodoc_id,td.nombre,td.value,
+ts.idtiposervicio,ts.descripcion,
+i.igv,ifnull(i.serie_doc,'') serieDocE,
+ifnull(i.num_doc,0) numDocE, 
+ifnull(v.fecha_entrega,'') fecha_entrega,
+ifnull(i.envio_pse_flag,'') envio_pse_flag, 
+ifnull(i.envio_pse_mensaje,'') envio_pse_mensaje,
+0 a_cuenta,
+ifnull(i.recibido,i.monto) recibido,
+ifnull(i.recibido,i.monto) - i.monto  vuelto,'i' tipo,v.idventa idVenta,ifnull(i2.serie_doc,''),ifnull(i2.num_doc,''),ifnull(i2.monto,''),ifnull(i2.fecha_pago,now()) 
+from ventas v 
+inner join ingresos i on i.idventa = v.idventa
+inner join clientes cli on i.cliente_id=cli.idcliente
+left join tipodoc td on td.tipodoc_id = i.tipodoc_id
+inner join tipos_servicio ts on ts.idtiposervicio = v.idtiposervicio 
+left join ingresos i2 on i2.idventa = v.idventa and i2.flag_adelanto = '1' and i2.estado = '2' and i2.idingreso <> i.idingreso
+left join tipodoc td2 on td.tipodoc_id = i2.tipodoc_id
+where ((49370 = 0 and 
+         i.fecha_pago between null and null and i.estado = '2' and td.value <> '00') or (i.idingreso  = 49370)) 
+order by i.num_doc desc

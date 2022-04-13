@@ -96,6 +96,10 @@ public class ComprobanteCab {
 
     private Set<ComprobanteCuotas> lista_cuotas;
     
+    private String serie_ref;
+    private String numero_ref;
+    private String monto_ref;
+    private String fecha_ref;
     
     public String getTipo() {
         return tipo;
@@ -321,6 +325,38 @@ public class ComprobanteCab {
         this.lista_cuotas = lista_cuotas;
     }
 
+    public String getSerie_ref() {
+        return serie_ref;
+    }
+
+    public void setSerie_ref(String serie_ref) {
+        this.serie_ref = serie_ref;
+    }
+
+    public String getNumero_ref() {
+        return numero_ref;
+    }
+
+    public void setNumero_ref(String numero_ref) {
+        this.numero_ref = numero_ref;
+    }
+
+    public String getMonto_ref() {
+        return monto_ref;
+    }
+
+    public void setMonto_ref(String monto_ref) {
+        this.monto_ref = monto_ref;
+    }
+
+    public String getFecha_ref() {
+        return fecha_ref;
+    }
+
+    public void setFecha_ref(String fecha_ref) {
+        this.fecha_ref = fecha_ref;
+    }
+    
     
 
     
@@ -428,4 +464,9 @@ public class ComprobanteCab {
 //        JsonObject object = objectBuilder.build();
 //        return object.toString();
 //    }
+
+    @Override
+    public String toString() {
+        return "ComprobanteCab{" + "tipo=" + tipo + ", serie=" + serie + ", numero=" + numero + ", fecha_emision=" + fecha_emision + ", fecha_vencimiento=" + fecha_vencimiento + ", tipo_operacion=" + tipo_operacion + ", cliente_tipo=" + cliente_tipo + ", cliente_documento=" + cliente_documento + ", cliente_nombre=" + cliente_nombre + ", cliente_direccion=" + cliente_direccion + ", cliente_email=" + cliente_email + ", cliente_telefono=" + cliente_telefono + ", vendedor_nombre=" + vendedor_nombre + ", observaciones=" + observaciones + ", placa_vehiculo=" + placa_vehiculo + ", orden_compra=" + orden_compra + ", guia_remision=" + guia_remision + ", descuento_global_porcentaje=" + descuento_global_porcentaje + ", moneda=" + moneda + ", nota_tipo=" + nota_tipo + ", nota_motivo=" + nota_motivo + ", nota_referencia_tipo=" + nota_referencia_tipo + ", nota_referencia_serie=" + nota_referencia_serie + ", nota_referencia_numero=" + nota_referencia_numero + ", sumatoriaIGV=" + sumatoriaIGV + ", sumatoriaISC=" + sumatoriaISC + ", sumatoriaOtrosTributos=" + sumatoriaOtrosTributos + ", sumatoriaOtrosCargos=" + sumatoriaOtrosCargos + ", totalValorVentasGravadas=" + totalValorVentasGravadas + ", totalValorVentasInafectas=" + totalValorVentasInafectas + ", totalValorVentasExoneradas=" + totalValorVentasExoneradas + ", forma_pago=" + forma_pago + ", moneda_monto_neto_pendiente=" + moneda_monto_neto_pendiente + ", monto_neto_pendiente=" + monto_neto_pendiente + ", lista_productos=" + lista_productos + ", lista_cuotas=" + lista_cuotas + ", serie_ref=" + serie_ref + ", numero_ref=" + numero_ref + ", monto_ref=" + monto_ref + ", fecha_ref=" + fecha_ref + '}';
+    }
 }

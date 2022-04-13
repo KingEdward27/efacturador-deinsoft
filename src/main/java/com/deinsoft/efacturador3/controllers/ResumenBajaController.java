@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author EDWARD-PC
  */
 @RestController
-@RequestMapping("resumenBaja")
+@RequestMapping("api/v1/resumenBaja")
 public class ResumenBajaController extends BaseController {
 
     private static final Logger log = LoggerFactory.getLogger(ResumenBajaController.class);

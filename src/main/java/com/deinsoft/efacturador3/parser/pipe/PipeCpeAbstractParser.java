@@ -182,40 +182,40 @@ public abstract class PipeCpeAbstractParser
       } 
 
       
-      List<Map<String, Object>> listaRelacionado = new ArrayList<>();
-      Map<String, Object> relacionado = null;
-      if (activarRelacionado.intValue() == 1) {
-        
-        FileReader fArchivoRelacionado = new FileReader(archivoRelacionado);
-        BufferedReader bArchivoRelacionado = new BufferedReader(fArchivoRelacionado);
-        while ((cadena = bArchivoRelacionado.readLine()) != null) {
-          String[] registro = cadena.split("\\|");
-          
-          if (registro.length != 7) {
-            bArchivoRelacionado.close();
-            throw new RuntimeException("El archivo documento relacionado no continene la cantidad de datos esperada (7 columnas).");
-          } 
-          
-          relacionado = new HashMap<>();
-          relacionado.put("indDocRelacionado", registro[0]);
-          relacionado.put("numIdeAnticipo", registro[1]);
-          relacionado.put("tipDocRelacionado", registro[2]);
-          relacionado.put("numDocRelacionado", registro[3]);
-          relacionado.put("tipDocEmisor", registro[4]);
-          relacionado.put("numDocEmisor", registro[5]);
-          relacionado.put("mtoDocRelacionado", registro[6]);
-          
-          listaRelacionado.add(relacionado);
-        } 
-
-        
-        bArchivoRelacionado.close();
-        comprobante.put("listaRelacionado", listaRelacionado);
-      }
-      else {
-        
-        comprobante.put("listaRelacionado", listaRelacionado);
-      } 
+//      List<Map<String, Object>> listaRelacionado = new ArrayList<>();
+//      Map<String, Object> relacionado = null;
+//      if (activarRelacionado.intValue() == 1) {
+//        
+//        FileReader fArchivoRelacionado = new FileReader(archivoRelacionado);
+//        BufferedReader bArchivoRelacionado = new BufferedReader(fArchivoRelacionado);
+//        while ((cadena = bArchivoRelacionado.readLine()) != null) {
+//          String[] registro = cadena.split("\\|");
+//          
+//          if (registro.length != 7) {
+//            bArchivoRelacionado.close();
+//            throw new RuntimeException("El archivo documento relacionado no continene la cantidad de datos esperada (7 columnas).");
+//          } 
+//          
+//          relacionado = new HashMap<>();
+//          relacionado.put("indDocRelacionado", registro[0]);
+//          relacionado.put("numIdeAnticipo", registro[1]);
+//          relacionado.put("tipDocRelacionado", registro[2]);
+//          relacionado.put("numDocRelacionado", registro[3]);
+//          relacionado.put("tipDocEmisor", registro[4]);
+//          relacionado.put("numDocEmisor", registro[5]);
+//          relacionado.put("mtoDocRelacionado", registro[6]);
+//          
+//          listaRelacionado.add(relacionado);
+//        } 
+//
+//        
+//        bArchivoRelacionado.close();
+//        comprobante.put("listaRelacionado", listaRelacionado);
+//      }
+//      else {
+//        
+//        comprobante.put("listaRelacionado", listaRelacionado);
+//      } 
 
       
       List<Map<String, Object>> listaLeyendas = new ArrayList<>();
@@ -249,40 +249,40 @@ public abstract class PipeCpeAbstractParser
       } 
 
       
-      List<Map<String, Object>> listaVariablesGlobales = new ArrayList<>();
-      Map<String, Object> variablesGlobales = null;
-      
-      if (activarVariablesGlobales.intValue() == 1)
-      {
-        FileReader fArchivoVariablesGlobales = new FileReader(archivoAdiVariableGlobal);
-        BufferedReader bArchivoVariablesGlobales = new BufferedReader(fArchivoVariablesGlobales);
-        while ((cadena = bArchivoVariablesGlobales.readLine()) != null) {
-          String[] registro = cadena.split("\\|");
-          
-          if (registro.length != 7) {
-            bArchivoVariablesGlobales.close();
-            throw new RuntimeException("El archivo de Adicional de Variables Globales no continene la cantidad de datos esperada (7 columnas).");
-          } 
-          
-          variablesGlobales = new HashMap<>();
-          variablesGlobales.put("tipVariableGlobal", registro[0]);
-          variablesGlobales.put("codTipoVariableGlobal", registro[1]);
-          variablesGlobales.put("porVariableGlobal", registro[2]);
-          variablesGlobales.put("monMontoVariableGlobal", registro[3]);
-          variablesGlobales.put("mtoVariableGlobal", registro[4]);
-          variablesGlobales.put("monBaseImponibleVariableGlobal", registro[5]);
-          variablesGlobales.put("mtoBaseImpVariableGlobal", registro[6]);
-          
-          listaVariablesGlobales.add(variablesGlobales);
-        } 
-        
-        bArchivoVariablesGlobales.close();
-        comprobante.put("listaVariablesGlobales", listaVariablesGlobales);
-      }
-      else
-      {
-        comprobante.put("listaVariablesGlobales", listaVariablesGlobales);
-      }
+//      List<Map<String, Object>> listaVariablesGlobales = new ArrayList<>();
+//      Map<String, Object> variablesGlobales = null;
+//      
+//      if (activarVariablesGlobales.intValue() == 1)
+//      {
+//        FileReader fArchivoVariablesGlobales = new FileReader(archivoAdiVariableGlobal);
+//        BufferedReader bArchivoVariablesGlobales = new BufferedReader(fArchivoVariablesGlobales);
+//        while ((cadena = bArchivoVariablesGlobales.readLine()) != null) {
+//          String[] registro = cadena.split("\\|");
+//          
+//          if (registro.length != 7) {
+//            bArchivoVariablesGlobales.close();
+//            throw new RuntimeException("El archivo de Adicional de Variables Globales no continene la cantidad de datos esperada (7 columnas).");
+//          } 
+//          
+//          variablesGlobales = new HashMap<>();
+//          variablesGlobales.put("tipVariableGlobal", registro[0]);
+//          variablesGlobales.put("codTipoVariableGlobal", registro[1]);
+//          variablesGlobales.put("porVariableGlobal", registro[2]);
+//          variablesGlobales.put("monMontoVariableGlobal", registro[3]);
+//          variablesGlobales.put("mtoVariableGlobal", registro[4]);
+//          variablesGlobales.put("monBaseImponibleVariableGlobal", registro[5]);
+//          variablesGlobales.put("mtoBaseImpVariableGlobal", registro[6]);
+//          
+//          listaVariablesGlobales.add(variablesGlobales);
+//        } 
+//        
+//        bArchivoVariablesGlobales.close();
+//        comprobante.put("listaVariablesGlobales", listaVariablesGlobales);
+//      }
+//      else
+//      {
+//        comprobante.put("listaVariablesGlobales", listaVariablesGlobales);
+//      }
     
     } catch (FileNotFoundException e1) {
       throw new IllegalArgumentException("Error procesando archivo Json", e1);

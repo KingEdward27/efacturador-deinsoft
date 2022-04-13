@@ -150,6 +150,18 @@ public class FacturaElectronica implements Serializable {
     @Column(name = "ticket_sunat")
     private String ticketSunat;
     
+    @Column(name = "docref_serie")
+    private String docrefSerie;
+    
+    @Column(name = "docref_numero")
+    private String docrefNumero;
+    
+    @Column(name = "docref_monto")
+    private BigDecimal docrefMonto;
+    
+    @Column(name = "docref_fecha")
+    private LocalDate docrefFecha;
+    
 //    @Column(name = "nombre_Archivo")
 //    private String nombreArchivo;
 
@@ -639,6 +651,38 @@ public class FacturaElectronica implements Serializable {
 
     public BigDecimal getPorcentajeIGV() {
         return porcentajeIGV;
+    }
+
+    public String getDocrefSerie() {
+        return docrefSerie;
+    }
+
+    public void setDocrefSerie(String docrefSerie) {
+        this.docrefSerie = docrefSerie;
+    }
+
+    public String getDocrefNumero() {
+        return docrefNumero;
+    }
+
+    public void setDocrefNumero(String docrefNumero) {
+        this.docrefNumero = docrefNumero;
+    }
+
+    public BigDecimal getDocrefMonto() {
+        return docrefMonto;
+    }
+
+    public void setDocrefMonto(BigDecimal docrefMonto) {
+        this.docrefMonto = docrefMonto;
+    }
+
+    public LocalDate getDocrefFecha() {
+        return docrefFecha;
+    }
+
+    public void setDocrefFecha(LocalDate docrefFecha) {
+        this.docrefFecha = docrefFecha;
     }
 
     public void setPorcentajeIGV(BigDecimal porcentajeIGV) {

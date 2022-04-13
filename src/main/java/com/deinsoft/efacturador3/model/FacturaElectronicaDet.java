@@ -84,6 +84,9 @@ public class FacturaElectronicaDet implements Serializable {
     @Column(name = "cod_tributo_igv")
     private String codTipTributoIgv;
 
+    @Column(name = "valor_ref_unitario")
+    private BigDecimal valorRefUnitario;
+    
     public FacturaElectronicaDet() {
     }
 
@@ -207,6 +210,14 @@ public class FacturaElectronicaDet implements Serializable {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
+    }
+
+    public BigDecimal getValorRefUnitario() {
+        return valorRefUnitario;
+    }
+
+    public void setValorRefUnitario(BigDecimal valorRefUnitario) {
+        this.valorRefUnitario = valorRefUnitario;
     }
 
     

@@ -1,0 +1,3 @@
+falta arreglar anticipos, deberia ser un detalle en el json
+falta arreglar impuestos, debería ser un detalle de impuestos
+actjualmente solo permite igv
