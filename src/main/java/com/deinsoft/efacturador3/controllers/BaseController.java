@@ -36,6 +36,7 @@ public class BaseController {
 
     protected Empresa getEmpresa(HttpServletRequest request) throws JsonProcessingException {
         Map<String, Object> map = JwtUtil.getJwtLoggedUserData(request);
+//        if(map == null) return null;
         String numDoc = (String) map.get("numDoc");
         return empresaService.findByNumdoc(numDoc);
     }

@@ -24,6 +24,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -161,6 +162,12 @@ public class FacturaElectronica implements Serializable {
     
     @Column(name = "docref_fecha")
     private LocalDate docrefFecha;
+    
+    @Transient
+    private String fechaIni;
+    
+    @Transient
+    private String fechaFin;
     
 //    @Column(name = "nombre_Archivo")
 //    private String nombreArchivo;
@@ -687,6 +694,22 @@ public class FacturaElectronica implements Serializable {
 
     public void setPorcentajeIGV(BigDecimal porcentajeIGV) {
         this.porcentajeIGV = porcentajeIGV;
+    }
+
+    public String getFechaIni() {
+        return fechaIni;
+    }
+
+    public void setFechaIni(String fechaIni) {
+        this.fechaIni = fechaIni;
+    }
+
+    public String getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(String fechaFin) {
+        this.fechaFin = fechaFin;
     }
 
     public List<FacturaElectronicaDet> getListFacturaElectronicaDet() {

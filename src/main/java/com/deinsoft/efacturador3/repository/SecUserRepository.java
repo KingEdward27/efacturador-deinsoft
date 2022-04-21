@@ -17,5 +17,5 @@ import org.springframework.data.repository.query.Param;
  * @author EDWARD-PC
  */
 public interface SecUserRepository  extends JpaRepository<SecUser,Long>{
-   
+   public SecUser findByName(String name);
 }

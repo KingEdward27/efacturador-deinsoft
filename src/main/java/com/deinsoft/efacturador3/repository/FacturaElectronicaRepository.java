@@ -6,6 +6,7 @@
 package com.deinsoft.efacturador3.repository;
 
 import com.deinsoft.efacturador3.model.FacturaElectronica;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,6 +27,8 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
     List<FacturaElectronica> findBySerieAndNumeroAndEmpresaId(String serie,String numero,int empresaId);
 
     List<FacturaElectronica> findByIndSituacionIn(List<String> listSituacion);
+    
+    List<FacturaElectronica> findByFechaEmisionBetweenAndEmpresaIdIn(LocalDate fecIni, LocalDate fecFin, List<Integer> empresaIds);
     
     @Query(value="select p from facturaElectronica p where p.tipo = :#{#facturaElectronica.notaReferenciaTipo} "
             + "and p.serie = :#{#facturaElectronica.notaReferenciaSerie} "

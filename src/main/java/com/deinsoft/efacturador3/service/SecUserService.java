@@ -18,4 +18,5 @@ public interface SecUserService {
     public SecUser getSecUserById(long id) ;
     public List<SecUser> getSecUsers();
     public SecUser save(SecUser empresa);
+    public SecUser getSecUserByName(String name) ;
 }

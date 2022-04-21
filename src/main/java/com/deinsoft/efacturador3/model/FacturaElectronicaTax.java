@@ -32,13 +32,19 @@ public class FacturaElectronicaTax {
     private FacturaElectronica facturaElectronica;
     
     @Column(name = "tax_id")
-    private int taxId;
+    private String taxId;
     
-    @Column(name = "baseamt")
-    private BigDecimal baseamt;
+    @Column(name = "nom_tributo")
+    private String nomTributo;
+    
+    @Column(name = "cod_tip_tributo")
+    private String codTipTributo;
+    
+    @Column(name = "mto_base_imponible")
+    private BigDecimal mtoBaseImponible;
     
     @Column(name = "taxtotal")
-    private BigDecimal taxtotal;
+    private BigDecimal mtoTributo;
 
     public long getId() {
         return id;
@@ -56,29 +62,46 @@ public class FacturaElectronicaTax {
         this.facturaElectronica = facturaElectronica;
     }
 
-    public int getTaxId() {
+    public String getTaxId() {
         return taxId;
     }
 
-    public void setTaxId(int taxId) {
+    public void setTaxId(String taxId) {
         this.taxId = taxId;
     }
 
-    public BigDecimal getBaseamt() {
-        return baseamt;
+    public String getNomTributo() {
+        return nomTributo;
     }
 
-    public void setBaseamt(BigDecimal baseamt) {
-        this.baseamt = baseamt;
+    public void setNomTributo(String nomTributo) {
+        this.nomTributo = nomTributo;
     }
 
-    public BigDecimal getTaxtotal() {
-        return taxtotal;
+    public String getCodTipTributo() {
+        return codTipTributo;
     }
 
-    public void setTaxtotal(BigDecimal taxtotal) {
-        this.taxtotal = taxtotal;
+    public void setCodTipTributo(String codTipTributo) {
+        this.codTipTributo = codTipTributo;
     }
+
+    public BigDecimal getMtoBaseImponible() {
+        return mtoBaseImponible;
+    }
+
+    public void setMtoBaseImponible(BigDecimal mtoBaseImponible) {
+        this.mtoBaseImponible = mtoBaseImponible;
+    }
+
+    public BigDecimal getMtoTributo() {
+        return mtoTributo;
+    }
+
+    public void setMtoTributo(BigDecimal mtoTributo) {
+        this.mtoTributo = mtoTributo;
+    }
+
     
     
 }

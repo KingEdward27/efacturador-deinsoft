@@ -31,6 +31,9 @@ public class ComprobanteDet {
     @NotBlank
     private String tipo_igv;
 
+    @NotBlank
+    private String cod_tributo_igv;
+    
     @NotNull
     @DecimalMin(value = "0.0", inclusive = true)
     private BigDecimal afectacion_igv;
@@ -139,6 +142,14 @@ public class ComprobanteDet {
 
     public void setMonto_referencial_unitario(BigDecimal monto_referencial_unitario) {
         this.monto_referencial_unitario = monto_referencial_unitario;
+    }
+
+    public String getCod_tributo_igv() {
+        return cod_tributo_igv;
+    }
+
+    public void setCod_tributo_igv(String cod_tributo_igv) {
+        this.cod_tributo_igv = cod_tributo_igv;
     }
 
     

@@ -7,6 +7,7 @@ import com.deinsoft.efacturador3.model.FacturaElectronicaDet;
 import com.deinsoft.efacturador3.model.FacturaElectronicaTax;
 import com.deinsoft.efacturador3.parser.Parser;
 import com.deinsoft.efacturador3.parser.ParserException;
+import com.deinsoft.efacturador3.util.Impresion;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -196,11 +197,11 @@ public class PipeNotaCreditoParser
             for (FacturaElectronicaTax itemTax : cabecera.getListFacturaElectronicaTax()) {
                 tributo = new HashMap<>();
                 tributo.put("ideTributo",String.valueOf(itemTax.getTaxId()));
-                tributo.put("nomTributo", "IGV");
-                tributo.put("codTipTributo", "VAT");
-                tributo.put("mtoBaseImponible", itemTax.getBaseamt().toString());
-                tributo.put("mtoTributo", itemTax.getTaxtotal().toString());
-                tributo.put("codigoMonedaSolesSwf",cabecera.getMoneda());
+                tributo.put("nomTributo", itemTax.getNomTributo());
+                tributo.put("codTipTributo", itemTax.getCodTipTributo());
+                tributo.put("mtoBaseImponible", Impresion.df.format(itemTax.getMtoBaseImponible()));
+                tributo.put("mtoTributo", Impresion.df.format(itemTax.getMtoTributo()));
+                tributo.put("codigoMonedaSolesSwf", cabecera.getMoneda());
 
                 listaTributos.add(tributo);
             }

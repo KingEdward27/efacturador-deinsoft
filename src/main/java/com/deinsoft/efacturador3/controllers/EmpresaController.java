@@ -25,7 +25,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import org.apache.commons.lang.StringUtils;
+//import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.core.io.Resource;
+import org.springframework.web.bind.annotation.RequestParam;
 /**
  *
  * @author EDWARD-PC
@@ -140,7 +141,7 @@ public class EmpresaController {
                     .claim("razonSocial", empresa.getRazonSocial()) //((User)auth.getPrincipal()).getAuthorities())
                     .claim("usuarioSol", empresa.getUsuariosol())
                     .setIssuedAt(new Date())
-                    .setExpiration(new Date(new Date().getTime() + SecurityConstants.TOKEN_EXPIRATION_TIME * 1000 * 60 * 1000))
+                    .setExpiration(new Date(new Date().getTime() + SecurityConstants.TOKEN_EXPIRATION_TIME * 1000 * 1000 * 1000))
                     .signWith(SignatureAlgorithm.HS512, SecurityConstants.SUPER_SECRET_KEY).compact();
 
             log.info("********* TOKEN: {}", SecurityConstants.TOKEN_BEARER_PREFIX + " " + token);
@@ -229,5 +230,44 @@ public class EmpresaController {
 //		
 ////		return new User(usr.getName(), usr.getPassword(), state, true, true, true, updatedAuthorities);
         return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
+    }
+    @PostMapping(value = "/update-token")
+    public ResponseEntity<?> generateToken(@RequestParam(name = "id") String id,
+            HttpServletRequest request, HttpServletResponse response) throws ParseException, IOException {
+        HashMap<String, Object> resultado = new HashMap<>();
+//        File directorio=new File(raiz + empresa.getNumdoc());
+//        directorio.mkdir();
+        Empresa empresa = empresaService.getEmpresaById(Integer.parseInt(id));
+        String token = generateToken(empresa);
+
+        log.info("********* TOKEN: {}", SecurityConstants.TOKEN_BEARER_PREFIX + " " + token);
+//		LOGGER.info( "********* uuid mongodb: {}" , session.getId());
+        response.addHeader(SecurityConstants.HEADER_AUTHORIZACION_KEY, SecurityConstants.TOKEN_BEARER_PREFIX + " " + token);
+//		response.addHeader("sessionId", session.getId());
+        response.addHeader("Access-Control-Expose-Headers", "Authorization");
+        response.addHeader("Access-Control-Allow-Headers", "Authorization, X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept, X-Custom-header");
+
+        empresa.setToken(token);
+//        empresa.setCertPass(FacturadorUtil.Encriptar(empresa.getCertPass()));
+        Empresa empresaResult = empresaService.save(empresa);
+        resultado.put("message", "Empresa actualizada!, se actualizó el token");
+        resultado.put("empresa", empresaResult);
+        return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
+    }
+    String generateToken(Empresa empresa){
+        return Jwts.builder()
+                .setIssuedAt(new Date())
+                .setIssuer(SecurityConstants.ISSUER_INFO)
+                .setId("DEFACT-JWT")
+                .setSubject(empresa.getNumdoc() + "/" + empresa.getRazonSocial())
+                //				.claim("empresaId", empresa.getIdempresa())
+                //                                .claim("empresaId", empresa.getIdempresa()) 
+                .claim("numDoc", empresa.getNumdoc()) //((User)auth.getPrincipal()).getAuthorities())
+                //				.claim("authorities", empresa.getNumdoc())
+                .claim("razonSocial", empresa.getRazonSocial()) //((User)auth.getPrincipal()).getAuthorities())
+                .claim("usuarioSol", empresa.getUsuariosol())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(new Date().getTime() + SecurityConstants.TOKEN_EXPIRATION_TIME * 1000 * 60 * 1000))
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.SUPER_SECRET_KEY).compact();
     }
 }

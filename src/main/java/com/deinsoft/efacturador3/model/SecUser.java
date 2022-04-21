@@ -12,8 +12,8 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
-@Entity(name="segUsuario")
-@Table(name="seg_usuario")
+@Entity(name="secUser")
+@Table(name="sec_user")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class SecUser implements Serializable{
 
@@ -21,7 +21,7 @@ public class SecUser implements Serializable{
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="seg_ususario_id",nullable = false, unique = true)
+	@Column(name="sec_user_id",nullable = false, unique = true)
 	private long id;
 	
 	@NotEmpty

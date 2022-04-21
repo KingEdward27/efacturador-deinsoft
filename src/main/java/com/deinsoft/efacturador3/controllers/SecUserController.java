@@ -19,6 +19,9 @@ import javax.validation.Valid;
 
 import com.deinsoft.efacturador3.model.SecUser;
 import com.deinsoft.efacturador3.service.SecUserService;
+import java.security.Principal;
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RequestMapping("api/v1/users")
 public class SecUserController {
@@ -30,6 +33,7 @@ public class SecUserController {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
+    
     @GetMapping(value = "/get-all")
     public ResponseEntity<?> getAllSecUser(SecUser secUser, HttpServletRequest request) {
         logger.info("getAllSecUser received: " + secUser.toString());

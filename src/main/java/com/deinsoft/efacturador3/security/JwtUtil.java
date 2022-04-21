@@ -84,7 +84,9 @@ public class JwtUtil {
         return null;
     }
     public static Map<String, Object> getJwtLoggedUserData(HttpServletRequest request) throws JsonProcessingException {
-		
+//		if(request.getHeader(SecurityConstants.HEADER_AUTHORIZACION_KEY) == null){
+//                    return null;
+//                }
 		String jwt = request.getHeader(SecurityConstants.HEADER_AUTHORIZACION_KEY).replace("\"","");
 		      Jws<Claims> claims = Jwts.parser()
 				.setSigningKey(SecurityConstants.SUPER_SECRET_KEY)

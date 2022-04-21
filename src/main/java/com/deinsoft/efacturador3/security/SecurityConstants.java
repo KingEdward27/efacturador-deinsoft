@@ -18,6 +18,6 @@ public class SecurityConstants {
 	
 	public static final String ISSUER_INFO = "DEINSOFT";
 	public static final String SUPER_SECRET_KEY = "Un4cL4V3C0mpl1c4d4";
-	public static final long TOKEN_EXPIRATION_TIME = 30; // minutes
+	public static final long TOKEN_EXPIRATION_TIME = 32; // minutes
 	public static final long TOKEN_REFRESH_EXPIRATION_TIME = 180;
 }

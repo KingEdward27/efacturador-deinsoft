@@ -201,7 +201,7 @@ public class PipeFacturaParser
 
             detalle.put("sumTotTributosItem", String.valueOf(item.getAfectacionIgv()));
             detalle.put("unidadMedida", item.getUnidadMedida());
-            detalle.put("codTriIGV", item.getAfectacionIGVCode().equals("31") ? "9996" : "1000");
+            detalle.put("codTriIGV", item.getCodTipTributoIgv());
             detalle.put("mtoIgvItem", String.valueOf(item.getAfectacionIgv()));
             detalle.put("mtoBaseIgvItem", item.getValorRefUnitario().compareTo(BigDecimal.ZERO) == 0 ? item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv()) : item.getValorRefUnitario().multiply(item.getCantidad()));
             detalle.put("nomTributoIgvItem", item.getAfectacionIGVCode().equals("31") ? "GRA" : "IGV");
@@ -250,10 +250,10 @@ public class PipeFacturaParser
             for (FacturaElectronicaTax itemTax : cabecera.getListFacturaElectronicaTax()) {
                 tributo = new HashMap<>();
                 tributo.put("ideTributo",String.valueOf(itemTax.getTaxId()));
-                tributo.put("nomTributo", "IGV");
-                tributo.put("codTipTributo", "VAT");
-                tributo.put("mtoBaseImponible", Impresion.df.format(itemTax.getBaseamt()));
-                tributo.put("mtoTributo", Impresion.df.format(itemTax.getTaxtotal()));
+                tributo.put("nomTributo", itemTax.getNomTributo());
+                tributo.put("codTipTributo", itemTax.getCodTipTributo());
+                tributo.put("mtoBaseImponible", Impresion.df.format(itemTax.getMtoBaseImponible()));
+                tributo.put("mtoTributo", Impresion.df.format(itemTax.getMtoTributo()));
                 tributo.put("codigoMonedaSolesSwf", cabecera.getMoneda());
 
                 listaTributos.add(tributo);

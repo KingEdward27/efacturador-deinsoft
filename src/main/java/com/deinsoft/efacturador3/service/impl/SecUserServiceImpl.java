@@ -45,4 +45,9 @@ public class SecUserServiceImpl implements SecUserService{
     public SecUser save(SecUser secUser) {
         return secUserRepository.save(secUser);
     }
+    
+    @Override
+    public SecUser getSecUserByName(String name) {
+        return secUserRepository.findByName(name);
+    }
 }

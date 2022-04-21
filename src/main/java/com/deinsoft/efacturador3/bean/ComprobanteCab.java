@@ -96,6 +96,9 @@ public class ComprobanteCab {
 
     private Set<ComprobanteCuotas> lista_cuotas;
     
+    @Valid
+    private Set<ComprobanteTax> lista_tributos;
+    
     private String serie_ref;
     private String numero_ref;
     private String monto_ref;
@@ -438,6 +441,14 @@ public class ComprobanteCab {
 
     public void setMonto_neto_pendiente(BigDecimal monto_neto_pendiente) {
         this.monto_neto_pendiente = monto_neto_pendiente;
+    }
+
+    public Set<ComprobanteTax> getLista_tributos() {
+        return lista_tributos;
+    }
+
+    public void setLista_tributos(Set<ComprobanteTax> lista_tributos) {
+        this.lista_tributos = lista_tributos;
     }
 
     

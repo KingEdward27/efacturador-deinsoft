@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -285,9 +284,9 @@ public abstract class PipeCpeAbstractParser
 //      }
     
     } catch (FileNotFoundException e1) {
-      throw new IllegalArgumentException("Error procesando archivo Json", e1);
+      throw new java.lang.IllegalArgumentException("Error procesando archivo Json", e1);
     } catch (IOException e) {
-      throw new IllegalArgumentException("Error procesando archivo Json", e);
+      throw new java.lang.IllegalArgumentException("Error procesando archivo Json", e);
     } 
   }
 

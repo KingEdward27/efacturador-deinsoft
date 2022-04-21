@@ -138,7 +138,7 @@ public class FacturaController extends BaseController {
             HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException {
         Map<String,Object> result = null;
         try {
-            result = this.facturaElectronicaService.generarComprobantePagoSunat(appConfig.getRootPath(), new Long(id));
+            result = this.facturaElectronicaService.generarComprobantePagoSunat(new Long(id));
         } catch (Exception e) {
             e.printStackTrace();
             result  = new HashMap<>();

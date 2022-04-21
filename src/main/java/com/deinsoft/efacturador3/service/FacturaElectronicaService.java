@@ -9,8 +9,8 @@ import com.deinsoft.efacturador3.bean.ComprobanteCab;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
-import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -33,10 +33,12 @@ public interface FacturaElectronicaService {
     public FacturaElectronica toFacturaModel(ComprobanteCab documento,Empresa e) throws TransferirArchivoException, ParseException;
 
     public Map<String, Object> generarComprobantePagoSunat(String rootpath, FacturaElectronica documento) throws TransferirArchivoException;
-    public Map<String, Object> generarComprobantePagoSunat(String rootpath, long comprobanteId) throws TransferirArchivoException;
+    public Map<String, Object> generarComprobantePagoSunat(long comprobanteId) throws TransferirArchivoException;
     public String validarComprobante(ComprobanteCab documento,Empresa e);
 
     public Map<String, Object> sendToSUNAT(long comprobante_id);
 
     public void sendToSUNAT();
+    
+    public List<FacturaElectronica> getByFechaEmisionBetweenAndEmpresaIdIn(LocalDate fecIni, LocalDate fecFin,List<Integer> empresaIds);
 }
