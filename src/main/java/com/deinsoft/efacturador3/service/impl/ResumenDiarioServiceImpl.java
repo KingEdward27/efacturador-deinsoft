@@ -387,29 +387,41 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
                 ResumenDiario ResumenDiarioResult = save(resumenDiario);
 
                 if (res.getCode() == null && res.getTicket() != null) {
+                    Thread.sleep(5000);
                     res = comunesService.consultarTicketSUNAT(urlWebService, appConfig.getRootPath(), res.getTicket(), ResumenDiarioResult.getEmpresa());
-                    if (res.getCode() == 0) {
-                        for (Iterator<ResumenDiarioDet> it = ResumenDiarioResult.getListResumenDiarioDet().iterator(); it.hasNext();) {
-                            ResumenDiarioDet resumenDiarioDet = it.next();
-                            FacturaElectronica fact = new FacturaElectronica();
-                            fact.setSerie(resumenDiarioDet.getNroDocumento().split("-")[0]);
-                            fact.setNumero(String.format("%08d", Integer.valueOf(resumenDiarioDet.getNroDocumento().split("-")[1])));
-                            fact.setEmpresa(ResumenDiarioResult.getEmpresa());
-                            List<FacturaElectronica> listFact = facturaElectronicaService.getBySerieAndNumeroAndEmpresaId(fact);
-                            fact = listFact.get(0);
-                            fact.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
-                            fact.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
-                            fact.setObservacionEnvio(res.getDescription());
-                            fact.setTicketSunat(res.getTicket());
-                            facturaElectronicaService.save(fact);
-
-                        }
-                        ResumenDiarioResult.setIndSituacion(res.getCode() == null ? Constantes.CONSTANTE_SITUACION_ENVIADO_PROCESANDO
-                                : res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO
-                                : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
-                        ResumenDiarioResult.setObservacionEnvio(res.getDescription());
+                    if(res == null){
+                        ResumenDiarioResult.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+                        ResumenDiarioResult.setObservacionEnvio("Ticket con errores - Internal Server Error");
                         save(ResumenDiarioResult);
+                    }else{
+                        if (res.getCode() == 0) {
+                            for (Iterator<ResumenDiarioDet> it = ResumenDiarioResult.getListResumenDiarioDet().iterator(); it.hasNext();) {
+                                ResumenDiarioDet resumenDiarioDet = it.next();
+                                FacturaElectronica fact = new FacturaElectronica();
+                                fact.setSerie(resumenDiarioDet.getNroDocumento().split("-")[0]);
+                                fact.setNumero(String.format("%08d", Integer.valueOf(resumenDiarioDet.getNroDocumento().split("-")[1])));
+                                fact.setEmpresa(ResumenDiarioResult.getEmpresa());
+                                List<FacturaElectronica> listFact = facturaElectronicaService.getBySerieAndNumeroAndEmpresaId(fact);
+                                fact = listFact.get(0);
+                                fact.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
+                                fact.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+                                fact.setObservacionEnvio(res.getDescription());
+                                fact.setTicketSunat(res.getTicket());
+                                facturaElectronicaService.save(fact);
+
+                            }
+                            ResumenDiarioResult.setIndSituacion(res.getCode() == null ? Constantes.CONSTANTE_SITUACION_ENVIADO_PROCESANDO
+                                    : res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO
+                                    : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+                            ResumenDiarioResult.setObservacionEnvio(res.getDescription());
+                            save(ResumenDiarioResult);
+                        }else if (res.getCode() == 98) {
+                            ResumenDiarioResult.setIndSituacion(Constantes.CONSTANTE_SITUACION_ENVIADO_PROCESANDO);
+                            ResumenDiarioResult.setObservacionEnvio("En espera: "+ res.getCode());
+                            save(ResumenDiarioResult);
+                        }
                     }
+                    
 
                 }
                 Map<String, Object> map = new ObjectMapper().convertValue(res, Map.class);

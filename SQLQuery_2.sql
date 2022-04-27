@@ -174,3 +174,21 @@ CREATE TABLE resumen_diario_tax (
 
 exec sp_columns factura_electronica
 exec sp_columns resumen_diario
+
+select * from factura_electronica
+select * from resumen_diario_det
+
+update resumen_diario set ind_situacion = '03',
+observacion_envio = 'El Comprobante RC-20220413-7, ha sido aceptado'
+where resumen_diario_id = 7;
+
+update factura_electronica set ind_situacion = '03',
+observacion_envio = 'El Comprobante RC-20220413-7, ha sido aceptado'
+where exists (select 1 from resumen_diario_det det
+where nro_documento = factura_electronica.serie + '-' +factura_electronica.numero
+and det.resumen_diario_id = 7);
+
+select 1 from resumen_diario_det det
+where nro_documento = 'BB02' + '-' +'00000037'
+and det.resumen_diario_id = 2
+
