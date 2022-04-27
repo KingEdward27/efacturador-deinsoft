@@ -30,7 +30,7 @@ public class ResumenDiarioDet {
     
     private static final long serialVersionUID = 1L;
     @Id
-    @Column(name = "resumen_diario_det_id")
+    @Column(name = "resumen_diario_det_id", nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     
