@@ -815,6 +815,8 @@ CREATE TABLE resumen_diario_tax (
   CONSTRAINT fk_resumen_diario_tax_resumen_diario FOREIGN KEY (resumen_diario_id) REFERENCES resumen_diario (resumen_diario_id)
 ) ;
 
+alter table factura_electronica
+add estado char(1) default '1';
 
 select * from empresa
 select * from factura_electronica_tax

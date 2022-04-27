@@ -140,7 +140,19 @@
                                 <tr>
                                     <td sec:authorize="hasRole('ROLE_ADMIN')" >
                                     <td colspan="6" style="text-align: right;font-weight: bold;">Total:</td>
-                                    <td style="text-align: right;font-weight: bold;" th:text="${#aggregates.sum(facturas.![totalValorVenta])}" />
+                                    <td style="text-align: right;font-weight: bold;" th:text="${#numbers.formatDecimal(#aggregates.sum(facturas.![totalValorVenta]),3,'COMMA',2,'POINT')}" />
+                                    <td colspan="2"></td>
+                                </tr>
+                                <tr>
+                                    <td sec:authorize="hasRole('ROLE_ADMIN')" >
+                                    <td colspan="6" style="text-align: right;font-weight: bold;">Total Anulado:</td>
+                                    <td style="text-align: right;font-weight: bold;" th:text="${#numbers.formatDecimal(#aggregates.sum(facturas.?[estado == '2'].![totalValorVenta])== null?0:#aggregates.sum(facturas.?[estado == '2'].![totalValorVenta]),3,'COMMA',2,'POINT')}" />
+                                    <td colspan="2"></td>
+                                </tr>
+                                <tr>
+                                    <td sec:authorize="hasRole('ROLE_ADMIN')" >
+                                    <td colspan="6" style="text-align: right;font-weight: bold;">Total Activo:</td>
+                                    <td style="text-align: right;font-weight: bold;" th:text="${#numbers.formatDecimal(#aggregates.sum(facturas.?[estado == '1'].![totalValorVenta]) == ''?0:#aggregates.sum(facturas.?[estado == '1'].![totalValorVenta]),3,'COMMA',2,'POINT')}" />
                                     <td colspan="2"></td>
                                 </tr>
                             </tfoot>

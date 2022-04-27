@@ -748,7 +748,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                     item.getIndSituacion().equals("01")?"por generar XML":
                     item.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_CON_ERRORES) 
                             || item.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO)?item.getObservacionEnvio():
-                            "Con problemas");
+                            item.getEstado().equals("2")? "Anulado" : "Con problemas");
             item.setTipo(Catalogos.tipoDocumento(item.getTipo(), null)[1]);
         });
         list = list.stream()

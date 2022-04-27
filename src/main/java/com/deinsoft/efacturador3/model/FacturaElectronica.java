@@ -173,6 +173,9 @@ public class FacturaElectronica implements Serializable {
     @Transient
     private String fechaFin;
 
+    @Column(name = "estado")
+    private String estado;
+    
 //    @Column(name = "nombre_Archivo")
 //    private String nombreArchivo;
     @OneToMany(mappedBy = "facturaElectronica", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -756,6 +759,14 @@ public class FacturaElectronica implements Serializable {
 
     public void setTicketSunat(String ticketSunat) {
         this.ticketSunat = ticketSunat;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     @Override
