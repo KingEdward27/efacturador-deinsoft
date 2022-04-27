@@ -743,12 +743,13 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     public List<FacturaElectronica> getByFechaEmisionBetweenAndEmpresaIdIn(LocalDate fecIni, LocalDate fecFin, List<Integer> empresaIds){
         List<FacturaElectronica> list = facturaElectronicaRepository.findByFechaEmisionBetweenAndEmpresaIdIn(fecIni, fecFin, empresaIds);
         list.forEach((item) -> {
-            item.setIndSituacion(item.getIndSituacion().equals("03")?"Aceptado":
+            item.setIndSituacion(item.getIndSituacion().equals("03")?"ACEPTADO":
                     item.getIndSituacion().equals("02")?"XML generado":
                     item.getIndSituacion().equals("01")?"por generar XML":
                     item.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_CON_ERRORES) 
-                            || item.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO)?item.getObservacionEnvio():
-                            item.getEstado().equals("2")? "Anulado" : "Con problemas");
+                            || item.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO)?
+                            item.getObservacionEnvio():"Con problemas");
+            item.setEstado(item.getEstado().equals("1")?"ACTIVO":"ANULADO");
             item.setTipo(Catalogos.tipoDocumento(item.getTipo(), null)[1]);
         });
         list = list.stream()

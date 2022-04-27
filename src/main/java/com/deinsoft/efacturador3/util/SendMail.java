@@ -44,9 +44,9 @@ public class SendMail {
         return result;
     }
 
-    public static boolean sendEmail(MailBean mail) {
+    public static String sendEmail(MailBean mail) {
 
-        boolean result = false;
+        String result = "";
         Session mailSession = null;
         try {
             Properties props = new Properties();
@@ -99,17 +99,17 @@ public class SendMail {
             }
             m.setContent(multipart);
             Transport.send(m);
-            result = true;
-            LOG.debug("sendEmail/".concat(mail.toString()).concat("El correo se envio correctamente"));
+            result = "El correo se envio correctamente";
+            LOG.debug("sendEmail/".concat(mail.toString()).concat(result));
         } catch (NullPointerException e) {
             LOG.debug("sendEmail/".concat(mail.toString()), e);
-            return result;
+            result = e.getMessage();
         } catch (javax.mail.MessagingException e) {
             LOG.debug("sendEmail/".concat(mail.toString()), e);
-            return result;
+            result = e.getMessage();
         } catch (Exception e) {
             LOG.debug("sendEmail/".concat(mail.toString()), e);
-            return result;
+            result = e.getMessage();
         }
         return result;
     }
