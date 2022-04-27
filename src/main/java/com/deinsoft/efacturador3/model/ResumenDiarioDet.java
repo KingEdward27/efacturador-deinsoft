@@ -29,10 +29,11 @@ import org.hibernate.annotations.ColumnDefault;
 public class ResumenDiarioDet {
     
     private static final long serialVersionUID = 1L;
+    
     @Id
-    @Column(name = "resumen_diario_det_id", nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @Column(name = "resumen_diario_det_id")
+    private Long id;
     
     @NotNull
     @Valid
@@ -114,11 +115,11 @@ public class ResumenDiarioDet {
     public ResumenDiarioDet() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
