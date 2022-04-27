@@ -164,8 +164,11 @@ public class ComunesServiceImpl implements ComunesService {
             .build();
             
         result =   BillServiceManager.getStatus(ticket, config);//202208980058201, 202208984136401
-        
+        log.debug("result getStatus"+result.getStatus());
+        log.debug("result getDescription"+result.getDescription());
+        log.debug("result getCode"+result.getCode());
         } catch (Exception e) {
+            e.printStackTrace();
             result = null;
         }
         return result;
