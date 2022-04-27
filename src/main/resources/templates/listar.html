@@ -81,10 +81,10 @@
                         <table>
                             <tr>
                                     <td colspan="6" style="font-weight: bold;color: blue;">Total enviados: </td>
-                                    <td style="font-weight: bold;color: blue;" th:text="${#lists.size(facturas.?[indSituacion == 'ACEPTADO'])}" />
+                                    <td style="font-weight: bold;color: blue;" th:text="${#lists.size(facturas.?[indSituacion == 'Aceptado'])}" />
                                     <td>&nbsp;&nbsp;</td>
                                     <td colspan="6" style="font-weight: bold;color: red;">Total No enviados: </td>
-                                    <td style="font-weight: bold;color: red;" th:text="${#lists.size(facturas.?[indSituacion != 'ACEPTADO'])}" />
+                                    <td style="font-weight: bold;color: red;" th:text="${#lists.size(facturas.?[indSituacion != 'Aceptado'])}" />
                                 </tr>
                         </table>
                         <table id = "dtTable"  class="table table-striped table-bordered ">
