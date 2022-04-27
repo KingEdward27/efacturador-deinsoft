@@ -214,10 +214,10 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 log.debug("FacturaController.enviarXML...tipoComprobante: " + tipoComprobante);
                 BillServiceModel res = this.comunesService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica.getEmpresa());
 
-                facturaElectronica.setFechaEnvio(LocalDateTime.now());
+                facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
                 facturaElectronica.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
                 facturaElectronica.setObservacionEnvio(res.getDescription());
-                facturaElectronica.setTicketSunat(res.getTicket());
+                facturaElectronica.setTicketSunat(res.getTicket()); 
                 save(facturaElectronica);
                 Map<String, Object> map = new ObjectMapper().convertValue(res, Map.class);
                 return map;
@@ -233,7 +233,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             mensajeValidacion = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
             e.printStackTrace();
             resultadoProceso = "003";
-            facturaElectronica.setFechaEnvio(LocalDateTime.now());
+            facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
             facturaElectronica.setIndSituacion("06");
             facturaElectronica.setObservacionEnvio(mensajeValidacion);
             save(facturaElectronica);
@@ -380,7 +380,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         comprobante.setCodLocal("0000");
         comprobante.setFormaPago(documento.getForma_pago());
         comprobante.setPorcentajeIGV(new BigDecimal(Constantes.PORCENTAJE_IGV));
-        comprobante.setMontoNetoPendiente(documento.getMonto_neto_pendiente());
+        comprobante.setMontoNetoPendiente(documento.getMonto_neto_pendiente() == null? BigDecimal.ZERO : documento.getMonto_neto_pendiente());
         comprobante.setTipoMonedaMontoNetoPendiente(documento.getMoneda_monto_neto_pendiente());
         comprobante.setDescuentosGlobales(BigDecimal.ZERO);
 
@@ -611,6 +611,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                     sumTotalTributos = sumTotalTributos.add(item.getAfectacion_igv());
                 }
             }
+            sumTotalTributos = sumTotalTributos.setScale(2, BigDecimal.ROUND_HALF_EVEN);
             if(comprobanteTax.getMto_tributo().compareTo(sumTotalTributos) != 0){
                  return "La suma del monto del tributo no equivale al del detalle. Código tributo: "+comprobanteTax.getIde_tributo();
             }
@@ -695,9 +696,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
         FileUtils.writeByteArrayToFile(new File(rootpath + "TEMP/" + nomFile + ".pdf"), bytes);
 
-        if (!appConfig.getEnvironment().equals("PRODUCTION")) {
-            FileUtils.writeByteArrayToFile(new File("C:/report.pdf"), bytes);
-        }
+//        if (!appConfig.getEnvironment().equals("PRODUCTION")) {
+//            FileUtils.writeByteArrayToFile(new File("D:/report.pdf"), bytes);
+//        }
         String[] adjuntos = {rootpath + "/" + documento.getEmpresa().getNumdoc() + "/PARSE/" + nomFile + ".xml",
             rootpath + "TEMP/" + nomFile + ".pdf"};
 
@@ -748,10 +749,16 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                     item.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_CON_ERRORES) 
                             || item.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO)?item.getObservacionEnvio():
                             "Con problemas");
+            item.setTipo(Catalogos.tipoDocumento(item.getTipo(), null)[1]);
         });
         list = list.stream()
                     .sorted(Comparator.comparing(FacturaElectronica::getNumero).reversed())
                     .collect(Collectors.toList());
+        return list;
+    }
+    @Override
+    public List<FacturaElectronica> getByIdIn(List<Long> ids){
+        List<FacturaElectronica> list = facturaElectronicaRepository.findByIdIn(ids);
         return list;
     }
 }

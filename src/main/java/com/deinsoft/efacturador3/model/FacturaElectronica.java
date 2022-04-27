@@ -7,11 +7,15 @@ package com.deinsoft.efacturador3.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -47,7 +51,7 @@ public class FacturaElectronica implements Serializable {
     @Valid
     @OneToOne
     @JoinColumn(name = "empresa_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Empresa empresa;
 
     @Column(name = "fecha_emision")
@@ -121,57 +125,56 @@ public class FacturaElectronica implements Serializable {
 
     @Column(name = "ind_situacion")
     private String indSituacion;
-    
+
     @Column(name = "fecha_envio")
     private LocalDateTime fechaEnvio;
-    
+
     private LocalDateTime FechaGenXml;
-    
+
     @Column(name = "observacion_envio")
     private String observacionEnvio;
-    
+
     @Column(name = "cod_local")
     private String codLocal;
-    
+
     @Column(name = "forma_pago")
     private String formaPago;
-    
+
     @Column(name = "tipo_moneda_monto_neto_pendiente")
     private String tipoMonedaMontoNetoPendiente;
-    
+
     @Column(name = "monto_neto_pendiente")
     private BigDecimal montoNetoPendiente;
-    
+
     @Column(name = "porcentaje_igv")
     private BigDecimal porcentajeIGV;
-    
+
     @Column(name = "ticket_operacion")
     private long ticketOperacion;
-    
+
     @Column(name = "ticket_sunat")
     private String ticketSunat;
-    
+
     @Column(name = "docref_serie")
     private String docrefSerie;
-    
+
     @Column(name = "docref_numero")
     private String docrefNumero;
-    
+
     @Column(name = "docref_monto")
     private BigDecimal docrefMonto;
-    
+
     @Column(name = "docref_fecha")
     private LocalDate docrefFecha;
-    
+
     @Transient
     private String fechaIni;
-    
+
     @Transient
     private String fechaFin;
-    
+
 //    @Column(name = "nombre_Archivo")
 //    private String nombreArchivo;
-
     @OneToMany(mappedBy = "facturaElectronica", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JsonIgnoreProperties(value = {"facturaElectronica"}, allowSetters = true)
     private List<FacturaElectronicaDet> listFacturaElectronicaDet;
@@ -179,20 +182,23 @@ public class FacturaElectronica implements Serializable {
     @OneToMany(mappedBy = "facturaElectronica", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JsonIgnoreProperties(value = {"facturaElectronica"}, allowSetters = true)
     private List<FacturaElectronicaTax> listFacturaElectronicaTax;
-    
+
     @OneToMany(mappedBy = "facturaElectronica", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JsonIgnoreProperties(value = {"facturaElectronica"}, allowSetters = true)
     private List<FacturaElectronicaCuotas> listFacturaElectronicaCuotas;
-    
+
     public void addFacturaElectronicaDet(FacturaElectronicaDet item) {
         item.setFacturaElectronica(this);
     }
+
     public void addFacturaElectronicaTax(FacturaElectronicaTax item) {
         item.setFacturaElectronica(this);
     }
+
     public void addFacturaElectronicaCuotas(FacturaElectronicaCuotas item) {
         item.setFacturaElectronica(this);
     }
+
     public FacturaElectronica() {
     }
 
@@ -777,4 +783,21 @@ public class FacturaElectronica implements Serializable {
         return "com.deinsoft.efacturador3.bean.FacturaElectronica[ mId=" + id + " ]";
     }
 
+    public Map<String, Object> toMap(FacturaElectronica facturaElectronica,String[] visibles) throws IllegalArgumentException, IllegalAccessException, IllegalAccessException {
+        Map<String, Object> map = new HashMap<>();
+        for (Field f : facturaElectronica.getClass().getDeclaredFields()) {
+//            System.out.println(f.toString());
+//                System.out.println(f.getGenericType() + " " + f.getName() + " " + f.getType());
+//                System.out.println(f.getGenericType() + " " + f.getName() + " " + f.getModifiers()+ " = " + f.get(facturaElectronica));
+            if (f.toString().contains("final") || f.toString().contains("list") || 
+                    !Arrays.asList(visibles).contains(f.getName())) {
+                continue;
+            }
+
+            map.put(f.getName(), f.get(facturaElectronica)); 
+
+//                objectBuilder.add(f.getName(), f.get(facturaElectronica).toString());
+        }
+        return map;
+    }
 }

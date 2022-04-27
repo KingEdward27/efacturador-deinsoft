@@ -13,6 +13,7 @@ import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.model.ResumenDiario;
 import com.deinsoft.efacturador3.service.ComunesService;
+import com.deinsoft.efacturador3.service.FacturaElectronicaService;
 import com.deinsoft.efacturador3.service.ResumenDiarioService;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
 import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
@@ -52,11 +53,11 @@ public class ResumenDiarioController extends BaseController {
     @Autowired
     ResumenDiarioService resumenDiarioService;
 
+    
     @Autowired
     AppConfig appConfig;
 
-    @Autowired
-    private ComunesService comunesService;
+    
     
     @PostMapping(value = "send-document")
     public ResponseEntity<?> save(@Valid @RequestBody ResumenDiarioBean resumenDiarioBean, BindingResult bindingResult,
@@ -87,67 +88,17 @@ public class ResumenDiarioController extends BaseController {
     }
     @PostMapping(value = "/send-sunat")
     public ResponseEntity<?> enviarXML(@RequestParam(name = "id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception {
-        log.debug("FacturaController.send-sunat...Iniciando el procesamiento");
-        HashMap<String, Object> resultado = new HashMap<>();
-        String mensajeValidacion = "", resultadoProceso = "EXITO";
-        log.debug("FacturaController.enviarXML...Consultar Comprobante");
-        ResumenDiario resumenDiario = resumenDiarioService.getResumenDiarioById(Long.parseLong(id));
+        log.debug("ResumenDiarioController.send-sunat...Iniciando el procesamiento");
+        Map<String, Object> resultado = new HashMap<>();
         try {
-            log.debug("FacturaController.enviarXML...Enviar Comprobante");
-            log.debug("FacturaController.enviarXML...enviarComprobantePagoSunat Inicio");
-            HashMap<String, Object> retorno = new HashMap<>();
-            HashMap<String, Object> resultadoWebService = null;
-
-//            String nombreArchivo = appConfig.getRootPath() + "VALI/" + "constantes.properties";
-
-            if ("02".equals(resumenDiario.getIndSituacion()) || 
-                "10".equals(resumenDiario.getIndSituacion()) || 
-                "06".equals(resumenDiario.getIndSituacion())) {
-
-//                Properties prop = this.comunesService.getProperties(nombreArchivo);
-//
-//                String urlWebService = (prop.getProperty("RUTA_SERV_CDP") != null) ? prop.getProperty("RUTA_SERV_CDP") : "XX";
-                String urlWebService = (appConfig.getUrlServiceCDP() != null) ? appConfig.getUrlServiceCDP() : "XX";
-                String tipoComprobante = "RA";
-//                String filename = facturaElectronica.getEmpresa().getNumdoc()
-//                        + "-" + String.format("%02d", Integer.parseInt(facturaElectronica.getTipo()))
-//                        + "-" + facturaElectronica.getSerie()
-//                        + "-" + String.format("%08d", Integer.parseInt(facturaElectronica.getNumero()));
-                log.debug("FacturaController.enviarXML...Validando Conexión a Internet");
-                String[] rutaUrl = urlWebService.split("\\/");
-                log.debug("FacturaController.enviarXML...tokens: " + rutaUrl[2]);
-                this.comunesService.validarConexion(rutaUrl[2], 443);
-
-                log.debug("FacturaController.enviarXML...Enviando Documento");
-                log.debug("FacturaController.enviarXML...urlWebService: " + urlWebService);
-                log.debug("FacturaController.enviarXML...filename: " + resumenDiario.getNombreArchivo());
-                log.debug("FacturaController.enviarXML...tipoComprobante: " + tipoComprobante);
-                BillServiceModel res = this.comunesService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(),
-                        resumenDiario.getNombreArchivo(), resumenDiario.getEmpresa());
-                
-                return ResponseEntity.status(HttpStatus.CREATED).body(res);
-//                retorno.put("resultadoWebService", resultadoWebService);
-            }else {
-                mensajeValidacion = "El documento se encuentra en una situación incrrecta o ya fue enviado";
-                resultadoProceso = "-1";
-            }
-
-            log.debug("FacturaController.enviarXML...enviarComprobantePagoSunat Final");
-            
+            log.debug("ResumenDiarioController.enviarXML...Enviar Comprobante");
+            resultado = resumenDiarioService.sendSUNAT(Long.parseLong(id));
         } catch (Exception e) {
-            String mensaje = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
             e.printStackTrace();
-            log.error(mensaje);
-            resumenDiario.setFechaEnvio(new Date());
-            resumenDiario.setIndSituacion("06");
-            resumenDiario.setObservacionEnvio(mensaje);
-            resumenDiarioService.save(resumenDiario);
+            resultado = new HashMap<>();
+            resultado.put("code", "003");
+            resultado.put("message", e.getMessage());
         }
-
-        resultado.put("mensaje", mensajeValidacion);
-        resultado.put("codigo", resultadoProceso);
-        log.debug("SoftwareFacturadorController.enviarXML...Terminando el procesamiento");
-
         return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
     }
 }

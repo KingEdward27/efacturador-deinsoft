@@ -73,7 +73,7 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
 //    ConfigurationHolder config = ConfigurationHolder.getInstance();
 
     public byte[] formatoPlantillaXml(String rootPath, FacturaElectronica facturaElectronica, String nombreArchivo) throws TransferirArchivoException {
-        String idXml = "";
+        
         String tipoComprobante = facturaElectronica.getTipo();
         if ("01".equals(tipoComprobante) || "03"
                 .equals(tipoComprobante) || "07"
@@ -90,7 +90,7 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
 
             StringBuilder rutaSalida = new StringBuilder();
             rutaSalida.setLength(0);
-            rutaSalida.append(rootPath + "/" + facturaElectronica.getEmpresa().getNumdoc() + "/TEMP/").append(nombreArchivo).append(".xml");
+            rutaSalida.append(rootPath).append("/").append(facturaElectronica.getEmpresa().getNumdoc()).append("/TEMP/").append(nombreArchivo).append(".xml");
             String templatesPath = rootPath + "/VALI/";
 
             byte[] myByteArray = xmlParser.parse(templatesPath);

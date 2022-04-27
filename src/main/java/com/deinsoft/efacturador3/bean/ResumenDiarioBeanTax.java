@@ -38,6 +38,15 @@ public class ResumenDiarioBeanTax {
     public ResumenDiarioBeanTax() {
     }
 
+    public ResumenDiarioBeanTax(String idLineaRd, String ideTributoRd, String nomTributoRd, String codTipTributoRd, String mtoBaseImponibleRd, String mtoTributoRd) {
+        this.idLineaRd = idLineaRd;
+        this.ideTributoRd = ideTributoRd;
+        this.nomTributoRd = nomTributoRd;
+        this.codTipTributoRd = codTipTributoRd;
+        this.mtoBaseImponibleRd = mtoBaseImponibleRd;
+        this.mtoTributoRd = mtoTributoRd;
+    }
+
     public String getIdLineaRd() {
         return idLineaRd;
     }

@@ -7,6 +7,7 @@ package com.deinsoft.efacturador3.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -60,9 +61,9 @@ public class ResumenDiario {
     private String indSituacion;
     
     @Column(name = "fecha_envio")
-    private Date fechaEnvio;
+    private LocalDateTime fechaEnvio;
     
-    private Date FechaGenXml;
+    private LocalDateTime FechaGenXml;
     
     @Column(name = "observacion_envio")
     private String observacionEnvio;
@@ -160,19 +161,19 @@ public class ResumenDiario {
         this.indSituacion = indSituacion;
     }
 
-    public Date getFechaEnvio() {
+    public LocalDateTime getFechaEnvio() {
         return fechaEnvio;
     }
 
-    public void setFechaEnvio(Date fechaEnvio) {
+    public void setFechaEnvio(LocalDateTime fechaEnvio) {
         this.fechaEnvio = fechaEnvio;
     }
 
-    public Date getFechaGenXml() {
+    public LocalDateTime getFechaGenXml() {
         return FechaGenXml;
     }
 
-    public void setFechaGenXml(Date FechaGenXml) {
+    public void setFechaGenXml(LocalDateTime FechaGenXml) {
         this.FechaGenXml = FechaGenXml;
     }
 

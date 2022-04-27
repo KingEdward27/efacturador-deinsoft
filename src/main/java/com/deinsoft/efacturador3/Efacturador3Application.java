@@ -26,12 +26,12 @@ public class Efacturador3Application {
     public static void main(String[] args) throws Exception {
         SpringApplication.run(Efacturador3Application.class, args);
 //        ServiceConfig config = new ServiceConfig.Builder()
-//            .url("https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService")
+//            .url("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
 //            .username("10414316595EBOLETAS") 
 //            .password("Eboletas123")
 //            .build();
 //            
-//        BillServiceModel result =   BillServiceManager.getStatus("202208987586277", config);//202208980058201, 202208984136401
+//        BillServiceModel result =   BillServiceManager.getStatus("1650949839533", config);//202208980058201, 202208984136401
 //        System.out.println("result "+result.getStatus());
 //        System.out.println("result "+result.getDescription());
 //        System.out.println("result "+result.getCode());

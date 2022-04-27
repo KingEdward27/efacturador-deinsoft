@@ -153,7 +153,23 @@ public class ComunesServiceImpl implements ComunesService {
         }
         return result;
     }
-    
+    @Override
+    public BillServiceModel consultarTicketSUNAT(String wsUrl, String rootPath,String ticket, Empresa empresa){
+        BillServiceModel result;
+        try {
+            ServiceConfig config = new ServiceConfig.Builder()
+            .url(wsUrl)
+            .username(empresa.getNumdoc() + empresa.getUsuariosol())
+            .password(empresa.getClavesol())
+            .build();
+            
+        result =   BillServiceManager.getStatus(ticket, config);//202208980058201, 202208984136401
+        
+        } catch (Exception e) {
+            result = null;
+        }
+        return result;
+    }
     public Boolean validarVersionFacturador(String versionFacturador) {
         log.debug("ComunesServiceImpl.validarVersionFacturador...Inicio");
 

@@ -6,6 +6,7 @@
 package com.deinsoft.efacturador3.bean;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -45,25 +46,25 @@ public class ResumenDiarioBean {
     }
 
     @Valid
-    private Set<ResumenDiarioBeanDet> lista_comprobantes;
+    private List<ResumenDiarioBeanDet> lista_comprobantes;
 
     @Valid
-    private Set<ResumenDiarioBeanTax> lista_tributos;
+    private List<ResumenDiarioBeanTax> lista_tributos;
 
-    public Set<ResumenDiarioBeanDet> getLista_comprobantes() {
+    public List<ResumenDiarioBeanDet> getLista_comprobantes() {
         return lista_comprobantes;
     }
 
-    public void setLista_comprobantes(Set<ResumenDiarioBeanDet> lista_comprobantes) {
+    public void setLista_comprobantes(List<ResumenDiarioBeanDet> lista_comprobantes) {
         this.lista_comprobantes = lista_comprobantes;
     }
     
 
-    public Set<ResumenDiarioBeanTax> getLista_tributos() {
+    public List<ResumenDiarioBeanTax> getLista_tributos() {
         return lista_tributos;
     }
 
-    public void setLista_tributos(Set<ResumenDiarioBeanTax> lista_tributos) {
+    public void setLista_tributos(List<ResumenDiarioBeanTax> lista_tributos) {
         this.lista_tributos = lista_tributos;
     }
 

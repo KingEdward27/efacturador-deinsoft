@@ -3,13 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.deinsoft.efacturador3.controllers;
+package com.deinsoft.efacturador3.controllers.web;
 
+import com.deinsoft.efacturador3.controllers.BaseController;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.model.SecRoleUser;
 import com.deinsoft.efacturador3.model.SecUser;
 import com.deinsoft.efacturador3.service.FacturaElectronicaService;
+import com.deinsoft.efacturador3.service.ResumenDiarioService;
 import com.deinsoft.efacturador3.service.SecUserService;
+import com.deinsoft.efacturador3.util.ExportUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -31,6 +39,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.springframework.security.core.GrantedAuthority;
@@ -43,6 +52,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.HashMap;
+import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 /**
@@ -51,13 +62,16 @@ import org.springframework.web.bind.annotation.PostMapping;
  */
 @Controller
 @SessionAttributes("facturaView")
-public class FacturaViewController {
+public class FacturaViewController extends BaseController{
 
     protected final Log logger = LogFactory.getLog(this.getClass());
 
     @Autowired
     private FacturaElectronicaService facturaElectronicaService;
 
+    @Autowired
+    private ResumenDiarioService resumenDiarioService;
+    
     @Autowired
     private SecUserService secUserService;
 
@@ -116,19 +130,25 @@ public class FacturaViewController {
         model.addAttribute("facturas", list);
         return "listar";
     }
-    void verDatos(Model model,SecUser usuario){
+    List<FacturaElectronica> verDatos(Model model,SecUser usuario){
         List<Integer> listEmpresaIds = new ArrayList<>();
         for (SecRoleUser secRoleUser : usuario.getListSecRoleUser()) {
             listEmpresaIds.add(secRoleUser.getEmpresa().getId());
         }
-        model.addAttribute("titulo", "Listado de Comprobantes");
+        
         List<FacturaElectronica> list = new ArrayList<>();
         if (facturaSearch.getFechaIni() == null || !StringUtils.hasText(facturaSearch.getFechaIni()) ||
                 facturaSearch.getFechaFin() == null || !StringUtils.hasText(facturaSearch.getFechaFin())) {
-            model.addAttribute("success", "Debe ingresar la fecha inicial y final para hacer la búsqueda");
-            model.addAttribute("facturas", list);
-            model.addAttribute("facturaSearch", this.facturaSearch);
-            return;
+            if(model != null){
+                model.addAttribute("titulo", "Listado de Comprobantes");
+                model.addAttribute("success", "Debe ingresar la fecha inicial y final para hacer la búsqueda");
+                model.addAttribute("facturas", list);
+                model.addAttribute("facturaSearch", this.facturaSearch);
+                return list;
+            }
+            else{
+                return null;
+            }
         }
 //        if (facturaSearch.getFechaIni() == null || !StringUtils.hasText(facturaSearch.getFechaIni())) {
 //            model.addAttribute("facturas", list);
@@ -137,8 +157,12 @@ public class FacturaViewController {
         LocalDate date1 = LocalDate.parse(this.facturaSearch.getFechaIni(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         LocalDate date2 = LocalDate.parse(this.facturaSearch.getFechaFin(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         list = facturaElectronicaService.getByFechaEmisionBetweenAndEmpresaIdIn(date1, date2, listEmpresaIds);
-        model.addAttribute("facturas", list);
-        model.addAttribute("facturaSearch", this.facturaSearch);
+        if(model != null){
+            model.addAttribute("titulo", "Listado de Comprobantes");
+            model.addAttribute("facturas", list);
+            model.addAttribute("facturaSearch", this.facturaSearch);
+        }
+        return list;
     }
     
     @RequestMapping(value = {"/listar"}, method = RequestMethod.GET)
@@ -182,7 +206,7 @@ public class FacturaViewController {
         SecUser usuario = secUserService.getSecUserByName(auth.getName());
 
         if (usuario == null) {
-            return "/login";
+            return "redirect : /login";
         }
         
         
@@ -262,6 +286,12 @@ public class FacturaViewController {
             Authentication authentication,
             HttpServletRequest request){
         Map<String, Object> resultado = null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        SecUser usuario = secUserService.getSecUserByName(auth.getName());
+
+        if (usuario == null) {
+            return "redirect : /login";
+        }
         try {
             resultado = facturaElectronicaService.sendToSUNAT(idComprobante);
             if(resultado != null && resultado.get("status") != null){
@@ -282,17 +312,55 @@ public class FacturaViewController {
             resultado.put("message", e.getMessage());
             model.addAttribute("error", resultado.get("code") + "\n" + resultado.get("message"));
         }
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        SecUser usuario = secUserService.getSecUserByName(auth.getName());
-
-        if (usuario == null) {
-            return "/login";
-        }
+        
         verDatos(model, usuario);
         
         return "listar :: lista";
     }
+    @RequestMapping(value = {"/resumendiario/send"}, method = RequestMethod.POST)
+    public String sendResumenDiario( 
+            @RequestParam(value = "idComprobantes") String idComprobantes,
+            Model model,
+            RedirectAttributes flash,
+            Authentication authentication,
+            HttpServletRequest request){
+        Map<String, Object> resultado = null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        SecUser usuario = secUserService.getSecUserByName(auth.getName());
 
+        if (usuario == null) {
+            return "redirect : /login";
+        }
+        String[] idsTrabajadores = idComprobantes.split(",");
+        List<Long> listIds = new ArrayList<>();
+        for (String idsTrabajadore : idsTrabajadores) {
+            listIds.add(Long.valueOf(idsTrabajadore));
+        }
+        try {
+            resultado = resumenDiarioService.generarComprobantePagoSunatFromFacturas(listIds);
+            if(resultado != null && resultado.get("status") != null){
+                if(resultado.get("code").toString().equals("0")){
+                    model.addAttribute("success", resultado.get("status") + "\n" + resultado.get("description"));
+                }else{
+                    model.addAttribute("warning", resultado.get("status") + "\n" + " Código SUNAT rechazo: "+ resultado.get("code"));
+                }
+                
+            }else{
+                model.addAttribute("warning", resultado.get("code") + "\n" + resultado.get("message"));
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultado = new HashMap<>();
+            resultado.put("code", "003");
+            resultado.put("message", e.getMessage());
+            model.addAttribute("error", resultado.get("code") + "\n" + resultado.get("message"));
+        }
+        
+        verDatos(model, usuario);
+        
+        return "listar :: lista";
+    }
     @RequestMapping(value = {"/sendsunat"}, method = RequestMethod.GET)
     public String sendSunatMasivo(Model model,
             @ModelAttribute("facturaSearch") FacturaElectronica facturaSearch,
@@ -300,45 +368,44 @@ public class FacturaViewController {
             HttpServletRequest request) {
         return "redirect:/listar";
     }
+    @RequestMapping(value = {"/factura/export/excel"}, method = RequestMethod.GET)
+    public String exportToExcel(Model model,HttpServletResponse response) throws IOException, IllegalArgumentException, IllegalAccessException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        SecUser usuario = secUserService.getSecUserByName(auth.getName());
 
+        if (usuario == null) {
+            return "redirect : /login";
+        }
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+         
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=comprobantes_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+        
+        List<FacturaElectronica> list = verDatos(null, usuario);
+        if(list == null){
+            return "/login";
+        }
+        String[] arrayVisibleObjects = {"tipo","serie","numero","fechaEmision","clienteNombre","totalValorVenta","indSituacion"};
+        String[] cabecera = {"Tipo","Serie","N. Documento","Fecha EmisiÓn","Cliente","Total","Situacion"};
+        List<Map<String,Object>> list2= new ArrayList<>();
+        for (FacturaElectronica facturaElectronica : list) {
+//            Map<String, Object> map = new ObjectMapper().convertValue(facturaElectronica, Map.class);
+//            list2.add(map);
+            
+            list2.add(facturaElectronica.toMap(facturaElectronica,arrayVisibleObjects));
+        }
+        ExportUtil excelExporter = new ExportUtil(list2,cabecera,arrayVisibleObjects);
+         
+        excelExporter.export(response);
+        return null;
+    }  
     //            Page<FacturaElectronica> pageList = listConvertToPage1(list, pageRequest);
 //            PageRender<FacturaElectronica> pageRender = new PageRender<FacturaElectronica>("/listar", pageList);
 //            model.addAttribute("page", pageRender);
-    public static <T> Page<T> listConvertToPage1(List<T> list, Pageable pageable) {
-        int start = (int) pageable.getOffset();
-        int end = (int) (start + pageable.getPageSize()) > list.size() ? list.size() : (start + pageable.getPageSize());
-        return new PageImpl<T>(list.subList(start, end), pageable, list.size());
-    }
-
-    private boolean hasRole(String role) {
-
-        SecurityContext context = SecurityContextHolder.getContext();
-
-        if (context == null) {
-            return false;
-        }
-
-        Authentication auth = context.getAuthentication();
-
-        if (auth == null) {
-            return false;
-        }
-
-        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
-
-        return authorities.contains(new SimpleGrantedAuthority(role));
-
-        /*
-		 * for(GrantedAuthority authority: authorities) {
-			if(role.equals(authority.getAuthority())) {
-				logger.info("Hola usuario ".concat(auth.getName()).concat(" tu role es: ".concat(authority.getAuthority())));
-				return true;
-			}
-		}
-		
-		return false;
-         */
-    }
+   
 
     public FacturaElectronica getFacturaSearch() {
         return facturaSearch;

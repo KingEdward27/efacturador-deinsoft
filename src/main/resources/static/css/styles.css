@@ -1,4 +1,4 @@
-body{ 
+/*body{ 
   min-height: 100vh; 
   margin: 0; 
   
@@ -9,7 +9,7 @@ body{
 header{ 
   min-height:50px;
   background:lightcyan; 
-}
+}*/
 
 footer{ 
   min-height:50px; 
@@ -33,6 +33,11 @@ footer{
     border: 1px solid rgba(0,0,0,.15);
     border-radius: .75rem;
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+.btn{
+    border-radius: .75rem;
+    color: #fff !important;
+    padding : 10px 20px 10px 20px;
 }
 .input-icon{
     display: block;
@@ -77,7 +82,7 @@ footer{
 a, button, input[type=submit], input[type=button]{
     cursor: pointer;
 }
-#loading {
+/*#loading {
     background: url('../images/loader.gif') no-repeat center center;
     position: absolute;
     top: 0;
@@ -85,14 +90,42 @@ a, button, input[type=submit], input[type=button]{
     height: 100%;
     width: 100%;
     z-index: 9999999;
-}
+}*/
 html, #loading {
    height: 100%;
    margin: 0;
 }
-.dropdown-menu {
+.dropdown-menu2 {
     position: absolute;
     top: 100%;
     right: 0;
     left: inherit;
+}
+.ui-widget-header{
+    border: 0px;
+    background: none;
+}
+#dtTable_paginate{
+    display: none;
+}
+.ui-buttonset .ui-button{
+    margin-right: .0em;
+    padding: 3px 6px 3px 6px;
+}
+.dataTables_wrapper .dataTables_filter input, .dataTables_wrapper .dataTables_length select {
+    background-color: white !important;
+}
+.thead-inverse th{
+    background: #0078ae url(images/ui-bg_glass_45_0078ae_1x400.png) 50% 50% repeat-x;
+}
+
+.table.dataTable thead th, table.dataTable thead td{
+    padding: 2px 5px 2px 5px;
+    cursor: pointer
+}
+.ui-draggable .ui-dialog-titlebar{
+    background: #0078ae url(images/ui-bg_glass_45_0078ae_1x400.png) 50% 50% repeat-x;
+}
+table.dataTable tfoot th, table.dataTable tfoot td {
+    padding: 10px 8px 6px 18px !important;
 }

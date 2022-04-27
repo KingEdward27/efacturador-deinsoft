@@ -40,5 +40,6 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
             + "and p.numero = :#{#facturaElectronica.docrefNumero} "
             + "and p.empresa.id = :#{#facturaElectronica.empresa.id} ")
     List<FacturaElectronica> findByDocrefSerieAndDocrefNumero(@Param("facturaElectronica") FacturaElectronica facturaElectronica);
-
+    
+    List<FacturaElectronica> findByIdIn(List<Long> ids);
 }

@@ -12,7 +12,7 @@
                 <div class="card-body">
                     <form method="get" >
                         <div class = "row">
-                            <div class="form-group col-2">
+                            <div class="form-group col-xl-2 col-lg-2 col-sm-3 col-xs-3">
                                 <label for="fechaIni">Desde</label>
                                 <div class="input-group date">
                                     <span class="input-group-append bg-white border-right-0 input-icon">
@@ -27,7 +27,7 @@
                                                             <option value="">Search state</option>
                                                         </select>-->
                             </div>
-                            <div class="form-group col-2">
+                            <div class="form-group col-xl-2 col-lg-2 col-sm-3 col-xs-3">
                                 <label for="fechaFin">Hasta</label>
                                 <div class="input-group date">
                                     <span class="input-group-append bg-white border-right-0 input-icon">
@@ -42,15 +42,21 @@
                                                             <option value="">Search state</option>
                                                         </select>-->
                             </div>
-                            <div class="form-group col-2" style = "margin-top:10px;">
-                                <input type="button" class="btn btn-primary btn-xs" onclick="search();" value = "Buscar">
+                            <div class="form-group col-xl-2 col-lg-2 col-sm-6" style = "margin-top:10px;text-align: center">
+                                <a class="btn btn-primary btn-xs" onclick="search2();"><span class="btn-label"><i class="fa fa-file-text-o"></i></span> Buscar</a>
                             </div>
-                            <div class="col-2"></div>
-                            <div class="form-group col-4">
+                            <div class="form-group col-xl-6 col-lg-6 col-sm-12" style = "margin-top:10px;text-align: center">
                                 <div class = "row float-right">
-                                    <a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-primary btn-xs col-5" style="max-width: 150px;white-space: normal;">Enviar Resumen diario</a>
-                                    <a class="col-1"></a>
-                                    <a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-secondary btn-xs col-5" style="max-width: 150px;white-space: normal;">Enviar Resumen baja</a>
+                                    <a sec:authorize="hasRole('ROLE_ADMIN')" 
+                                       onclick="resumenDiario();" 
+                                       class="btn btn-primary btn-xs" 
+                                       style="max-width: 150px;white-space: normal;"
+                                       title = "Generar y enviar Resumen Diario"><span class="btn-label"><i class="fa fa-file-zip-o"></i></span></a>
+                                    
+                                    <a class="btn btn-success btn-xs mx-1" 
+                                       th:href="@{/factura/export/excel}" 
+                                       title = "Exportar a Excel"><span class="btn-label"><i class="fa fa-file-excel-o"></i></span></a>
+                                    
                                 </div>
 
                             </div>
@@ -67,25 +73,45 @@
                                 th:text="${warning}"></div>
                            <div class="alert alert-info" th:if="${info != null}"
                                 th:text="${info}"></div>
+                        <div style="display: none">
+                            <div id="dlgConfirm" title="Confirmar">
+                                <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><div id="msgConfirm">shkjgyuty</div>
+                            </div>
+                        </div>
+                        <table>
+                            <tr>
+                                    <td colspan="6" style="font-weight: bold;color: blue;">Total enviados: </td>
+                                    <td style="font-weight: bold;color: blue;" th:text="${#lists.size(facturas.?[indSituacion == 'ACEPTADO'])}" />
+                                    <td>&nbsp;&nbsp;</td>
+                                    <td colspan="6" style="font-weight: bold;color: red;">Total No enviados: </td>
+                                    <td style="font-weight: bold;color: red;" th:text="${#lists.size(facturas.?[indSituacion != 'ACEPTADO'])}" />
+                                </tr>
+                        </table>
                         <table id = "dtTable"  class="table table-striped table-bordered ">
                             <thead class="thead-inverse">
                                 <tr>
                                     <th>#</th>
-                                    <th sec:authorize="hasRole('ROLE_ADMIN')" > </th>
+                                    <th sec:authorize="hasRole('ROLE_ADMIN')" >
+                                    <!--<input type="checkbox" id="allRows" class = "allRows"
+                                           style="text-align: center"  />-->
+                                    </th>
                                     <th>Tipo</th>
                                     <th>Serie</th>
                                     <th>Nro. documento</th>
                                     <th>Fecha Emisión</th>
                                     <th>Cliente</th>
                                     <th>Monto</th>
-                                    <th>Situacion</th>
+                                    <th style = "max-width: 15%;">Situacion</th>
                                     <th sec:authorize="hasRole('ROLE_ADMIN')">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="tableList">
                                 <tr th:each="factura,iter : ${facturas}">
                                     <td th:text="${iter.count}"></td>
-                                    <td sec:authorize="hasRole('ROLE_ADMIN')" ><input type="checkbox" th:field="*{facturas}" th:value="|${factura.id}|" /></td>
+                                    <td sec:authorize="hasRole('ROLE_ADMIN')" >
+                                        <input type="checkbox" th:field="*{facturas}" 
+                                               th:value="|${factura.id}|"
+                                               class = "checkbox1"/></td>
                                     <td th:text="${factura.tipo}"></td>
                                     <td th:text="${factura.serie}"></td>
                                     <td style="text-align: right;" th:text="${factura.numero}"></td>
@@ -107,8 +133,17 @@
                                            th:onclick="'javascript:sendSUNAT(' + ${factura.id} + ');'" >
                                             <span class="btn-label"><i class="fa fa-file-pdf-o"></i></span></a></td>
                                 </tr>
+                                
                             </tbody>
-
+                            <tfoot>
+                                
+                                <tr>
+                                    <td sec:authorize="hasRole('ROLE_ADMIN')" >
+                                    <td colspan="6" style="text-align: right;font-weight: bold;">Total:</td>
+                                    <td style="text-align: right;font-weight: bold;" th:text="${#aggregates.sum(facturas.![totalValorVenta])}" />
+                                    <td colspan="2"></td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
 
@@ -124,13 +159,27 @@
         
         <footer th:replace="layout/layout :: footer"></footer>
         <script>
-            $('.input-group.date').datepicker({
-                autoclose: true,
-                language: 'es',
-                todayHighlight: true
+            $(document).ready(function() {
+                $("#dtTable").on("click", ".allRows", function(){  //on click 
+                    if (this.checked) { // check select status
+                        $('.checkbox1').each(function() { //loop through each checkbox
+                            alert("wee");
+                            this.checked = true;  //select all checkboxes with class "checkbox1"               
+                        });
+                    } else {
+                        $('.checkbox1').each(function() { //loop through each checkbox
+                            this.checked = false; //deselect all checkboxes with class "checkbox1"                       
+                        });
+                    }
+                });
+                
+                $('.input-group.date').datepicker({
+                    autoclose: true,
+                    language: 'es',
+                    todayHighlight: true
+                });
             });
-            
-            function search() {
+            function search2() {
                 var fechaIni = $("#fechaIni").val();
                 var fechaFin = $("#fechaFin").val();
                 if(fechaIni == "" || fechaFin == ""){
@@ -138,7 +187,7 @@
                         'Búsqueda',
                         'Debe ingresar los campos fecha inicial y final para hacer la búsqueda',
                         'error'
-                      )
+                      );
                     return;
                 }
                 $.ajax({
@@ -152,28 +201,8 @@
                         $("#ajaxloader").show();
                     },
                     success: function (data) {
-                        $("#ajaxloader").hide();
                         $("#list").replaceWith(data);
-                        setTimeout(function () {
-                            dt = $("#dtTable").DataTable({
-                                language: {
-                                    emptyTable: '',
-                                    zeroRecords: 'No hay coincidencias',
-                                    lengthMenu: 'Mostrar _MENU_ elementos',
-                                    search: 'Buscar:',
-                                    info: 'De _START_ a _END_ de _TOTAL_ elementos',
-                                    infoEmpty: 'De 0 a 0 de 0 elementos',
-                                    infoFiltered: '(filtrados de _MAX_ elementos totales)',
-                                    paginate: {
-                                        first: 'Prim.',
-                                        last: 'Últ.',
-                                        next: 'Sig.',
-                                        previous: 'Ant.'
-                                    }
-                                }
-                            });
-
-                        }, 1);
+                        oDatatable();
                     }, error: function (request, error) {
                         $("#loading").hide();
                         alert("Ocurrió un error inesperado: " + error);
@@ -181,85 +210,72 @@
                 });
             }
             function genXML(id) {
-                $.ajax({
-                    url: "/factura/xml",
-                    type: "POST",
-                    data: {
-                        idComprobante: id,
-                        _csrf: $("[name='_csrf']").val()
-                    },
-                    success: function (data) {
-                        $("#list").replaceWith(data);
-//                        if (typeof dt !== 'undefined') {
-//                            dt.destroy();
-//                        }
-                        setTimeout(function () {
-                            dt = $("#dtTable").DataTable({
-                                language: {
-                                    emptyTable: '',
-                                    zeroRecords: 'No hay coincidencias',
-                                    lengthMenu: 'Mostrar _MENU_ elementos',
-                                    search: 'Buscar:',
-                                    info: 'De _START_ a _END_ de _TOTAL_ elementos',
-                                    infoEmpty: 'De 0 a 0 de 0 elementos',
-                                    infoFiltered: '(filtrados de _MAX_ elementos totales)',
-                                    paginate: {
-                                        first: 'Prim.',
-                                        last: 'Últ.',
-                                        next: 'Sig.',
-                                        previous: 'Ant.'
-                                    }
-                                }
-                            });
-
-                        }, 1);
-                    }, error: function (request, error) {
-                        alert("Ocurrió un error inesperado: " + error);
-                    }
+                callConfirmDialog("¿Está Seguro de realizar este proceso?", function() {
+                    $.ajax({
+                        url: "/factura/xml",
+                        type: "POST",
+                        data: {
+                            idComprobante: id,
+                            _csrf: $("[name='_csrf']").val()
+                        },
+                        success: function (data) {
+                            $("#list").replaceWith(data);
+                            oDatatable();
+                        }, error: function (request, error) {
+                            alert("Ocurrió un error inesperado: " + error);
+                        }
+                    });
                 });
+                
             }
             //alert(dt);
             if (typeof dt !== 'undefined') {
                 dt.destroy();
             }
             function sendSUNAT(id) {
-                $.ajax({
-                    url: "/factura/sunat",
-                    type: "POST",
-                    data: {
-                        idComprobante: id,
-                        _csrf: $("[name='_csrf']").val()
-                    },
-                    success: function (data) {
-                        $("#list").replaceWith(data);
-                        setTimeout(function () {
-                            dt = $("#dtTable").DataTable({
-                                language: {
-                                    emptyTable: '',
-                                    zeroRecords: 'No hay coincidencias',
-                                    lengthMenu: 'Mostrar _MENU_ elementos',
-                                    search: 'Buscar:',
-                                    info: 'De _START_ a _END_ de _TOTAL_ elementos',
-                                    infoEmpty: 'De 0 a 0 de 0 elementos',
-                                    infoFiltered: '(filtrados de _MAX_ elementos totales)',
-                                    paginate: {
-                                        first: 'Prim.',
-                                        last: 'Últ.',
-                                        next: 'Sig.',
-                                        previous: 'Ant.'
-                                    }
-                                }
-                            });
-
-                        }, 1);
-                    }, error: function (request, error) {
-                        alert("Ocurrió un error inesperado: " + error);
-                    }
+                callConfirmDialog("¿Está Seguro de realizar este proceso?", function() {
+                    $.ajax({
+                        url: "/factura/sunat",
+                        type: "POST",
+                        data: {
+                            idComprobante: id,
+                            _csrf: $("[name='_csrf']").val()
+                        },
+                        success: function (data) {
+                            $("#list").replaceWith(data);
+                            oDatatable();
+                        }, error: function (request, error) {
+                            alert("Ocurrió un error inesperado: " + error);
+                        }
+                    });
                 });
+                
             }
             //alert(dt);
             if (typeof dt !== 'undefined') {
                 dt.destroy();
+            }
+            function resumenDiario(){
+                callConfirmDialog("¿Está Seguro de realizar este proceso?", function() {
+                   var json = $("#tableList input:checkbox:checked").map(function() {
+                                                    return $(this).val();
+                   }).get(); 
+                   $.ajax({
+                        url: "/resumendiario/send",
+                        type: "POST",
+                        data: {
+                            idComprobantes: json.toString(),
+                            _csrf: $("[name='_csrf']").val()
+                        },
+                        success: function (data) {
+                            $("#list").replaceWith(data);
+                            oDatatable();
+                            
+                        }, error: function (request, error) {
+                            alert("Ocurrió un error inesperado: " + error);
+                        }
+                    });
+                });
             }
             
         </script>

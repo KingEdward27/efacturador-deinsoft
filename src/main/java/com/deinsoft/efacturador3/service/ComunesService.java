@@ -25,6 +25,8 @@ public interface ComunesService {
   
   Properties getProperties(String paramString);
   public BillServiceModel enviarArchivoSunat(String wsUrl, String rootPath, String filename, Empresa Empresa);
+  
+  public BillServiceModel consultarTicketSUNAT(String wsUrl, String rootPath,String ticket, Empresa empresa);
 }
 
 

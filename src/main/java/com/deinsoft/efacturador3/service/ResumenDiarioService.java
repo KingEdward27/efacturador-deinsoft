@@ -27,4 +27,6 @@ public interface ResumenDiarioService {
     public Map<String, Object> generarComprobantePagoSunat(String rootpath,ResumenDiario resumenDiario) throws TransferirArchivoException;
     ResumenDiario toResumenDiarioModel(ResumenDiarioBean resumenDiarioBean,Empresa empresa) throws ParseException;
     public List<ResumenDiario> saveAll(List<ResumenDiario> e);
+    public Map<String, Object> generarComprobantePagoSunatFromFacturas(List<Long> listIds) throws TransferirArchivoException;
+    public Map<String, Object> sendSUNAT(Long id) ;
 }

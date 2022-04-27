@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.deinsoft.efacturador3.controllers;
+package com.deinsoft.efacturador3.controllers.web;
 
 import java.security.Principal;
 import org.springframework.ui.Model;

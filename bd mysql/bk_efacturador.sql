@@ -746,8 +746,16 @@ insert into sec_user values(null,"edward21.sistemas@gmail.com",'edward','$2a$10$
 insert into sec_user values(null,"edward21.sistemas@gmail.com",'pablo','$2a$10$ySSHW/94asbWwyduiUu6t./z761Sqgo0kJA9Q0/DexTBv9wY267wu','1');
 insert into sec_user values(null,"antonio@gmail.com",'antonio','$2a$10$ySSHW/94asbWwyduiUu6t./z761Sqgo0kJA9Q0/DexTBv9wY267wu','1');
 
-insert into sec_role_user values(null,15,2,2);
+insert into sec_role_user values(null,1,1,1);
+insert into sec_role_user values(null,1,2,2);
 insert into sec_role_user values(null,6,2,3);
-delete from factura_electronica where empresa_id not in (6,14,15)
 
+'3', 'VAT', '8.47', '1.53', 'IGV', '1000', '3'
+'4', 'VAT', '25.42', '4.58', 'IGV', '1000', '4'
+
+select * from empresa
+select * from factura_electronica_tax
+select * from factura_electronica_det
+select * from resumen_diario_det
+select * from resumen_diario_tax
 select * from factura_electronica where empresa_id = 6
