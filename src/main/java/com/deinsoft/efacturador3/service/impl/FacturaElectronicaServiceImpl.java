@@ -383,7 +383,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         comprobante.setMontoNetoPendiente(documento.getMonto_neto_pendiente() == null? BigDecimal.ZERO : documento.getMonto_neto_pendiente());
         comprobante.setTipoMonedaMontoNetoPendiente(documento.getMoneda_monto_neto_pendiente());
         comprobante.setDescuentosGlobales(BigDecimal.ZERO);
-
+        comprobante.setEstado("1");
         
         if(documento.getSerie_ref() != null && documento.getSerie_ref().length() == 4){
             comprobante.setDocrefSerie(documento.getSerie_ref());

@@ -178,6 +178,8 @@ exec sp_columns resumen_diario
 select * from factura_electronica
 select * from resumen_diario_det
 
+update factura_electronica set estado = '1' where estado is null
+
 alter table factura_electronica
 add estado char(1) default '1';
 
