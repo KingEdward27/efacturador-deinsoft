@@ -232,9 +232,9 @@ public class PipeFacturaParser
             detalle.put("mtoTriIcbperUnidad", "-");
 
             detalle.put("mtoPrecioVentaUnitario", item.getPrecioVentaUnitario());
-            detalle.put("mtoValorVentaItem", String.valueOf(item.getValorVentaItem()));
-            detalle.put("mtoValorReferencialUnitario", String.valueOf(item.getValorRefUnitario()));
-            detalle.put("ctdUnidadItem", String.valueOf(item.getCantidad()));
+            detalle.put("mtoValorVentaItem", Impresion.df.format(item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv())));
+            detalle.put("mtoValorReferencialUnitario", Impresion.df.format(item.getValorRefUnitario()));
+            detalle.put("ctdUnidadItem", Impresion.df.format(item.getCantidad()));
             detalle.put("lineaSwf", String.valueOf(contadorItem));
             detalle.put("tipoCodiMoneGratiSwf", "02");
 

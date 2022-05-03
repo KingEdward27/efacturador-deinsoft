@@ -49,7 +49,7 @@ public class Efacturador3Application implements CommandLineRunner {
 //         }
     }
 
-//    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 10000)
     void sendSunat() {
         facturaElectronicaService.sendToSUNAT();
     }
