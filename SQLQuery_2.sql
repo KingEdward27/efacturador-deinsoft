@@ -175,11 +175,14 @@ CREATE TABLE resumen_diario_tax (
 exec sp_columns factura_electronica
 exec sp_columns resumen_diario
 
-select * from factura_electronica
+select * from factura_electronica WHERE M_ID = 381
+update factura_electronica set ind_situacion = '03',serie = 'F001',observacion_envio = '- El comprobante de pago consultado ha sido emitido a otro contribuyente.',
+ FECHA_EMISION = '2022-04-29' WHERE M_ID = 381
+
 select * from resumen_diario_det
-
+select * from factura_electronica where numero = '00000202'
 update factura_electronica set estado = '1' where estado is null
-
+select * from factura_electronica_det where m_id in 380,
 alter table factura_electronica
 add estado char(1) default '1';
 
@@ -197,3 +200,6 @@ select 1 from resumen_diario_det det
 where nro_documento = 'BB02' + '-' +'00000037'
 and det.resumen_diario_id = 2
 
+ALTER TABLE factura_electronica
+ADD CONSTRAINT df_estado
+DEFAULT '1' FOR estado;

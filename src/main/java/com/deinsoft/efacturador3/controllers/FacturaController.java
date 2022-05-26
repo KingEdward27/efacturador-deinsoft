@@ -165,7 +165,23 @@ public class FacturaController extends BaseController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
     }
-
+    @PostMapping(value = "/get-pdf")
+    public ResponseEntity<?> getPDF(@RequestParam(name = "id") String id,
+            @RequestParam(name = "tipo") int tipo,
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
+        log.debug("FacturaController.get-pdf...Iniciando el procesamiento");
+        Map<String, Object> resultado = null;
+        try {
+            resultado =  facturaElectronicaService.getPDF(new Long(id),tipo);
+        }catch (Exception e) {
+            e.printStackTrace();
+            resultado  = new HashMap<>();
+            resultado.put("code","003");
+            resultado.put("message",e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultado);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
+    }
     
 
     

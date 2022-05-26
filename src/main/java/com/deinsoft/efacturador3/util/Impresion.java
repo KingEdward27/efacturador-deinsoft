@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class Impresion {
             parametros.put("razon_social", comprobante.getEmpresa().getNombreComercial() == null ? comprobante.getEmpresa().getRazonSocial() : comprobante.getEmpresa().getNombreComercial());
             parametros.put("direccion", comprobante.getEmpresa().getDireccion());
             parametros.put("ruc", comprobante.getEmpresa().getNumdoc());
-
+            System.out.println("comprobante.getEmpresa().getNumdoc(): "+comprobante.getEmpresa().getNumdoc());
             parametros.put("numero", comprobante.getSerie() + "-" + comprobante.getNumero());
             parametros.put("ruc_dniCliente", comprobante.getClienteDocumento());
             parametros.put("nombreCliente", comprobante.getClienteNombre());
@@ -88,7 +89,10 @@ public class Impresion {
             parametros.put("pgravado",String.valueOf(comprobante.getTotalValorVenta().subtract(comprobante.getSumatoriaIGV())));
             parametros.put("pigv",String.valueOf(comprobante.getSumatoriaIGV()));
             parametros.put("ptotal", String.valueOf(comprobante.getTotalValorVenta()));
-            parametros.put("ptotal_letras", "SON "+ NumberToLetterConverter.convertNumberToLetter(comprobante.getTotalValorVenta().doubleValue(),descripcionMoneda));
+//            NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
+//            Number number = format.parse(comprobante.getTotalValorVenta().toString());
+//            double d = comprobante.getTotalValorVenta().doubleValue();
+            parametros.put("ptotal_letras", "SON "+ NumberToLetterConverter.convertNumberToLetter( comprobante.getTotalValorVenta().toString(),descripcionMoneda));
 
             parametros.put("pusuario_fecha", "ADMIN el " + comprobante.getFechaEmision());
             parametros.put("presolucion", "Autorizado mediantes resolución N° "+ Constantes.RESOLUCION);

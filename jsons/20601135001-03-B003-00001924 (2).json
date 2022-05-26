@@ -1,0 +1,96 @@
+{
+  "cabecera": {
+    "tipOperacion": "1001",
+    "fecEmision": "2020-08-25",
+    "horEmision": "20:38:56",
+    "fecVencimiento": "-",
+    "codLocalEmisor": "0001",
+    "tipDocUsuario": "0",
+    "numDocUsuario": "11111111",
+    "rznSocialUsuario": "PUBLICO EN GENERAL",
+    "tipMoneda": "PEN",
+    "sumTotTributos": "0.00",
+    "adicionalCabecera": {
+      "ctaBancoNacionDetraccion": "00561052735",
+      "codBienDetraccion": "035",
+      "porDetraccion": "1.50",
+      "mtoDetraccion": "53.87",
+      "codMedioPago": "001",
+      "codPaisCliente": "PE",
+      "codUbigeoCliente": "",
+      "desDireccionCliente": "-",
+      "codPaisEntrega": "PE",
+      "codUbigeoEntrega": "110507",
+      "desDireccionEntrega": "AV. LOS LIBERTADORES Nº. 614"
+    },
+    "sumTotValVenta": "3591.00",
+    "sumPrecioVenta": "3591.00",
+    "sumDescTotal": "0.00",
+    "sumOtrosCargos": "0.00",
+    "sumTotalAnticipos": "0.00",
+    "sumImpVenta": "3591.00",
+    "ublVersionId": "2.1",
+    "customizationId": "2.0"
+  },
+  "detalle": [
+
+    {
+      "codUnidadMedida": "NIU",
+      "ctdUnidadItem": "57.000",
+      "codProducto": "100168",
+      "codProductoSUNAT": "-",
+      "desItem": "UREA X 50KG",
+      "mtoValorUnitario": "63.00",
+      "sumTotTributosItem": "0.00",
+      "codTriIGV": "9997",
+      "mtoIgvItem": "0.00",
+      "mtoBaseIgvItem": "3591.00",
+      "nomTributoIgvItem": "EXO",
+      "codTipTributoIgvItem": "VAT",
+      "tipAfeIGV": "20",
+      "porIgvItem": "0.00",
+      "codTriISC": "",
+      "mtoIscItem": "0.00",
+      "mtoBaseIscItem": "0.00",
+      "nomTributoIscItem": "",
+      "codTipTributoIscItem": "",
+      "tipSisISC": "",
+      "porIscItem": "0.00",
+      "codTriOtro": "-",
+      "mtoTriOtroItem": "0.00",
+      "mtoBaseTriOtroItem": "0.00",
+      "nomTributoOtroItem": "",
+      "codTipTributoOtroItem": "",
+      "porTriOtroItem": "0.00",
+      "codTriIcbper": "-",
+      "mtoTriIcbperItem": "0.00",
+      "ctdBolsasTriIcbperItem": "0",
+      "nomTributoIcbperItem": null,
+      "codTipTributoIcbperItem": null,
+      "mtoTriIcbperUnidad": "0.00",
+      "mtoPrecioVentaUnitario": "63.00",
+      "mtoValorVentaItem": "3591.00",
+      "mtoValorReferencialUnitario": "0.00"
+    }
+  ],
+  "tributos": [
+
+    {
+      "ideTributo": "9997",
+      "nomTributo": "EXO",
+      "codTipTributo": "VAT",
+      "mtoBaseImponible": "3591.00",
+      "mtoTributo": "0.00"
+    }
+  ],
+  "leyendas": [
+    
+    {
+      "codLeyenda": "2006",
+      "desLeyenda": "Operación sujeta a detracción"
+    },
+    {
+      "codLeyenda": "1000",
+      "desLeyenda": "TRES MIL QUINIENTOS NOVENTA Y UN CON 00/100 SOLES"
+    }
+  ]}

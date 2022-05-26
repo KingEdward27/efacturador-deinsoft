@@ -43,4 +43,8 @@ public interface FacturaElectronicaService {
     public List<FacturaElectronica> getByFechaEmisionBetweenAndEmpresaIdIn(LocalDate fecIni, LocalDate fecFin,List<Integer> empresaIds);
     
     public List<FacturaElectronica> getByIdIn(List<Long> ids);
+    
+    public List<FacturaElectronica> getByTicketOperacion(long ticketOperacion);
+    
+    public Map<String, Object> getPDF(long ticketOperacion,int tipo) throws Exception;
 }

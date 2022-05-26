@@ -1,0 +1,38 @@
+{
+  "cabecera": 
+  {
+    "tipOperacion": "1001",
+    "fecEmision": "2020-08-25",
+    "horEmision": "20:33:15",
+    "codLocalEmisor": "0001",
+    "tipDocUsuario": "0",
+    "numDocUsuario": "11111111",
+    "rznSocialUsuario": "PUBLICO EN GENERAL",
+    "tipMoneda": "PEN",
+    "codMotivo": "01",
+    "desMotivo": "Anulación de la operación",
+    "tipDocAfectado": "03",
+    "numDocAfectado": "B003-00001918",
+    "sumTotTributos": "47.29",
+    "adicionalCabecera": {
+      "ctaBancoNacionDetraccion": null,
+      "codBienDetraccion": null,
+      "porDetraccion": "0.00",
+      "mtoDetraccion": "0.00",
+      "codMedioPago": null,
+      "codPaisCliente": "PE",
+      "codUbigeoCliente": "",
+      "desDireccionCliente": "-",
+      "codPaisEntrega": "PE",
+      "codUbigeoEntrega": "110507",
+      "desDireccionEntrega": "AV. LOS LIBERTADORES Nº. 614"
+    },
+    "sumTotValVenta": "616.71",
+    "sumPrecioVenta": "664.00",
+    "sumDescTotal": "0.00",
+    "sumOtrosCargos": "0.00",
+    "sumTotalAnticipos": "0.00",
+    "sumImpVenta": "664.00",
+    "ublVersionId": "2.1",
+    "customizationId": "2.0"
+  },"detalle":[{"codUnidadMedida":"NIU","ctdUnidadItem":"3.00","codProducto":"100152","codProductoSUNAT":"-","desItem":"SULFATO DE POTASIO X 50KG","mtoValorUnitario":"118.00","sumTotTributosItem":"0.00","codTriIGV":"9997","mtoIgvItem":"0.00","mtoBaseIgvItem":"354.00","nomTributoIgvItem":"EXO","codTipTributoIgvItem":"VAT","tipAfeIGV":"20","porIgvItem":"0","codTriISC":null,"mtoIscItem":"0.00","mtoBaseIscItem":"0.00","nomTributoIscItem":"","codTipTributoIscItem":"-","tipSisISC":"","porIscItem":"0.00","codTriOtro":"","mtoTriOtroItem":"0.00","mtoBaseTriOtroItem":"0.00","nomTributoOtroItem":"","codTipTributoOtroItem":"-","porTriOtroItem":"0.00","codTriIcbper":null,"mtoTriIcbperItem":"0.00","ctdBolsasTriIcbperItem":"0","nomTributoIcbperItem":null,"codTipTributoIcbperItem":null,"mtoTriIcbperUnidad":"0.00","mtoPrecioVentaUnitario":"118.00","mtoValorVentaItem":"354.00","mtoValorReferencialUnitario":"0.00"},{"codUnidadMedida":"NIU","ctdUnidadItem":"2.00","codProducto":"100153","codProductoSUNAT":"-","desItem":"SULFATO DE ZINK X 25 KILOS","mtoValorUnitario":"80.51","sumTotTributosItem":"28.98","codTriIGV":"1000","mtoIgvItem":"28.98","mtoBaseIgvItem":"161.02","nomTributoIgvItem":"IGV","codTipTributoIgvItem":"VAT","tipAfeIGV":"10","porIgvItem":"18.00","codTriISC":null,"mtoIscItem":"0.00","mtoBaseIscItem":"0.00","nomTributoIscItem":"","codTipTributoIscItem":"-","tipSisISC":"","porIscItem":"0.00","codTriOtro":"","mtoTriOtroItem":"0.00","mtoBaseTriOtroItem":"0.00","nomTributoOtroItem":"","codTipTributoOtroItem":"-","porTriOtroItem":"0.00","codTriIcbper":null,"mtoTriIcbperItem":"0.00","ctdBolsasTriIcbperItem":"0","nomTributoIcbperItem":null,"codTipTributoIcbperItem":null,"mtoTriIcbperUnidad":"0.00","mtoPrecioVentaUnitario":"95.00","mtoValorVentaItem":"161.02","mtoValorReferencialUnitario":"0.00"},{"codUnidadMedida":"NIU","ctdUnidadItem":"3.00","codProducto":"100158","codProductoSUNAT":"-","desItem":"SUPERCLOR 48 CE XLITRO","mtoValorUnitario":"33.90","sumTotTributosItem":"18.31","codTriIGV":"1000","mtoIgvItem":"18.31","mtoBaseIgvItem":"101.70","nomTributoIgvItem":"IGV","codTipTributoIgvItem":"VAT","tipAfeIGV":"10","porIgvItem":"18.00","codTriISC":null,"mtoIscItem":"0.00","mtoBaseIscItem":"0.00","nomTributoIscItem":"","codTipTributoIscItem":"-","tipSisISC":"","porIscItem":"0.00","codTriOtro":"","mtoTriOtroItem":"0.00","mtoBaseTriOtroItem":"0.00","nomTributoOtroItem":"","codTipTributoOtroItem":"-","porTriOtroItem":"0.00","codTriIcbper":null,"mtoTriIcbperItem":"0.00","ctdBolsasTriIcbperItem":"0","nomTributoIcbperItem":null,"codTipTributoIcbperItem":null,"mtoTriIcbperUnidad":"0.00","mtoPrecioVentaUnitario":"40.00","mtoValorVentaItem":"101.70","mtoValorReferencialUnitario":"0.00"}],"tributos":[{"ideTributo":"1000","nomTributo":"IGV","codTipTributo":"VAT","mtoBaseImponible":"262.71","mtoTributo":"47.29"},{"ideTributo":"9997","nomTributo":"EXO","codTipTributo":"VAT","mtoBaseImponible":"354.00","mtoTributo":"0.00"}],"leyendas":[{"codLeyenda":"2006","desLeyenda":"Operación sujeta a detracción"},{"codLeyenda":"1000","desLeyenda":"SEISCIENTOS SESENTA Y CUATRO CON 00/100 SOLES"}]}

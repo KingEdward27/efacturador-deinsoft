@@ -485,10 +485,10 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
     @Override
     public String validarComprobante(ComprobanteCab documento,Empresa e) {
-        if (documento.getCliente_tipo().equals("1")
-                && String.format("%02d", Integer.parseInt(documento.getTipo())).equals("01")) {
-            return "El dato ingresado en el tipo de documento de identidad del receptor no esta permitido para el tipo de comprobante";
-        }
+//        if (documento.getCliente_tipo().equals("1")
+//                && String.format("%02d", Integer.parseInt(documento.getTipo())).equals("01")) {
+//            return "El dato ingresado en el tipo de documento de identidad del receptor no esta permitido para el tipo de comprobante";
+//        }
         if (documento.getCliente_tipo().equals("1") && documento.getCliente_documento().length() != 8
                 || documento.getCliente_tipo().equals("6") && documento.getCliente_documento().length() != 11) {
             return "El número de documento del cliente no cumple con el tamaño requerido para el tipo de comprobante";
@@ -518,6 +518,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 && FacturadorUtil.isNullOrEmpty(documento.getNota_motivo())) {
             return "Para el tipo de documento debe indicar la descripción motivo";
         }
+        
         if ((documento.getTipo().equals("07") || documento.getTipo().equals("08"))
                 && FacturadorUtil.isNullOrEmpty(documento.getNota_referencia_tipo())) {
             return "Para el tipo de documento debe indicar el tipo de documento referenciado";
@@ -548,6 +549,10 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             if (item.getPrecio_unitario().compareTo(BigDecimal.ZERO) == 0
                     && item.getMonto_referencial_unitario().compareTo(BigDecimal.ZERO) == 0) {
                 return "El monto de valor referencial unitario debe ser mayor a 0.00 (Operaciones gratuitas)";
+            }
+            if(item.getPrecio_unitario().compareTo(BigDecimal.ZERO) == 0 && 
+                    item.getMonto_referencial_unitario() != BigDecimal.ZERO){
+                return "El monto de valor referencial unitario debe ser 0.00 o null si el precio unitario es mayor a 0.00";        
             }
         }
         //1. cambiar por clase catalogos
@@ -587,6 +592,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                     if (FacturadorUtil.isNullOrEmpty(detalle.getTipo_moneda_pago())) {
                         return "Si la forma de pago es Credito debe indicar el tipo de moneda de la cuota, campo: tipo_moneda_pago";
                     }
+                    
                 }
             }
 
@@ -687,10 +693,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
         documento.setXmlHash(retorno.get("xmlHash").toString());
         String tempDescripcionPluralMoneda = "SOLES";
-        ByteArrayInputStream stream = Impresion.Imprimir(rootpath + "TEMP/", 1, documento, tempDescripcionPluralMoneda);
-        int n = stream.available();
-        byte[] bytes = new byte[n];
-        stream.read(bytes, 0, n);
+        byte[] bytes = print(rootpath + "TEMP/", documento,1, tempDescripcionPluralMoneda);
 
         retorno.put("pdfBase64", bytes);
 
@@ -740,6 +743,27 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         return retorno;
     }
     @Override
+    public Map<String, Object> getPDF(long ticketOperacion,int tipo) throws Exception {
+        Map<String, Object> retorno = new HashMap<>();
+        List<FacturaElectronica> fact = getByTicketOperacion(ticketOperacion);
+        if(fact == null) return null;
+        if(fact.get(0).getId() == null) return null;
+        log.info("fact.getId(): "+fact.get(0).getId());
+        byte[] bytes = print(this.appConfig.getRootPath(),fact.get(0),tipo,"SOLES");
+        if (!appConfig.getEnvironment().equals("PRODUCTION")) {
+            FileUtils.writeByteArrayToFile(new File("D:/report.pdf"), bytes);
+        }
+        retorno.put("pdfBase64", bytes);
+        return retorno;
+    }
+    private byte[] print(String rootpath, FacturaElectronica documento,int tipo, String tempDescripcionPluralMoneda) throws Exception {
+        ByteArrayInputStream stream = Impresion.Imprimir(rootpath, tipo, documento, tempDescripcionPluralMoneda);
+        int n = stream.available();
+        byte[] bytes = new byte[n];
+        stream.read(bytes, 0, n);
+        return bytes;
+    }
+    @Override
     public List<FacturaElectronica> getByFechaEmisionBetweenAndEmpresaIdIn(LocalDate fecIni, LocalDate fecFin, List<Integer> empresaIds){
         List<FacturaElectronica> list = facturaElectronicaRepository.findByFechaEmisionBetweenAndEmpresaIdIn(fecIni, fecFin, empresaIds);
         list.forEach((item) -> {
@@ -761,5 +785,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     public List<FacturaElectronica> getByIdIn(List<Long> ids){
         List<FacturaElectronica> list = facturaElectronicaRepository.findByIdIn(ids);
         return list;
+    }
+    @Override
+    public List<FacturaElectronica> getByTicketOperacion(long ticketOperacion){
+        return facturaElectronicaRepository.findByTicketOperacion(ticketOperacion);
     }
 }
