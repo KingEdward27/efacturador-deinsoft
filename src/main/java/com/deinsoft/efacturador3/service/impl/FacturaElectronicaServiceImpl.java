@@ -485,12 +485,11 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
     @Override
     public String validarComprobante(ComprobanteCab documento,Empresa e) {
-//        if (documento.getCliente_tipo().equals("1")
-//                && String.format("%02d", Integer.parseInt(documento.getTipo())).equals("01")) {
-//            return "El dato ingresado en el tipo de documento de identidad del receptor no esta permitido para el tipo de comprobante";
-//        }
-        if (documento.getCliente_tipo().equals("1") && documento.getCliente_documento().length() != 8
-                || documento.getCliente_tipo().equals("6") && documento.getCliente_documento().length() != 11) {
+        if (documento.getCliente_tipo().equals("1")
+                && String.format("%02d", Integer.parseInt(documento.getTipo())).equals("01")) {
+            return "El dato ingresado en el tipo de documento de identidad del receptor no esta permitido para el tipo de comprobante";
+        }
+        if (documento.getCliente_tipo().equals("6") && documento.getCliente_documento().length() != 11) {
             return "El número de documento del cliente no cumple con el tamaño requerido para el tipo de comprobante";
         }
         if (CollectionUtils.isEmpty(documento.getLista_productos())) {
