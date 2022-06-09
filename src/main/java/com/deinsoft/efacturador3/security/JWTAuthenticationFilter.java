@@ -27,62 +27,63 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+
 /**
  * @author bangulo
  *
  */
-public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
-	
-	private AuthenticationManager authenticationManager;
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
-	
-	public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
-		this.authenticationManager = authenticationManager;
-	}
-	
-	@Override
-	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-			throws AuthenticationException {
-		try {
-			Empresa credenciales = new ObjectMapper().readValue(request.getInputStream(), Empresa.class);
-			return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-					credenciales.getNumdoc(), credenciales.getUsuariosol() + credenciales.getClavesol(), new ArrayList<>()));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	@Override
-	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-			Authentication auth) throws IOException, ServletException {
+public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-		UserDetails userDetails = (UserDetails) auth.getPrincipal();
+    private AuthenticationManager authenticationManager;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
+
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
+
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException {
+        try {
+            Empresa credenciales = new ObjectMapper().readValue(request.getInputStream(), Empresa.class);
+            return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    credenciales.getNumdoc(), credenciales.getUsuariosol() + credenciales.getClavesol(), new ArrayList<>()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+            Authentication auth) throws IOException, ServletException {
+
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
         LocalDateTime currentTime = LocalDateTime.now();
-		final Date createdDate = new Date();
-		final Date expirationDate = new Date(createdDate.getTime() + SecurityConstants.TOKEN_EXPIRATION_TIME * 1000 * 60 * 1000/* *10000 maximo tiempo posible*/);
-		LOGGER.info("expirationDate: " + expirationDate);
-		//String username = ((UserDetails) auth.getPrincipal()).getUsername();
-		//Usuario usuario =  usuarioRepository.findUsuarioByUsername(username);
-		//String idUp = usuario.getUnidadPolicial().getIdUnidadPolicial();
+        final Date createdDate = new Date();
+        final Date expirationDate = new Date(createdDate.getTime() + SecurityConstants.TOKEN_EXPIRATION_TIME * 1000 * 60 * 1000 * 12/* *10000 maximo tiempo posible*/);
+        LOGGER.info("expirationDate: " + expirationDate);
+        //String username = ((UserDetails) auth.getPrincipal()).getUsername();
+        //Usuario usuario =  usuarioRepository.findUsuarioByUsername(username);
+        //String idUp = usuario.getUnidadPolicial().getIdUnidadPolicial();
 
-		//Usuario usr = userService.getUserByUsername(usrname);
-		String token = Jwts.builder().setIssuedAt(new Date()).setIssuer(SecurityConstants.ISSUER_INFO)
-				.setId("DEINSOFT-JWT")
-				.setSubject(((User)auth.getPrincipal()).getUsername())
-				.claim("authorities", "DEINSOFT")
-				.setIssuedAt(Date.from(currentTime.atZone(ZoneId.systemDefault()).toInstant()))
-				.setExpiration(expirationDate)
-				//.setExpiration(Date.from(ZonedDateTime.now().plusMinutes(TOKEN_EXPIRATION_TIME).toInstant()))
-				.signWith(SignatureAlgorithm.HS512, SecurityConstants.SUPER_SECRET_KEY).compact();
-		LOGGER.info( "********* TOKEN: {}" , SecurityConstants.TOKEN_BEARER_PREFIX + " " + token );
-		response.addHeader(SecurityConstants.HEADER_AUTHORIZACION_KEY, SecurityConstants.TOKEN_BEARER_PREFIX+" "+token);
-		response.addHeader("Access-Control-Expose-Headers", "Authorization");
-		response.addHeader("Access-Control-Allow-Headers", "Authorization, X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept, X-Custom-header");
-		
-		SecurityContextHolder.getContext().setAuthentication(auth);
-		LOGGER.info("Authorities:{} ", auth.getAuthorities());
-		LOGGER.info("UserDetails:{} ", userDetails.toString());
-		LOGGER.info("********** User has authorities: {}" + userDetails.getAuthorities());
-	}
+        //Usuario usr = userService.getUserByUsername(usrname);
+        String token = Jwts.builder().setIssuedAt(new Date()).setIssuer(SecurityConstants.ISSUER_INFO)
+                .setId("DEINSOFT-JWT")
+                .setSubject(((User) auth.getPrincipal()).getUsername())
+                .claim("authorities", "DEINSOFT")
+                .setIssuedAt(Date.from(currentTime.atZone(ZoneId.systemDefault()).toInstant()))
+                .setExpiration(expirationDate)
+                //.setExpiration(Date.from(ZonedDateTime.now().plusMinutes(TOKEN_EXPIRATION_TIME).toInstant()))
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.SUPER_SECRET_KEY).compact();
+        LOGGER.info("********* TOKEN: {}", SecurityConstants.TOKEN_BEARER_PREFIX + " " + token);
+        response.addHeader(SecurityConstants.HEADER_AUTHORIZACION_KEY, SecurityConstants.TOKEN_BEARER_PREFIX + " " + token);
+        response.addHeader("Access-Control-Expose-Headers", "Authorization");
+        response.addHeader("Access-Control-Allow-Headers", "Authorization, X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept, X-Custom-header");
+
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        LOGGER.info("Authorities:{} ", auth.getAuthorities());
+        LOGGER.info("UserDetails:{} ", userDetails.toString());
+        LOGGER.info("********** User has authorities: {}" + userDetails.getAuthorities());
+    }
 }

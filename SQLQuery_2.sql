@@ -203,3 +203,17 @@ and det.resumen_diario_id = 2
 ALTER TABLE factura_electronica
 ADD CONSTRAINT df_estado
 DEFAULT '1' FOR estado;
+
+select * from empresa
+
+update empresa 
+set token = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2NTI3NDUxMzcsImlzcyI6IkRFSU5TT0ZUIiwianRpIjoiREVGQUNULUpXVCIsInN1YiI6IjEwNDE0MzE2NTk1L1BFUkVaIERFTEdBRE8gQkxBTkNBIE5FUkkiLCJudW1Eb2MiOiIxMDQxNDMxNjU5NSIsInJhem9uU29jaWFsIjoiUEVSRVogREVMR0FETyBCTEFOQ0EgTkVSSSIsInVzdWFyaW9Tb2wiOiJFQk9MRVRBUyIsImV4cCI6MTY1NDY2NTEzN30.LD5KQ2oTuCcOusCaMLTSSyRw6-6Xz6QJwXZEiwzuizoMwlIQi0K1f0AYn4nwAGS_UzANYq4cQNSNBPTYSZD4EQ'
+where idempresa = 14
+
+select * from factura_electronica where numero in ('00000448','00000451','00000450')
+
+UPDATE factura_electronica set ind_situacion = '03', observacion_envio = 'La Boleta numero BB02-00000448, ha sido aceptada'
+where numero ='00000448'
+
+UPDATE factura_electronica set ind_situacion = '03', observacion_envio = 'La Boleta numero BB02-00000451, ha sido aceptada'
+where numero ='00000451'
