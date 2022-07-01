@@ -29,4 +29,5 @@ public interface ResumenDiarioService {
     public List<ResumenDiario> saveAll(List<ResumenDiario> e);
     public Map<String, Object> generarComprobantePagoSunatFromFacturas(List<Long> listIds) throws TransferirArchivoException;
     public Map<String, Object> sendSUNAT(Long id) ;
+    void sendSUNAT() throws TransferirArchivoException;
 }

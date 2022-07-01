@@ -113,9 +113,12 @@ public class ComunesServiceImpl implements ComunesService {
         return rutaDirectorio.toString();
     }
 
-    public void validarConexion(String direccion, Integer puerto) {
+    public boolean validarConexion(String direccion, Integer puerto) {
         if (!tieneConexionInternet(direccion, puerto).booleanValue()) {
-            throw new RuntimeException("No tienen Acceso a Internet.");
+            return false;
+        }else{
+            log.debug("sunat connection ok");
+            return true;
         }
     }
 

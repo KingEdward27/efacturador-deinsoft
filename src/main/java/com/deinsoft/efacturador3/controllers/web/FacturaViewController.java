@@ -130,6 +130,7 @@ public class FacturaViewController extends BaseController{
         model.addAttribute("facturas", list);
         return "listar";
     }
+    
     List<FacturaElectronica> verDatos(Model model,SecUser usuario){
         List<Integer> listEmpresaIds = new ArrayList<>();
         for (SecRoleUser secRoleUser : usuario.getListSecRoleUser()) {

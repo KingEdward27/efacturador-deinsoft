@@ -17,8 +17,10 @@ import com.deinsoft.efacturador3.model.FacturaElectronicaTax;
 import com.deinsoft.efacturador3.model.ResumenDiario;
 import com.deinsoft.efacturador3.model.ResumenDiarioDet;
 import com.deinsoft.efacturador3.model.ResumenDiarioTax;
+import com.deinsoft.efacturador3.repository.FacturaElectronicaRepository;
 import com.deinsoft.efacturador3.repository.ResumenDiarioRepository;
 import com.deinsoft.efacturador3.service.ComunesService;
+import com.deinsoft.efacturador3.service.EmpresaService;
 import com.deinsoft.efacturador3.service.FacturaElectronicaService;
 import com.deinsoft.efacturador3.service.GenerarDocumentosService;
 import com.deinsoft.efacturador3.util.CertificadoFacturador;
@@ -82,6 +84,9 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
     FacturaElectronicaService facturaElectronicaService;
 
     @Autowired
+    FacturaElectronicaRepository facturaElectronicaRepository;
+
+    @Autowired
     private ComunesService comunesService;
 
     @Autowired
@@ -89,6 +94,9 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
 
     @Autowired
     private XsltCpePath xsltCpePath;
+
+    @Autowired
+    private EmpresaService empresaService;
 
     @Override
     public ResumenDiario getResumenDiarioById(long id) {
@@ -254,8 +262,8 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
                     return retorno;
                 }
                 if (!(Constantes.CONSTANTE_SITUACION_XML_GENERADO.equals(facturaElectronica.getIndSituacion())
-                    || Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO.equals(facturaElectronica.getIndSituacion())
-                    || Constantes.CONSTANTE_SITUACION_CON_ERRORES.equals(facturaElectronica.getIndSituacion()))) {
+                        || Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO.equals(facturaElectronica.getIndSituacion())
+                        || Constantes.CONSTANTE_SITUACION_CON_ERRORES.equals(facturaElectronica.getIndSituacion()))) {
                     retorno.clear();
                     retorno.put("code", "003");
                     retorno.put("message", "El comprobante " + facturaElectronica.getSerie() + "-" + facturaElectronica.getNumero() + " se encuentra en una situaciòn incorrecta o ya fue enviado");
@@ -277,7 +285,7 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
                 det.setTipDocModifico(facturaElectronica.getNotaReferenciaTipo() == null ? "" : facturaElectronica.getNotaReferenciaTipo());
                 det.setSerDocModifico(facturaElectronica.getNotaReferenciaSerie() == null ? "" : facturaElectronica.getNotaReferenciaSerie());
                 det.setNumDocModifico(facturaElectronica.getNotaReferenciaNumero() == null ? "" : facturaElectronica.getNotaReferenciaNumero());
-                det.setCondicion("1");
+                det.setCondicion(facturaElectronica.getEstado().equals("2")?"3":"1");
                 listDet.add(det);
 
                 cont++;
@@ -389,11 +397,11 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
                 if (res.getCode() == null && res.getTicket() != null) {
                     Thread.sleep(5000);
                     res = comunesService.consultarTicketSUNAT(urlWebService, appConfig.getRootPath(), res.getTicket(), ResumenDiarioResult.getEmpresa());
-                    if(res == null){
+                    if (res == null) {
                         ResumenDiarioResult.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
                         ResumenDiarioResult.setObservacionEnvio("Ticket con errores - Internal Server Error");
                         save(ResumenDiarioResult);
-                    }else{
+                    } else {
                         if (res.getCode() == 0) {
                             for (Iterator<ResumenDiarioDet> it = ResumenDiarioResult.getListResumenDiarioDet().iterator(); it.hasNext();) {
                                 ResumenDiarioDet resumenDiarioDet = it.next();
@@ -415,13 +423,12 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
                                     : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
                             ResumenDiarioResult.setObservacionEnvio(res.getDescription());
                             save(ResumenDiarioResult);
-                        }else if (res.getCode() == 98) {
+                        } else if (res.getCode() == 98) {
                             ResumenDiarioResult.setIndSituacion(Constantes.CONSTANTE_SITUACION_ENVIADO_PROCESANDO);
-                            ResumenDiarioResult.setObservacionEnvio("En espera: "+ res.getCode());
+                            ResumenDiarioResult.setObservacionEnvio("En espera: " + res.getCode());
                             save(ResumenDiarioResult);
                         }
                     }
-                    
 
                 }
                 Map<String, Object> map = new ObjectMapper().convertValue(res, Map.class);
@@ -449,5 +456,38 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
         retorno.put("code", resultadoProceso);
         log.debug("SoftwareFacturadorController.enviarXML...Terminando el procesamiento");
         return retorno;
+    }
+
+    @Override
+    public void sendSUNAT() throws TransferirArchivoException {
+        Map<String, Object> resultado = null;
+        List<String> listSituacion = new ArrayList<>();
+        listSituacion.add(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
+        listSituacion.add(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO);
+        listSituacion.add(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+        for (Empresa empresa : empresaService.getEmpresas()) {
+            List<FacturaElectronica> list = facturaElectronicaRepository.
+                findByEmpresaIdAndTipoAndIndSituacionInOrderByFechaEmisionAsc(empresa.getId(), "03", listSituacion);
+            List<Long> listIds = new ArrayList<>();
+            LocalDate fechaEmision = list.get(0).getFechaEmision();
+            for (FacturaElectronica idsTrabajadore : list) {
+                if (idsTrabajadore.getFechaEmision().compareTo(fechaEmision) != 0) {
+                    break;
+                }
+                listIds.add(idsTrabajadore.getId());
+            }
+            resultado = generarComprobantePagoSunatFromFacturas(listIds);
+            if (resultado != null && resultado.get("status") != null) {
+                if (resultado.get("code").toString().equals("0")) {
+                    log.info(resultado.get("status") + "\n" + resultado.get("description"));
+                } else {
+                    log.info(resultado.get("status") + "\n" + " Código SUNAT rechazo: " + resultado.get("code"));
+                }
+
+            } else {
+                log.info(resultado.get("code") + "\n" + resultado.get("message"));
+            }
+        }
+        
     }
 }

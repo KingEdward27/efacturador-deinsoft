@@ -23,6 +23,7 @@ import com.deinsoft.efacturador3.model.ResumenDiarioDet;
 import com.deinsoft.efacturador3.repository.ErrorRepository;
 import com.deinsoft.efacturador3.repository.FacturaElectronicaRepository;
 import com.deinsoft.efacturador3.service.ComunesService;
+import com.deinsoft.efacturador3.service.EmpresaService;
 import com.deinsoft.efacturador3.service.FacturaElectronicaService;
 import com.deinsoft.efacturador3.service.GenerarDocumentosService;
 import com.deinsoft.efacturador3.soap.gencdp.ExceptionDetail;
@@ -74,6 +75,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import org.apache.commons.beanutils.BeanUtils;
+
 /**
  *
  * @author EDWARD-PC
@@ -99,6 +101,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
     @Autowired
     AppConfig appConfig;
+
+    @Autowired
+    private EmpresaService empresaService;
 
     @Override
     public FacturaElectronica getById(long id) {
@@ -127,7 +132,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
     @Override
     @Transactional
-    public Map<String, Object> generarComprobantePagoSunat(long comprobanteId) throws TransferirArchivoException{
+    public Map<String, Object> generarComprobantePagoSunat(long comprobanteId) throws TransferirArchivoException {
         log.debug("FacturaController.generarComprobantePagoSunat...inicio/params: " + String.valueOf(comprobanteId));
         Map<String, Object> retorno = new HashMap<>();
         FacturaElectronica facturaElectronicaResult = null;
@@ -217,7 +222,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
                 facturaElectronica.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
                 facturaElectronica.setObservacionEnvio(res.getDescription());
-                facturaElectronica.setTicketSunat(res.getTicket()); 
+                facturaElectronica.setTicketSunat(res.getTicket());
                 save(facturaElectronica);
                 Map<String, Object> map = new ObjectMapper().convertValue(res, Map.class);
                 return map;
@@ -252,65 +257,63 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         listSituacion.add(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
         listSituacion.add(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO);
         listSituacion.add(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
-        List<FacturaElectronica> list = facturaElectronicaRepository.findByIndSituacionIn(listSituacion);
-//        String nombreArchivo = appConfig.getRootPath() + "VALI/" + "constantes.properties";
-//        Properties prop = this.comunesService.getProperties(nombreArchivo);
         String urlWebService = (appConfig.getUrlServiceCDP() != null) ? appConfig.getUrlServiceCDP() : "XX";
-        list.forEach((facturaElectronica) -> {
-            try {
-                HashMap<String, Object> resultadoWebService = null;
-                String filename = facturaElectronica.getEmpresa().getNumdoc()
-                        + "-" + String.format("%02d", Integer.parseInt(facturaElectronica.getTipo()))
-                        + "-" + facturaElectronica.getSerie()
-                        + "-" + String.format("%08d", Integer.parseInt(facturaElectronica.getNumero()));
-                log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...Validando Conexión a Internet");
-                String[] rutaUrl = urlWebService.split("\\/");
-                log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...tokens: " + rutaUrl[2]);
-                this.comunesService.validarConexion(rutaUrl[2], 443);
-                log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...filename: " + filename);
-                //resultadoWebService = this.generarDocumentosService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica);
-                BillServiceModel res = comunesService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica.getEmpresa());
-                log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getCode());
-                log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getDescription());
-                log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getTicket());
-                facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
-                facturaElectronica.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
-                facturaElectronica.setObservacionEnvio(res.getDescription());
-                facturaElectronica.setTicketSunat(res.getTicket());
-                save(facturaElectronica);
-//                if (resultadoWebService != null) {
-//                    String estadoRetorno = (resultadoWebService.get("situacion") != null) ? (String) resultadoWebService.get("situacion") : "";
-//                    String mensaje = (resultadoWebService.get("mensaje") != null) ? (String) resultadoWebService.get("mensaje") : "-";
-//                    if (!"".equals(estadoRetorno)) {
-//                        if (!Constantes.CONSTANTE_SITUACION_DESCARGA_CDR.equals(estadoRetorno)
-//                                && !Constantes.CONSTANTE_SITUACION_DESCARGA_CDR_OBSERVACIONES.equals(estadoRetorno)) {
-//                            facturaElectronica.setFechaEnvio(new Date());
-//                            facturaElectronica.setIndSituacion(estadoRetorno);
-//                            facturaElectronica.setObservacionEnvio(mensaje);
-//                            save(facturaElectronica);
-//                        } else {
-//                            facturaElectronica.setIndSituacion(estadoRetorno);
-//                            facturaElectronica.setObservacionEnvio(mensaje);
-//                            save(facturaElectronica);
-//                        }
-//                    }
-//                }
-                log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...enviarComprobantePagoSunat Final");
-            } catch (Exception e) {
-                String mensaje = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
-                e.printStackTrace();
-                log.error(mensaje);
-                facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
-                facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
-                facturaElectronica.setObservacionEnvio(mensaje);
-                save(facturaElectronica);
+        int cont = 1;
+        boolean connection = false;
+        while (cont <= 3) {
+            log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...Validando Conexión a Internet");
+            String[] rutaUrl = urlWebService.split("\\/");
+            log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...tokens: " + rutaUrl[2]);
+            if (this.comunesService.validarConexion(rutaUrl[2], 443)) {
+                connection = true;
+                break;
             }
+            cont++;
+        }
+        if (!connection) {
+            return;
+        }
 
-        });
+        for (Empresa empresa : empresaService.getEmpresas()) {
+            List<FacturaElectronica> list = facturaElectronicaRepository.
+                    findByEmpresaIdAndTipoAndIndSituacionInOrderByFechaEmisionAsc(empresa.getId(), "01", listSituacion);
+
+            list.forEach((facturaElectronica) -> {
+                try {
+
+                    String filename = facturaElectronica.getEmpresa().getNumdoc()
+                            + "-" + String.format("%02d", Integer.parseInt(facturaElectronica.getTipo()))
+                            + "-" + facturaElectronica.getSerie()
+                            + "-" + String.format("%08d", Integer.parseInt(facturaElectronica.getNumero()));
+                    log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...filename: " + filename);
+                    //resultadoWebService = this.generarDocumentosService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica);
+                    BillServiceModel res = comunesService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica.getEmpresa());
+                    log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getCode());
+                    log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getDescription());
+                    log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getTicket());
+                    facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
+                    facturaElectronica.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+                    facturaElectronica.setObservacionEnvio(res.getDescription());
+                    facturaElectronica.setTicketSunat(res.getTicket());
+                    save(facturaElectronica);
+                    log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...enviarComprobantePagoSunat Final");
+                } catch (Exception e) {
+                    String mensaje = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
+                    e.printStackTrace();
+                    log.error(mensaje);
+                    facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
+                    facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+                    facturaElectronica.setObservacionEnvio(mensaje);
+                    save(facturaElectronica);
+                }
+
+            });
+        }
+
     }
 
     @Override
-    public FacturaElectronica toFacturaModel(ComprobanteCab documento,Empresa e) throws TransferirArchivoException, ParseException {
+    public FacturaElectronica toFacturaModel(ComprobanteCab documento, Empresa e) throws TransferirArchivoException, ParseException {
         BigDecimal totalValorVentasGravadas = BigDecimal.ZERO, totalValorVentasInafectas = BigDecimal.ZERO,
                 totalValorVentasExoneradas = BigDecimal.ZERO,
                 SumatoriaIGV = BigDecimal.ZERO, SumatoriaISC = BigDecimal.ZERO,
@@ -320,7 +323,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         for (ComprobanteDet detalle : documento.getLista_productos()) {
             if (Integer.valueOf(detalle.getTipo_igv()) >= 10 && Integer.valueOf(detalle.getTipo_igv()) <= 20) {
                 totalValorVentasGravadas = totalValorVentasGravadas.add(detalle.getCantidad().multiply(detalle.getPrecio_unitario()));
-                System.out.println("totalValorVentasGravadas: "+totalValorVentasGravadas.toString());
+                System.out.println("totalValorVentasGravadas: " + totalValorVentasGravadas.toString());
             } else if (Integer.valueOf(detalle.getTipo_igv()) >= 30 && Integer.valueOf(detalle.getTipo_igv()) <= 36) {
                 totalValorVentasInafectas = totalValorVentasInafectas.add(detalle.getCantidad().multiply(detalle.getPrecio_unitario()));
             } else {
@@ -335,8 +338,8 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         documento.setSumatoriaISC(SumatoriaISC);
         documento.setSumatoriaOtrosCargos(BigDecimal.ZERO);
         documento.setSumatoriaOtrosTributos(BigDecimal.ZERO);
-        System.out.println("totalValorVentasGravadas: "+totalValorVentasGravadas.toString());
-        System.out.println("totalValorVentasGravadas: "+totalValorVentasGravadas.setScale(2, BigDecimal.ROUND_HALF_EVEN).toString());
+        System.out.println("totalValorVentasGravadas: " + totalValorVentasGravadas.toString());
+        System.out.println("totalValorVentasGravadas: " + totalValorVentasGravadas.setScale(2, BigDecimal.ROUND_HALF_EVEN).toString());
         documento.setTotalValorVentasGravadas(totalValorVentasGravadas.setScale(2, BigDecimal.ROUND_HALF_EVEN));
         documento.setTotalValorVentasInafectas(totalValorVentasInafectas.setScale(2, BigDecimal.ROUND_HALF_EVEN));
         documento.setTotalValorVentasExoneradas(totalValorVentasExoneradas.setScale(2, BigDecimal.ROUND_HALF_EVEN));
@@ -380,14 +383,14 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         comprobante.setCodLocal("0000");
         comprobante.setFormaPago(documento.getForma_pago());
         comprobante.setPorcentajeIGV(new BigDecimal(Constantes.PORCENTAJE_IGV));
-        comprobante.setMontoNetoPendiente(documento.getMonto_neto_pendiente() == null? BigDecimal.ZERO : documento.getMonto_neto_pendiente());
+        comprobante.setMontoNetoPendiente(documento.getMonto_neto_pendiente() == null ? BigDecimal.ZERO : documento.getMonto_neto_pendiente());
         comprobante.setTipoMonedaMontoNetoPendiente(documento.getMoneda_monto_neto_pendiente());
         comprobante.setDescuentosGlobales(BigDecimal.ZERO);
         comprobante.setEstado("1");
-        
-        if(documento.getSerie_ref() != null && documento.getSerie_ref().length() == 4){
+
+        if (documento.getSerie_ref() != null && documento.getSerie_ref().length() == 4) {
             comprobante.setDocrefSerie(documento.getSerie_ref());
-            comprobante.setDocrefNumero(String.format("%08d", Integer.parseInt( documento.getNumero_ref())));
+            comprobante.setDocrefNumero(String.format("%08d", Integer.parseInt(documento.getNumero_ref())));
             comprobante.setDocrefMonto(new BigDecimal(documento.getMonto_ref()));
             comprobante.setTotalValorVenta(totalValorVenta.subtract(comprobante.getDocrefMonto()));
             comprobante.setEmpresa(e);
@@ -418,7 +421,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             det.setUnidadMedida(comprobanteDet.getUnidad_medida());
             det.setCantidad(comprobanteDet.getCantidad());
             det.setPrecioVentaUnitario(comprobanteDet.getPrecio_unitario());
-            
+
             BigDecimal afectacionIGVUnit = comprobanteDet.getAfectacion_igv().divide(comprobanteDet.getCantidad(), 2, RoundingMode.HALF_UP);
             det.setValorVentaItem(comprobanteDet.getPrecio_unitario().subtract(afectacionIGVUnit).setScale(2, BigDecimal.ROUND_HALF_EVEN));
             det.setValorUnitario(comprobanteDet.getPrecio_unitario().subtract(afectacionIGVUnit).setScale(2, BigDecimal.ROUND_HALF_EVEN));
@@ -442,10 +445,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             det.setMtoBaseImponible(comprobanteTax.getMto_base_imponible());
             det.setMtoTributo(comprobanteTax.getMto_tributo());
             det.setNomTributo(comprobanteTax.getNom_tributo());
-            
+
             listTax.add(det);
         }
-        
 
 //        facturaElectronicaTax = new FacturaElectronicaTax();
 //        facturaElectronicaTax.setTaxId(9996);
@@ -484,7 +486,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     }
 
     @Override
-    public String validarComprobante(ComprobanteCab documento,Empresa e) {
+    public String validarComprobante(ComprobanteCab documento, Empresa e) {
         if (documento.getCliente_tipo().equals("1")
                 && String.format("%02d", Integer.parseInt(documento.getTipo())).equals("01")) {
             return "El dato ingresado en el tipo de documento de identidad del receptor no esta permitido para el tipo de comprobante";
@@ -517,7 +519,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 && FacturadorUtil.isNullOrEmpty(documento.getNota_motivo())) {
             return "Para el tipo de documento debe indicar la descripción motivo";
         }
-        
+
         if ((documento.getTipo().equals("07") || documento.getTipo().equals("08"))
                 && FacturadorUtil.isNullOrEmpty(documento.getNota_referencia_tipo())) {
             return "Para el tipo de documento debe indicar el tipo de documento referenciado";
@@ -549,9 +551,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                     && item.getMonto_referencial_unitario().compareTo(BigDecimal.ZERO) == 0) {
                 return "El monto de valor referencial unitario debe ser mayor a 0.00 (Operaciones gratuitas)";
             }
-            if(item.getPrecio_unitario().compareTo(BigDecimal.ZERO) == 0 && 
-                    item.getMonto_referencial_unitario() != BigDecimal.ZERO){
-                return "El monto de valor referencial unitario debe ser 0.00 o null si el precio unitario es mayor a 0.00";        
+            if (item.getPrecio_unitario().compareTo(BigDecimal.ZERO) == 0
+                    && item.getMonto_referencial_unitario() != BigDecimal.ZERO) {
+                return "El monto de valor referencial unitario debe ser 0.00 o null si el precio unitario es mayor a 0.00";
             }
         }
         //1. cambiar por clase catalogos
@@ -560,19 +562,19 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         if (!listDocIds.contains(documento.getCliente_tipo())) {
             return "El tipo de documento de identidad no existe";
         }
-        if(documento.getSerie_ref() != null){
-            if(!documento.getNumero_ref().isEmpty() && !documento.getNumero_ref().isEmpty()){
+        if (documento.getSerie_ref() != null) {
+            if (!documento.getNumero_ref().isEmpty() && !documento.getNumero_ref().isEmpty()) {
                 FacturaElectronica fact = new FacturaElectronica();
                 fact.setDocrefSerie(documento.getSerie_ref());
-                fact.setDocrefNumero(String.format("%08d", Integer.parseInt( documento.getNumero_ref())));
+                fact.setDocrefNumero(String.format("%08d", Integer.parseInt(documento.getNumero_ref())));
                 fact.setEmpresa(e);
                 List<FacturaElectronica> comprobanteRel = facturaElectronicaRepository.findByDocrefSerieAndDocrefNumero(fact);
-                if(comprobanteRel == null || (comprobanteRel != null && comprobanteRel.size() == 0)){
+                if (comprobanteRel == null || (comprobanteRel != null && comprobanteRel.size() == 0)) {
                     return "Comprobante relacionado de anticipo no existe";
                 }
             }
         }
-        
+
         if (!(documento.getTipo().equals("07") || documento.getTipo().equals("08") || documento.getTipo().equals("03"))) {
             if (documento.getForma_pago().equalsIgnoreCase(Constantes.FORMA_PAGO_CONTADO) && !CollectionUtils.isEmpty(documento.getLista_cuotas())) {
                 return "Si la forma de pago es Contado no es necesario indicar la lista de cuotas, campo: lista_cuotas";
@@ -591,7 +593,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                     if (FacturadorUtil.isNullOrEmpty(detalle.getTipo_moneda_pago())) {
                         return "Si la forma de pago es Credito debe indicar el tipo de moneda de la cuota, campo: tipo_moneda_pago";
                     }
-                    
+
                 }
             }
 
@@ -599,7 +601,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
                 BigDecimal sumaCoutas = BigDecimal.ZERO;
                 for (ComprobanteCuotas detalle : documento.getLista_cuotas()) {
-                    
+
                     sumaCoutas = sumaCoutas.add(detalle.getMonto_pago());
 
                 }
@@ -609,16 +611,16 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 }
             }
         }
-        BigDecimal sumTotalTributos = BigDecimal.ZERO,sumBaseImponible = BigDecimal.ZERO;
+        BigDecimal sumTotalTributos = BigDecimal.ZERO, sumBaseImponible = BigDecimal.ZERO;
         for (ComprobanteTax comprobanteTax : documento.getLista_tributos()) {
             for (ComprobanteDet item : documento.getLista_productos()) {
-                if(item.getCod_tributo_igv().equals(comprobanteTax.getIde_tributo())){
+                if (item.getCod_tributo_igv().equals(comprobanteTax.getIde_tributo())) {
                     sumTotalTributos = sumTotalTributos.add(item.getAfectacion_igv());
                 }
             }
             sumTotalTributos = sumTotalTributos.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-            if(comprobanteTax.getMto_tributo().compareTo(sumTotalTributos) != 0){
-                 return "La suma del monto del tributo no equivale al del detalle. Código tributo: "+comprobanteTax.getIde_tributo();
+            if (comprobanteTax.getMto_tributo().compareTo(sumTotalTributos) != 0) {
+                return "La suma del monto del tributo no equivale al del detalle. Código tributo: " + comprobanteTax.getIde_tributo();
             }
         }
         String res = validarPlazo(documento);
@@ -692,7 +694,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
         documento.setXmlHash(retorno.get("xmlHash").toString());
         String tempDescripcionPluralMoneda = "SOLES";
-        byte[] bytes = print(rootpath + "TEMP/", documento,1, tempDescripcionPluralMoneda);
+        byte[] bytes = print(rootpath + "TEMP/", documento, 1, tempDescripcionPluralMoneda);
 
         retorno.put("pdfBase64", bytes);
 
@@ -741,52 +743,61 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 //            }
         return retorno;
     }
+
     @Override
-    public Map<String, Object> getPDF(long ticketOperacion,int tipo) throws Exception {
+    public Map<String, Object> getPDF(long ticketOperacion, int tipo) throws Exception {
         Map<String, Object> retorno = new HashMap<>();
         List<FacturaElectronica> fact = getByTicketOperacion(ticketOperacion);
-        if(fact == null) return null;
-        if(fact.get(0).getId() == null) return null;
-        log.info("fact.getId(): "+fact.get(0).getId());
-        byte[] bytes = print(this.appConfig.getRootPath(),fact.get(0),tipo,"SOLES");
+        if (fact == null) {
+            return null;
+        }
+        if (fact.get(0).getId() == null) {
+            return null;
+        }
+        log.info("fact.getId(): " + fact.get(0).getId());
+        byte[] bytes = print(this.appConfig.getRootPath(), fact.get(0), tipo, "SOLES");
         if (!appConfig.getEnvironment().equals("PRODUCTION")) {
             FileUtils.writeByteArrayToFile(new File("D:/report.pdf"), bytes);
         }
         retorno.put("pdfBase64", bytes);
         return retorno;
     }
-    private byte[] print(String rootpath, FacturaElectronica documento,int tipo, String tempDescripcionPluralMoneda) throws Exception {
+
+    private byte[] print(String rootpath, FacturaElectronica documento, int tipo, String tempDescripcionPluralMoneda) throws Exception {
         ByteArrayInputStream stream = Impresion.Imprimir(rootpath, tipo, documento, tempDescripcionPluralMoneda);
         int n = stream.available();
         byte[] bytes = new byte[n];
         stream.read(bytes, 0, n);
         return bytes;
     }
+
     @Override
-    public List<FacturaElectronica> getByFechaEmisionBetweenAndEmpresaIdIn(LocalDate fecIni, LocalDate fecFin, List<Integer> empresaIds){
+    public List<FacturaElectronica> getByFechaEmisionBetweenAndEmpresaIdIn(LocalDate fecIni, LocalDate fecFin, List<Integer> empresaIds) {
         List<FacturaElectronica> list = facturaElectronicaRepository.findByFechaEmisionBetweenAndEmpresaIdIn(fecIni, fecFin, empresaIds);
         list.forEach((item) -> {
-            item.setIndSituacion(item.getIndSituacion().equals("03")?"ACEPTADO":
-                    item.getIndSituacion().equals("02")?"XML generado":
-                    item.getIndSituacion().equals("01")?"por generar XML":
-                    item.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_CON_ERRORES) 
-                            || item.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO)?
-                            item.getObservacionEnvio():"Con problemas");
-            item.setEstado(item.getEstado().equals("1")?"ACTIVO":"ANULADO");
+            item.setIndSituacion(item.getIndSituacion().equals("03") ? "ACEPTADO"
+                    : item.getIndSituacion().equals("02") ? "XML generado"
+                    : item.getIndSituacion().equals("01") ? "por generar XML"
+                    : item.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_CON_ERRORES)
+                    || item.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO)
+                    ? item.getObservacionEnvio() : "Con problemas");
+            item.setEstado(item.getEstado().equals("1") ? "ACTIVO" : "ANULADO");
             item.setTipo(Catalogos.tipoDocumento(item.getTipo(), null)[1]);
         });
         list = list.stream()
-                    .sorted(Comparator.comparing(FacturaElectronica::getNumero).reversed())
-                    .collect(Collectors.toList());
+                .sorted(Comparator.comparing(FacturaElectronica::getNumero).reversed())
+                .collect(Collectors.toList());
         return list;
     }
+
     @Override
-    public List<FacturaElectronica> getByIdIn(List<Long> ids){
+    public List<FacturaElectronica> getByIdIn(List<Long> ids) {
         List<FacturaElectronica> list = facturaElectronicaRepository.findByIdIn(ids);
         return list;
     }
+
     @Override
-    public List<FacturaElectronica> getByTicketOperacion(long ticketOperacion){
+    public List<FacturaElectronica> getByTicketOperacion(long ticketOperacion) {
         return facturaElectronicaRepository.findByTicketOperacion(ticketOperacion);
     }
 }

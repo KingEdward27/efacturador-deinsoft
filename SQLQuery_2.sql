@@ -9,8 +9,7 @@ SELECT TOP (1000) [idempresa]
       ,[tipodoc]
       ,[token]
       ,[usuariosol] from empresa
-eyJhbGciOiJIUzUxMiJ9.eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2NDkzNjExODQsImlzcyI6IkRFSU5TT0ZUIiwianRpIjoiREVGQUNULUpXVCIsInN1YiI6IjIwNTE4OTY0NzU2L0hFUk9FUyBERUwgUEFDSUZJQ08iLCJudW1Eb2MiOiIyMDUxODk2NDc1NiIsInJhem9uU29jaWFsIjoiSEVST0VTIERFTCBQQUNJRklDTyIsInVzdWFyaW9Tb2wiOiJNT0REQVRPUyIsImV4cCI6MTY1MTE2MTE4NH0.jqX1NeB4MZ3O_wpiZIK_B2MgUsRacAjWG-2rPzXJQd1p1D-jXt4ihznBKC4ymp53O7K3wXCEikZiO2IIOT-AzQ.ulu9iCbXzudfgmAenRHtSgmjLANTOM907MOzwVdSQvj06-D2C9zQ2xBPDHgTKsUKCT4Tmbk_jjin8Q3v45ZQuA
-  update empresa set usuariosol = 'EBOLETAS',clavesol = 'Eboletas123' where idempresa = 14
+ update empresa set usuariosol = 'EBOLETAS',clavesol = 'Eboletas123' where idempresa = 14
   FROM [dbo].[empresa]
 
   --update factura_electronica set ind_situacion = '04' where m_id in (24,25)
@@ -205,10 +204,6 @@ ADD CONSTRAINT df_estado
 DEFAULT '1' FOR estado;
 
 select * from empresa
-
-update empresa 
-set token = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2NTI3NDUxMzcsImlzcyI6IkRFSU5TT0ZUIiwianRpIjoiREVGQUNULUpXVCIsInN1YiI6IjEwNDE0MzE2NTk1L1BFUkVaIERFTEdBRE8gQkxBTkNBIE5FUkkiLCJudW1Eb2MiOiIxMDQxNDMxNjU5NSIsInJhem9uU29jaWFsIjoiUEVSRVogREVMR0FETyBCTEFOQ0EgTkVSSSIsInVzdWFyaW9Tb2wiOiJFQk9MRVRBUyIsImV4cCI6MTY1NDY2NTEzN30.LD5KQ2oTuCcOusCaMLTSSyRw6-6Xz6QJwXZEiwzuizoMwlIQi0K1f0AYn4nwAGS_UzANYq4cQNSNBPTYSZD4EQ'
-where idempresa = 14
 
 select * from factura_electronica where numero in ('00000448','00000451','00000450')
 

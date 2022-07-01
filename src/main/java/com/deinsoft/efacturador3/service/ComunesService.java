@@ -9,7 +9,7 @@ import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceMo
 public interface ComunesService {
   String obtenerRutaTrabajo(String paramString);
   
-  void validarConexion(String paramString, Integer paramInteger);
+  boolean validarConexion(String paramString, Integer paramInteger);
   
   Boolean validarVersionFacturador(String paramString);
   

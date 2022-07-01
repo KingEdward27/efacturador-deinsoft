@@ -1,12 +1,17 @@
 package com.deinsoft.efacturador3;
 
+import com.deinsoft.efacturador3.model.ResumenDiario;
 import com.deinsoft.efacturador3.service.FacturaElectronicaService;
+import com.deinsoft.efacturador3.service.ResumenDiarioService;
+import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
 import io.github.project.openubl.xmlsenderws.webservices.managers.BillServiceManager;
 import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
 import io.github.project.openubl.xmlsenderws.webservices.wrappers.ServiceConfig;
 import java.io.FileOutputStream;
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -29,6 +34,9 @@ public class Efacturador3Application implements CommandLineRunner {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    ResumenDiarioService resumenDiarioService;
+    
     public static void main(String[] args) throws Exception {
         SpringApplication.run(Efacturador3Application.class, args);
 //        ServiceConfig config = new ServiceConfig.Builder()
@@ -49,9 +57,14 @@ public class Efacturador3Application implements CommandLineRunner {
 //         }
     }
 
-    //@Scheduled(cron = "0 0 1 * * *")
+    @Scheduled(cron = "0 0 11 * * *")
     void sendSunat() {
         facturaElectronicaService.sendToSUNAT();
+//        try {
+//            resumenDiarioService.sendSUNAT();
+//        } catch (TransferirArchivoException ex) {
+//            Logger.getLogger(Efacturador3Application.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     @Override
