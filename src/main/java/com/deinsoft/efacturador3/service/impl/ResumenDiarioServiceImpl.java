@@ -467,7 +467,7 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
         listSituacion.add(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
         for (Empresa empresa : empresaService.getEmpresas()) {
             List<FacturaElectronica> list = facturaElectronicaRepository.
-                findByEmpresaIdAndTipoAndIndSituacionInOrderByFechaEmisionAsc(empresa.getId(), "03", listSituacion);
+                findByEmpresaIdAndTipoAndIndSituacionInAndEstadoOrderByFechaEmisionAsc(empresa.getId(), "03", listSituacion,"1");
             List<Long> listIds = new ArrayList<>();
             LocalDate fechaEmision = list.get(0).getFechaEmision();
             for (FacturaElectronica idsTrabajadore : list) {

@@ -276,7 +276,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
         for (Empresa empresa : empresaService.getEmpresas()) {
             List<FacturaElectronica> list = facturaElectronicaRepository.
-                    findByEmpresaIdAndTipoAndIndSituacionInOrderByFechaEmisionAsc(empresa.getId(), "01", listSituacion);
+                    findByEmpresaIdAndTipoAndIndSituacionInAndEstadoOrderByFechaEmisionAsc(empresa.getId(), "01", listSituacion,"1");
 
             list.forEach((facturaElectronica) -> {
                 try {
