@@ -772,8 +772,8 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     }
 
     @Override
-    public List<FacturaElectronica> getByFechaEmisionBetweenAndEmpresaIdIn(LocalDate fecIni, LocalDate fecFin, List<Integer> empresaIds) {
-        List<FacturaElectronica> list = facturaElectronicaRepository.findByFechaEmisionBetweenAndEmpresaIdIn(fecIni, fecFin, empresaIds);
+    public List<FacturaElectronica> getByFechaEmisionBetweenAndEmpresaIdInAndEstadoIn(LocalDate fecIni, LocalDate fecFin, List<Integer> empresaIds, List<String> estados) {
+        List<FacturaElectronica> list = facturaElectronicaRepository.findByFechaEmisionBetweenAndEmpresaIdInAndEstadoIn(fecIni, fecFin, empresaIds,estados);
         list.forEach((item) -> {
             item.setIndSituacion(item.getIndSituacion().equals("03") ? "ACEPTADO"
                     : item.getIndSituacion().equals("02") ? "XML generado"

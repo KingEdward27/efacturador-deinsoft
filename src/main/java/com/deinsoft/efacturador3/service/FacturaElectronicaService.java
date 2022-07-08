@@ -40,7 +40,7 @@ public interface FacturaElectronicaService {
 
     public void sendToSUNAT();
     
-    public List<FacturaElectronica> getByFechaEmisionBetweenAndEmpresaIdIn(LocalDate fecIni, LocalDate fecFin,List<Integer> empresaIds);
+    public List<FacturaElectronica> getByFechaEmisionBetweenAndEmpresaIdInAndEstadoIn(LocalDate fecIni, LocalDate fecFin,List<Integer> empresaIds, List<String> estados);
     
     public List<FacturaElectronica> getByIdIn(List<Long> ids);
     

@@ -204,11 +204,33 @@ ADD CONSTRAINT df_estado
 DEFAULT '1' FOR estado;
 
 select * from empresa
+select * from factura_electronica
+select M_ID,NUMERO,observacion_envio from factura_electronica F where m_id > 1685
+update factura_electronica set estado = '0' where m_id in(
+1694,
+1696,
+1699,
+1701,
+1703,
+1705,
+1707,
+1709,
+1711,
+1713,
+1715,
+1717,
+1719,
+1721,
+1724,
+1726)
 
-select * from factura_electronica where numero in ('00000448','00000451','00000450')
-
+1120 1121
+update factura_electronica set estado = '2' where m_id = 1604
 UPDATE factura_electronica set ind_situacion = '03', observacion_envio = 'La Boleta numero BB02-00000448, ha sido aceptada'
 where numero ='00000448'
 
 UPDATE factura_electronica set ind_situacion = '03', observacion_envio = 'La Boleta numero BB02-00000451, ha sido aceptada'
 where numero ='00000451'
+select * from factura_electronica where  M_ID = 381
+update factura_electronica set FECHA_EMISION = '2022-06-17' WHERE M_ID = 1369
+update factura_electronica set FECHA_EMISION = '2022-05-03' WHERE M_ID = 381

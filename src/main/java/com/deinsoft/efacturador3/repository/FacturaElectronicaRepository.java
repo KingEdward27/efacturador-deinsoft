@@ -29,7 +29,7 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
     List<FacturaElectronica> findByEmpresaIdAndTipoAndIndSituacionInAndEstadoOrderByFechaEmisionAsc
         (long empresaId, String tipo, List<String> listSituacion, String estado);
     
-    List<FacturaElectronica> findByFechaEmisionBetweenAndEmpresaIdIn(LocalDate fecIni, LocalDate fecFin, List<Integer> empresaIds);
+    List<FacturaElectronica> findByFechaEmisionBetweenAndEmpresaIdInAndEstadoIn(LocalDate fecIni, LocalDate fecFin, List<Integer> empresaIds, List<String> estados);
     
     @Query(value="select p from facturaElectronica p where p.tipo = :#{#facturaElectronica.notaReferenciaTipo} "
             + "and p.serie = :#{#facturaElectronica.notaReferenciaSerie} "

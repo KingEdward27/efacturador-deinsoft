@@ -136,7 +136,9 @@ public class FacturaViewController extends BaseController{
         for (SecRoleUser secRoleUser : usuario.getListSecRoleUser()) {
             listEmpresaIds.add(secRoleUser.getEmpresa().getId());
         }
-        
+        List<String> estados = new ArrayList<>();
+        estados.add("1");
+        estados.add("2");
         List<FacturaElectronica> list = new ArrayList<>();
         if (facturaSearch.getFechaIni() == null || !StringUtils.hasText(facturaSearch.getFechaIni()) ||
                 facturaSearch.getFechaFin() == null || !StringUtils.hasText(facturaSearch.getFechaFin())) {
@@ -157,7 +159,7 @@ public class FacturaViewController extends BaseController{
 //        }
         LocalDate date1 = LocalDate.parse(this.facturaSearch.getFechaIni(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         LocalDate date2 = LocalDate.parse(this.facturaSearch.getFechaFin(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        list = facturaElectronicaService.getByFechaEmisionBetweenAndEmpresaIdIn(date1, date2, listEmpresaIds);
+        list = facturaElectronicaService.getByFechaEmisionBetweenAndEmpresaIdInAndEstadoIn(date1, date2, listEmpresaIds,estados);
         if(model != null){
             model.addAttribute("titulo", "Listado de Comprobantes");
             model.addAttribute("facturas", list);
