@@ -7,6 +7,7 @@ package com.deinsoft.efacturador3.controllers.web;
 
 import com.deinsoft.efacturador3.controllers.BaseController;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
+import com.deinsoft.efacturador3.model.ResumenDiario;
 import com.deinsoft.efacturador3.model.SecRoleUser;
 import com.deinsoft.efacturador3.model.SecUser;
 import com.deinsoft.efacturador3.service.FacturaElectronicaService;
@@ -128,6 +129,7 @@ public class FacturaViewController extends BaseController{
         model.addAttribute("titulo", "Listado de Comprobantes");
         model.addAttribute("facturaSearch", this.facturaSearch);
         model.addAttribute("facturas", list);
+        model.addAttribute("resumenDiario", new ResumenDiario());
         return "listar";
     }
     
@@ -147,6 +149,7 @@ public class FacturaViewController extends BaseController{
                 model.addAttribute("success", "Debe ingresar la fecha inicial y final para hacer la búsqueda");
                 model.addAttribute("facturas", list);
                 model.addAttribute("facturaSearch", this.facturaSearch);
+                model.addAttribute("resumenDiario", new ResumenDiario());
                 return list;
             }
             else{
@@ -164,6 +167,7 @@ public class FacturaViewController extends BaseController{
             model.addAttribute("titulo", "Listado de Comprobantes");
             model.addAttribute("facturas", list);
             model.addAttribute("facturaSearch", this.facturaSearch);
+            model.addAttribute("resumenDiario", new ResumenDiario());
         }
         return list;
     }
@@ -280,7 +284,6 @@ public class FacturaViewController extends BaseController{
 //        flash.addFlashAttribute("success", resultado.get("code") + "\n" + resultado.get("message"));
         return "listar :: lista";
     }
-
     @RequestMapping(value = {"/factura/sunat"}, method = RequestMethod.POST)
     public String sendSunat(
             @RequestParam(value = "idComprobante") long idComprobante,
@@ -409,7 +412,54 @@ public class FacturaViewController extends BaseController{
 //            PageRender<FacturaElectronica> pageRender = new PageRender<FacturaElectronica>("/listar", pageList);
 //            model.addAttribute("page", pageRender);
    
+    @RequestMapping(value = {"/factura/view-detail"}, method = RequestMethod.POST)
+    public String viewDetailFactura(@RequestParam(value = "idComprobante") long idComprobante, Model model) {
+        Map<String, Object> resultado = null;
+        try {
+            ResumenDiario rd = this.resumenDiarioService.getResumenByDoc(idComprobante);
+            if (rd == null) rd = new ResumenDiario();
+            model.addAttribute("resumenDiario",rd);
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultado = new HashMap<>();
+            resultado.put("code", "003");
+            resultado.put("message", e.getMessage());
+            model.addAttribute("error", resultado.get("code") + "\n" + resultado.get("message"));
+        }
+        
+        
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        SecUser usuario = secUserService.getSecUserByName(auth.getName());
 
+        if (usuario == null) {
+            return "/login";
+        }
+        return "listar :: dDetailForm";
+    }
+    @RequestMapping(value = {"/factura/see-ticket"}, method = RequestMethod.POST)
+    public String consultarTicket(@RequestParam(value = "idResumen") Long idResumen, Model model) {
+        Map<String, Object> resultado = null;
+        try {
+            ResumenDiario rd = resumenDiarioService.consultarTicketSunat("", idResumen);
+            if (rd == null) rd = new ResumenDiario();
+            model.addAttribute("resumenDiario",rd);
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultado = new HashMap<>();
+            resultado.put("code", "003");
+            resultado.put("message", e.getMessage());
+            model.addAttribute("error", resultado.get("code") + "\n" + resultado.get("message"));
+        }
+        
+        
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        SecUser usuario = secUserService.getSecUserByName(auth.getName());
+
+        if (usuario == null) {
+            return "/login";
+        }
+        return "listar :: dDetailForm";
+    }
     public FacturaElectronica getFacturaSearch() {
         return facturaSearch;
     }

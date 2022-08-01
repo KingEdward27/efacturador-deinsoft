@@ -111,7 +111,7 @@ public class PipeFacturaParser
         factura.put("tipDocUsuario", cabecera.getClienteTipo());
         factura.put("numDocUsuario", cabecera.getClienteDocumento());
         factura.put("rznSocialUsuario", cabecera.getClienteNombre());
-        factura.put("moneda", "PEN");
+        factura.put("moneda", cabecera.getMoneda());
 
         factura.put("sumTotTributos", Impresion.df.format(cabecera.getSumatoriaIGV().add(cabecera.getSumatoriaISC())));
         factura.put("sumTotValVenta", Impresion.df.format(cabecera.getTotalValorVentasGravadas().subtract(cabecera.getSumatoriaIGV())));

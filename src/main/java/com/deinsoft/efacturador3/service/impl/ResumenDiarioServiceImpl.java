@@ -45,6 +45,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -285,7 +286,7 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
                 det.setTipDocModifico(facturaElectronica.getNotaReferenciaTipo() == null ? "" : facturaElectronica.getNotaReferenciaTipo());
                 det.setSerDocModifico(facturaElectronica.getNotaReferenciaSerie() == null ? "" : facturaElectronica.getNotaReferenciaSerie());
                 det.setNumDocModifico(facturaElectronica.getNotaReferenciaNumero() == null ? "" : facturaElectronica.getNotaReferenciaNumero());
-                det.setCondicion(facturaElectronica.getEstado().equals("2")?"3":"1");
+                det.setCondicion(facturaElectronica.getEstado().equals("2") ? "3" : "1");
                 listDet.add(det);
 
                 cont++;
@@ -459,6 +460,56 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
     }
 
     @Override
+    public ResumenDiario consultarTicketSunat(String urlWebService, Long id) {
+        String urlSunat = urlWebService;
+        if (urlWebService == null || (urlWebService != null && urlWebService.equalsIgnoreCase(""))) {
+            urlSunat = (appConfig.getUrlServiceCDP() != null) ? appConfig.getUrlServiceCDP() : "XX";
+        }
+        String[] rutaUrl = urlSunat.split("\\/");
+        log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...tokens: " + rutaUrl[2]);
+        if (!this.comunesService.validarConexion(rutaUrl[2], 443)) {
+            return null;
+        }
+        ResumenDiario rd = getResumenDiarioById(id);
+        BillServiceModel res = comunesService.consultarTicketSUNAT(urlSunat, appConfig.getRootPath(),
+                rd.getTicketSunat(), rd.getEmpresa());
+        if (res == null) {
+            rd.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+            rd.setObservacionEnvio("Ticket con errores - Internal Server Error");
+            save(rd);
+        } else {
+            if (res.getCode() == 0) {
+                for (Iterator<ResumenDiarioDet> it
+                        = rd.getListResumenDiarioDet().iterator(); it.hasNext();) {
+                    ResumenDiarioDet resumenDiarioDet = it.next();
+                    FacturaElectronica fact = new FacturaElectronica();
+                    fact.setSerie(resumenDiarioDet.getNroDocumento().split("-")[0]);
+                    fact.setNumero(String.format("%08d", Integer.valueOf(resumenDiarioDet.getNroDocumento().split("-")[1])));
+                    fact.setEmpresa(rd.getEmpresa());
+                    List<FacturaElectronica> listFact = facturaElectronicaService.getBySerieAndNumeroAndEmpresaId(fact);
+                    fact = listFact.get(0);
+                    fact.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
+                    fact.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+                    fact.setObservacionEnvio(res.getDescription());
+                    fact.setTicketSunat(res.getTicket());
+                    facturaElectronicaService.save(fact);
+
+                }
+                rd.setIndSituacion(res.getCode() == null ? Constantes.CONSTANTE_SITUACION_ENVIADO_PROCESANDO
+                        : res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO
+                        : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+                rd.setObservacionEnvio(res.getDescription());
+                save(rd);
+            } else if (res.getCode() == 98) {
+                rd.setIndSituacion(Constantes.CONSTANTE_SITUACION_ENVIADO_PROCESANDO);
+                rd.setObservacionEnvio("En espera: " + res.getCode());
+                save(rd);
+            }
+        }
+        return rd;
+    }
+
+    @Override
     public void sendSUNAT() throws TransferirArchivoException {
         Map<String, Object> resultado = null;
         List<String> listSituacion = new ArrayList<>();
@@ -467,7 +518,8 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
         listSituacion.add(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
         for (Empresa empresa : empresaService.getEmpresas()) {
             List<FacturaElectronica> list = facturaElectronicaRepository.
-                findByEmpresaIdAndTipoAndIndSituacionInAndEstadoOrderByFechaEmisionAsc(empresa.getId(), "03", listSituacion,"1");
+                    findByEmpresaIdAndTipoInAndIndSituacionInAndEstadoOrderByFechaEmisionAsc(
+                            empresa.getId(),Arrays.asList("03"), listSituacion, "1");
             List<Long> listIds = new ArrayList<>();
             LocalDate fechaEmision = list.get(0).getFechaEmision();
             for (FacturaElectronica idsTrabajadore : list) {
@@ -488,6 +540,14 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
                 log.info(resultado.get("code") + "\n" + resultado.get("message"));
             }
         }
-        
+
+    }
+
+    @Override
+    public ResumenDiario getResumenByDoc(Long comprobanteId) {
+        FacturaElectronica facturaElectronicaResult = facturaElectronicaService.getById(comprobanteId);
+        ResumenDiario rd = resumenDiarioRepository.findResumenDiarioByComprobante(
+                facturaElectronicaResult.getSerie() + "-" + String.format("%08d", Integer.parseInt(facturaElectronicaResult.getNumero())));
+        return rd;
     }
 }

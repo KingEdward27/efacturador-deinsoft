@@ -26,8 +26,8 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
 		  )
     List<FacturaElectronica> findBySerieAndNumeroAndEmpresaId(String serie,String numero,int empresaId);
 
-    List<FacturaElectronica> findByEmpresaIdAndTipoAndIndSituacionInAndEstadoOrderByFechaEmisionAsc
-        (long empresaId, String tipo, List<String> listSituacion, String estado);
+    List<FacturaElectronica> findByEmpresaIdAndTipoInAndIndSituacionInAndEstadoOrderByFechaEmisionAsc
+        (Integer empresaId, List<String> tipo, List<String> listSituacion, String estado);
     
     List<FacturaElectronica> findByFechaEmisionBetweenAndEmpresaIdInAndEstadoIn(LocalDate fecIni, LocalDate fecFin, List<Integer> empresaIds, List<String> estados);
     

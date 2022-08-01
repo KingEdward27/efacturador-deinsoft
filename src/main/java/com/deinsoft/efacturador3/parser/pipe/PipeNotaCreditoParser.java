@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,13 +72,13 @@ public class PipeNotaCreditoParser
 
         notaCredito = new HashMap<>();
         notaCredito.put("tipOperacion", cabecera.getTipoOperacion());
-        notaCredito.put("fecEmision", new SimpleDateFormat("yyyy-MM-dd").format(cabecera.getFechaEmision()));
+        notaCredito.put("fecEmision", cabecera.getFechaEmision().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         notaCredito.put("horEmision", "12:00:00");
         notaCredito.put("codLocalEmisor", cabecera.getCodLocal());
         notaCredito.put("tipDocUsuario", cabecera.getClienteTipo());
         notaCredito.put("numDocUsuario", cabecera.getClienteDocumento());
         notaCredito.put("rznSocialUsuario", cabecera.getClienteNombre());
-        notaCredito.put("moneda", "PEN");
+        notaCredito.put("moneda", cabecera.getMoneda());
 
         notaCredito.put("codMotivo", cabecera.getNotaTipo());
         notaCredito.put("desMotivo", cabecera.getNotaMotivo());
@@ -132,65 +133,67 @@ public class PipeNotaCreditoParser
         notaCredito.put("tipoCodigoMonedaSwf", "01");
         notaCredito.put("identificadorFacturadorSwf", "SISTEMA FACTURADOR DEFACTURADOR - DEINSOFT SRL");
         notaCredito.put("codigoFacturadorSwf", codigoFacturadorSwf.toString());
-        notaCredito.put("identificadorFirmaSwf", identificadorFirmaSwf);
+        notaCredito.put("identificadorFirmaSwf", identificadorFirmaSwf); 
 
         List<Map<String, Object>> listaDetalle = new ArrayList<>();
         Map<String, Object> detalle = null;
 
         Integer linea = Integer.valueOf(0);
 //      
-        for (FacturaElectronicaDet item : cabecera.getListFacturaElectronicaDet()) {
-            linea = Integer.valueOf(linea.intValue() + 1);
-            detalle = new HashMap<>();
-            detalle.put("unidadMedida", item.getUnidadMedida());
-            detalle.put("ctdUnidadItem", String.valueOf(item.getCantidad()));
-            detalle.put("codProducto", item.getCodigo());
-            //        detalle.put("codProductoSUNAT", registro[3]);
-            detalle.put("desItem", item.getDescripcion());
-            detalle.put("mtoValorUnitario", item.getValorUnitario());
+        if(cabecera.getListFacturaElectronicaDet() != null){
+            for (FacturaElectronicaDet item : cabecera.getListFacturaElectronicaDet()) {
+                linea = Integer.valueOf(linea.intValue() + 1);
+                detalle = new HashMap<>();
+                detalle.put("unidadMedida", item.getUnidadMedida());
+                detalle.put("ctdUnidadItem", String.valueOf(item.getCantidad()));
+                detalle.put("codProducto", item.getCodigo());
+                //        detalle.put("codProductoSUNAT", registro[3]);
+                detalle.put("desItem", item.getDescripcion());
+                detalle.put("mtoValorUnitario", item.getValorUnitario());
 
-            detalle.put("sumTotTributosItem", String.valueOf(item.getAfectacionIgv()));
+                detalle.put("sumTotTributosItem", String.valueOf(item.getAfectacionIgv()));
 
-            detalle.put("codTriIGV", "1000");
-            detalle.put("mtoIgvItem", String.valueOf(item.getAfectacionIgv()));
-            detalle.put("mtoBaseIgvItem", item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv()));
-            detalle.put("nomTributoIgvItem", "IGV");
-            detalle.put("codTipTributoIgvItem", "VAT");
-            detalle.put("tipAfeIGV", item.getAfectacionIGVCode());
-            detalle.put("porIgvItem", String.valueOf(cabecera.getPorcentajeIGV()));
+                detalle.put("codTriIGV", "1000");
+                detalle.put("mtoIgvItem", String.valueOf(item.getAfectacionIgv()));
+                detalle.put("mtoBaseIgvItem", item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv()));
+                detalle.put("nomTributoIgvItem", "IGV");
+                detalle.put("codTipTributoIgvItem", "VAT");
+                detalle.put("tipAfeIGV", item.getAfectacionIGVCode());
+                detalle.put("porIgvItem", String.valueOf(cabecera.getPorcentajeIGV()));
 
-            detalle.put("codTriISC", "-");
-            detalle.put("mtoIscItem", "-");
-            detalle.put("mtoBaseIscItem", "-");
-            detalle.put("nomTributoIscItem", "-");
-            detalle.put("codTipTributoIscItem", "-");
-            detalle.put("tipSisISC", "-");
-            detalle.put("porIscItem", "-");
+                detalle.put("codTriISC", "-");
+                detalle.put("mtoIscItem", "-");
+                detalle.put("mtoBaseIscItem", "-");
+                detalle.put("nomTributoIscItem", "-");
+                detalle.put("codTipTributoIscItem", "-");
+                detalle.put("tipSisISC", "-");
+                detalle.put("porIscItem", "-");
 
-            detalle.put("codTriOtro", "-");
-            detalle.put("mtoTriOtroItem", "-");
-            detalle.put("mtoBaseTriOtroItem", "-");
-            detalle.put("nomTributoOtroItem", "-");
-            detalle.put("codTipTributoOtroItem", "-");
-            detalle.put("porTriOtroItem", "-");
+                detalle.put("codTriOtro", "-");
+                detalle.put("mtoTriOtroItem", "-");
+                detalle.put("mtoBaseTriOtroItem", "-");
+                detalle.put("nomTributoOtroItem", "-");
+                detalle.put("codTipTributoOtroItem", "-");
+                detalle.put("porTriOtroItem", "-");
 
-            detalle.put("codTriIcbper", "-");
-            detalle.put("mtoTriIcbperItem", "-");
-            detalle.put("ctdBolsasTriIcbperItem", "-");
-            detalle.put("nomTributoIcbperItem", "-");
-            detalle.put("codTipTributoIcbperItem", "-");
-            detalle.put("mtoTriIcbperUnidad", "-");
+                detalle.put("codTriIcbper", "-");
+                detalle.put("mtoTriIcbperItem", "-");
+                detalle.put("ctdBolsasTriIcbperItem", "-");
+                detalle.put("nomTributoIcbperItem", "-");
+                detalle.put("codTipTributoIcbperItem", "-");
+                detalle.put("mtoTriIcbperUnidad", "-");
 
-            detalle.put("mtoPrecioVentaUnitario", item.getPrecioVentaUnitario());
-            detalle.put("mtoValorVentaItem", String.valueOf(item.getValorVentaItem()));
-            detalle.put("mtoValorReferencialUnitario", "0.00");
-            detalle.put("lineaSwf", String.valueOf(linea));
-            detalle.put("tipoCodiMoneGratiSwf", "02");
+                detalle.put("mtoPrecioVentaUnitario", item.getPrecioVentaUnitario());
+                detalle.put("mtoValorVentaItem", String.valueOf(item.getValorVentaItem()));
+                detalle.put("mtoValorReferencialUnitario", "0.00");
+                detalle.put("lineaSwf", String.valueOf(linea));
+                detalle.put("tipoCodiMoneGratiSwf", "02");
 
-            listaDetalle.add(detalle);
+                listaDetalle.add(detalle);
+            }
+            notaCredito.put("listaDetalle", listaDetalle);
         }
-
-        notaCredito.put("listaDetalle", listaDetalle);
+        
         List<Map<String, Object>> listaTributos = new ArrayList<>();
         Map<String, Object> tributo = null;
         if(cabecera.getListFacturaElectronicaTax() != null){

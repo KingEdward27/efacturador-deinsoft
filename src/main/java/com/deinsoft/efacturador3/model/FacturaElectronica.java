@@ -83,11 +83,22 @@ public class FacturaElectronica implements Serializable {
     private String descuentoGlobalPorcentaje;
 
     private String moneda;
+    
+    @Column(name = "nota_tipo")
     private String notaTipo;
+    
+    @Column(name = "nota_motivo")
     private String notaMotivo;
+    
+    @Column(name = "nota_referencia_tipo")
     private String notaReferenciaTipo;
+    
+    @Column(name = "nota_referencia_serie")
     private String notaReferenciaSerie;
+    
+    @Column(name = "nota_referencia_numero")
     private String notaReferenciaNumero;
+    
     private String incluirPdf;
     private String incluirXml;
 

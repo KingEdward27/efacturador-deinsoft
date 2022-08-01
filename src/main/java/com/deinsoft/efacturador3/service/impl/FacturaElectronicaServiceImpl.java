@@ -163,7 +163,48 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             throw new TransferirArchivoException(e.getMessage(), exceptionDetail);
         }
     }
+    @Override
+    @Transactional
+    public Map<String, Object> generarNotaCredito(long comprobanteId) throws TransferirArchivoException {
+        log.debug("FacturaController.generarComprobantePagoSunat...inicio/params: " + String.valueOf(comprobanteId));
+        Map<String, Object> retorno = new HashMap<>();
+        FacturaElectronica facturaElectronicaResult = null;
+        long ticket = Calendar.getInstance().getTimeInMillis();
 
+        try {
+            facturaElectronicaResult = getById(comprobanteId);
+            FacturaElectronica f = new FacturaElectronica();
+            BeanUtils.copyProperties(f, facturaElectronicaResult);
+            f.setId(0l);
+            f.setTipo("07");
+            f.setSerie("FN01");
+            f.setNumero("00000001");
+            f.setNotaReferenciaTipo(facturaElectronicaResult.getTipo());
+            f.setNotaReferenciaSerie(facturaElectronicaResult.getSerie());
+            f.setNotaReferenciaNumero(facturaElectronicaResult.getNumero());
+            f.setNotaTipo("01");
+            f.setNotaMotivo("Anulación de la operación");
+            f.setIndSituacion("02");
+            f = save(f);
+            if (f.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO)) {
+                retorno.put("code", "003");
+                retorno.put("message", "El comprobante ya se encuentra en estado ENVIADO y ACEPTADO");
+                return retorno;
+            }
+            retorno.put("ticketOperacion", ticket);
+            retorno.putAll(genXmlAndSignAndValidate(appConfig.getRootPath(), f, ticket));
+            return retorno;
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            retorno = new HashMap<>();
+            retorno.put("code", "003");
+            retorno.put("message", e.getMessage());
+            e.printStackTrace();
+            ExceptionDetail exceptionDetail = new ExceptionDetail();
+            exceptionDetail.setMessage(e.getMessage());
+            throw new TransferirArchivoException(e.getMessage(), exceptionDetail);
+        }
+    }
     @Override
     @Transactional
     public Map<String, Object> generarComprobantePagoSunat(String rootpath, FacturaElectronica documento) throws TransferirArchivoException {
@@ -255,8 +296,8 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     public void sendToSUNAT() {
         List<String> listSituacion = new ArrayList<>();
         listSituacion.add(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
-        listSituacion.add(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO);
-        listSituacion.add(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+//        listSituacion.add(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO);
+//        listSituacion.add(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
         String urlWebService = (appConfig.getUrlServiceCDP() != null) ? appConfig.getUrlServiceCDP() : "XX";
         int cont = 1;
         boolean connection = false;
@@ -271,12 +312,14 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             cont++;
         }
         if (!connection) {
+            log.debug("sunat connection down");
             return;
         }
 
         for (Empresa empresa : empresaService.getEmpresas()) {
             List<FacturaElectronica> list = facturaElectronicaRepository.
-                    findByEmpresaIdAndTipoAndIndSituacionInAndEstadoOrderByFechaEmisionAsc(empresa.getId(), "01", listSituacion,"1");
+                    findByEmpresaIdAndTipoInAndIndSituacionInAndEstadoOrderByFechaEmisionAsc(
+                            empresa.getId(), Arrays.asList("01","03"), listSituacion,"1");
 
             list.forEach((facturaElectronica) -> {
                 try {
@@ -297,6 +340,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                     facturaElectronica.setTicketSunat(res.getTicket());
                     save(facturaElectronica);
                     log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...enviarComprobantePagoSunat Final");
+                    Thread.sleep(3000);
                 } catch (Exception e) {
                     String mensaje = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
                     e.printStackTrace();

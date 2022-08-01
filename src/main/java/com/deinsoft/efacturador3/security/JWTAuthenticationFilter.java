@@ -61,7 +61,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
         LocalDateTime currentTime = LocalDateTime.now();
         final Date createdDate = new Date();
-        final Date expirationDate = new Date(createdDate.getTime() + SecurityConstants.TOKEN_EXPIRATION_TIME * 1000 * 60 * 1000 * 12/* *10000 maximo tiempo posible*/);
+        final Date expirationDate = new Date(createdDate.getTime() + SecurityConstants.TOKEN_EXPIRATION_TIME * 1000 * 1000 * 1000/* *10000 maximo tiempo posible*/);
         LOGGER.info("expirationDate: " + expirationDate);
         //String username = ((UserDetails) auth.getPrincipal()).getUsername();
         //Usuario usuario =  usuarioRepository.findUsuarioByUsername(username);

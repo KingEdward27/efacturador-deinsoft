@@ -149,6 +149,22 @@ public class FacturaController extends BaseController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
+    @PostMapping(value = "/gen-xml-notacredito")
+    public ResponseEntity<?> genXmlNotaCreditoFromExistingData(@RequestParam(name = "id") String id, 
+            HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException {
+        Map<String,Object> result = null;
+        try {
+            result = this.facturaElectronicaService.generarNotaCredito(new Long(id));
+        } catch (Exception e) {
+            e.printStackTrace();
+            result  = new HashMap<>();
+            result.put("code","003");
+            result.put("message",e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
     @PostMapping(value = "/send-sunat")
     public ResponseEntity<?> enviarXML(@RequestParam(name = "id") String id,
             HttpServletRequest request, HttpServletResponse response) throws Exception {

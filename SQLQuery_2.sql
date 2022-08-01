@@ -179,7 +179,7 @@ update factura_electronica set ind_situacion = '03',serie = 'F001',observacion_e
  FECHA_EMISION = '2022-04-29' WHERE M_ID = 381
 
 select * from resumen_diario_det
-select * from factura_electronica where numero = '00000202'
+select * from factura_electronica where numero = '00000022'
 update factura_electronica set estado = '1' where estado is null
 select * from factura_electronica_det where m_id in 380,
 alter table factura_electronica
@@ -203,9 +203,37 @@ ALTER TABLE factura_electronica
 ADD CONSTRAINT df_estado
 DEFAULT '1' FOR estado;
 
+select numero,estado,count(*) from factura_electronica
+where tipo = '03'
+group by numero,estado
+having count(*) > 1
+
 select * from empresa
-select * from factura_electronica
-select M_ID,NUMERO,observacion_envio from factura_electronica F where m_id > 1685
+select * from factura_electronica where tipo = '01'
+select * from factura_electronica d where d.m_id =  2072
+select * from factura_electronica_Det d where d.m_id = 2072 2072
+select * from factura_electronica_tax d where d.factura_electronica_id =  2072
+select * from resumen_diario
+
+update factura_electronica set sumatoriaigv = 7.92 where m_id =  2072
+
+update factura_electronica_Det set 
+valor_unitario = 5.0 ,
+valor_venta_item = 5.0
+where m_id =  2072
+-- 101.48
+
+update factura_electronica_Det set 
+afectacion_igv = precio_venta_unitario*cantidad - (precio_venta_unitario*cantidad/1.18) 
+where m_id =  2072
+
+update factura_electronica_tax set taxtotal = 7.92,mto_base_imponible = 44 where factura_electronica_id =  2072
+
+update factura_electronica_Det set 
+afectacion_igv = precio_venta_unitario - (precio_venta_unitario/1.18) 
+where m_id =  1771
+
+select M_ID,NUMERO,fecha_emision,observacion_envio from factura_electronica F where m_id > 1685
 update factura_electronica set estado = '0' where m_id in(
 1694,
 1696,
@@ -222,7 +250,12 @@ update factura_electronica set estado = '0' where m_id in(
 1719,
 1721,
 1724,
-1726)
+1726,
+1728,
+1730,
+1732,
+1734,
+1736)
 
 1120 1121
 update factura_electronica set estado = '2' where m_id = 1604

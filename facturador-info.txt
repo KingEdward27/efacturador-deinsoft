@@ -1,3 +1,8 @@
 falta arreglar anticipos, deberia ser un detalle en el json
 falta arreglar impuestos, debería ser un detalle de impuestos
 actjualmente solo permite igv
+
+hacer api para consultar validez
+revisar caso envio lavanderia día 05, envio 51, eran 30
+enviar boletas dia 5
+revisar log envio de facturas

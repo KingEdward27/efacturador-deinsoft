@@ -267,7 +267,7 @@ public class EmpresaController {
                 .claim("razonSocial", empresa.getRazonSocial()) //((User)auth.getPrincipal()).getAuthorities())
                 .claim("usuarioSol", empresa.getUsuariosol())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + SecurityConstants.TOKEN_EXPIRATION_TIME * 1000 * 60 * 1000))
+                .setExpiration(new Date(new Date().getTime() + SecurityConstants.TOKEN_EXPIRATION_TIME * 1000 * 1000 * 1000))
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.SUPER_SECRET_KEY).compact();
     }
 }
