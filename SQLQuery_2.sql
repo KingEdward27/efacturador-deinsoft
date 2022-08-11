@@ -267,3 +267,5 @@ where numero ='00000451'
 select * from factura_electronica where  M_ID = 381
 update factura_electronica set FECHA_EMISION = '2022-06-17' WHERE M_ID = 1369
 update factura_electronica set FECHA_EMISION = '2022-05-03' WHERE M_ID = 381
+
+select getdate()
