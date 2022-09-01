@@ -606,7 +606,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         if (!listDocIds.contains(documento.getCliente_tipo())) {
             return "El tipo de documento de identidad no existe";
         }
-        if (documento.getSerie_ref() != null) {
+        if (documento.getSerie_ref() != null && !documento.getSerie_ref().equals("")) {
             if (!documento.getNumero_ref().isEmpty() && !documento.getNumero_ref().isEmpty()) {
                 FacturaElectronica fact = new FacturaElectronica();
                 fact.setDocrefSerie(documento.getSerie_ref());

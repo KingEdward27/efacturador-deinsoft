@@ -259,11 +259,13 @@ update factura_electronica set estado = '0' where m_id in(
 
 1120 1121
 update factura_electronica set estado = '2' where m_id = 1604
-UPDATE factura_electronica set ind_situacion = '03', observacion_envio = 'La Boleta numero BB02-00000448, ha sido aceptada'
-where numero ='00000448'
+
+UPDATE factura_electronica set ind_situacion = '03', observacion_envio = 'La Boleta numero BB02-00002322, ha sido aceptada'
+where numero ='00002322'
 
 UPDATE factura_electronica set ind_situacion = '03', observacion_envio = 'La Boleta numero BB02-00000451, ha sido aceptada'
 where numero ='00000451'
+
 select * from factura_electronica where  M_ID = 381
 update factura_electronica set FECHA_EMISION = '2022-06-17' WHERE M_ID = 1369
 update factura_electronica set FECHA_EMISION = '2022-05-03' WHERE M_ID = 381

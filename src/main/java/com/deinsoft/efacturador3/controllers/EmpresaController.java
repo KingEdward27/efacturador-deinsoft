@@ -107,38 +107,13 @@ public class EmpresaController {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
                 }
             }
-//            String tokenold = request.getHeader(SecurityConstants.HEADER_AUTHORIZACION_KEY).replace("\"","");
-//		Date expirationDate = Jwts.parser()
-//				.setSigningKey(SecurityConstants.SUPER_SECRET_KEY)
-//				.parseClaimsJws(tokenold.replace(SecurityConstants.TOKEN_BEARER_PREFIX + " ", ""))
-//				.getBody().getExpiration();
-//				
-//		Date issuedAt = Jwts.parser()
-//				.setSigningKey(SecurityConstants.SUPER_SECRET_KEY)
-//				.parseClaimsJws(tokenold.replace(SecurityConstants.TOKEN_BEARER_PREFIX + " ", ""))
-//				.getBody().getIssuedAt();
-
-//		String id = request.getSession().getId();
-//		List<String> authorities = util.getListAuthorities( updatedAuthorities );
-//		Session service = util.setSession( id, authorities, secRoleUser, usr );
-//		Session session = sessionService.save( service );
             String token = Jwts.builder()
                     .setIssuedAt(new Date())
                     .setIssuer(SecurityConstants.ISSUER_INFO)
                     .setId("DEFACT-JWT")
                     .setSubject(empresa.getNumdoc() + "/" + empresa.getRazonSocial())
-                    //.claim("prf", secRoleUser.getSecRole())
-                    //.claim("cg", secRoleUser.getCnfTenant())
-                    //.claim("session", id)
-                    //.claim("cg", secRoleUser.getTenants())
-                    //.claim("cia", secRoleUser.getCompanies())
-                    //.claim("brn", secRoleUser.getOrgs())
-                    //.claim("usrEmail", usr.getEmail())
-                    //				.claim("empresaId", empresa.getIdempresa())
-                    //                                .claim("empresaId", empresa.getIdempresa()) 
-                    .claim("numDoc", empresa.getNumdoc()) //((User)auth.getPrincipal()).getAuthorities())
-                    //				.claim("authorities", empresa.getNumdoc())
-                    .claim("razonSocial", empresa.getRazonSocial()) //((User)auth.getPrincipal()).getAuthorities())
+                    .claim("numDoc", empresa.getNumdoc()) 
+                    .claim("razonSocial", empresa.getRazonSocial())
                     .claim("usuarioSol", empresa.getUsuariosol())
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(new Date().getTime() + SecurityConstants.TOKEN_EXPIRATION_TIME * 1000 * 1000 * 1000))
