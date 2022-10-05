@@ -82,6 +82,6 @@ public class MailBean {
     @Override
     public String toString() {
         return "MailBean [asunto=" + asunto + ", contenido=" + contenido
-                + ", correoElectronicoFrom=" + correoElectronicoFrom + ", correoElectronicoTo= "+correoElectronicoFrom+"]";
+                + ", correoElectronicoFrom=" + correoElectronicoFrom + ", correoElectronicoTo= "+correoElectronicoTo+"]";
     }
 }

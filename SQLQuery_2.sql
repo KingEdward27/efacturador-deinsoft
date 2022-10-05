@@ -9,11 +9,13 @@ SELECT TOP (1000) [idempresa]
       ,[tipodoc]
       ,[token]
       ,[usuariosol] from empresa
+
+      eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2NjE0NjQ0NzcsImlzcyI6IkRFSU5TT0ZUIiwianRpIjoiREVGQUNULUpXVCIsInN1YiI6IjEwNDE0MzE2NTk1L1BFUkVaIERFTEdBRE8gQkxBTkNBIE5FUkkiLCJudW1Eb2MiOiIxMDQxNDMxNjU5NSIsInJhem9uU29jaWFsIjoiUEVSRVogREVMR0FETyBCTEFOQ0EgTkVSSSIsInVzdWFyaW9Tb2wiOiJFQk9MRVRBUyIsImV4cCI6MTY5MzQ2NDQ3N30.Dk-LBXyih2218nubjqd58iNPKwZLbhPTuzkRcfmxVn5MoJpkJYtes87mQKiWyQlPIBSExa1KNDWrH9TY8NiYVQ
  update empresa set usuariosol = 'EBOLETAS',clavesol = 'Eboletas123' where idempresa = 14
   FROM [dbo].[empresa]
 
   --update factura_electronica set ind_situacion = '04' where m_id in (24,25)
-select * from factura_electronica where empresa_id = 4
+select * from factura_electronica where empresa_id = 16
 select * from factura_electronica_Det
 select CURRENT_TIMEZONE()
 
@@ -271,3 +273,32 @@ update factura_electronica set FECHA_EMISION = '2022-06-17' WHERE M_ID = 1369
 update factura_electronica set FECHA_EMISION = '2022-05-03' WHERE M_ID = 381
 
 select getdate()
+
+insert into sec_user (sec_user_id,email,name,PASSWORD,isactive) 
+values(5,'pablojc3005@gmail.com','pablojc3005',
+'$2a$10$ySSHW/94asbWwyduiUu6t./z761Sqgo0kJA9Q0/DexTBv9wY267wu','1');
+
+insert into sec_role_user(sec_role_user_id,empresa_id,sec_role_id,sec_user_id) 
+values(4,16,2,5);
+
+UPDATE factura_electronica set ind_situacion = '03', observacion_envio = 'La Boleta numero BB02-'+NUMERO+', ha sido aceptada'
+where numero IN ('00002707',
+'00002982',
+'00002972',
+'00002971',
+'00002794',
+'00002791')
+
+SELECT * FROM factura_electronica where numero IN ('00002707',
+'00002982',
+'00002972',
+'00002971',
+'00002794',
+'00002791')
+
+'00002707',
+'00002982',
+'00002972',
+'00002971',
+'00002794',
+'00002791'

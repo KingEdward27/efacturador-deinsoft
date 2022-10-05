@@ -203,7 +203,9 @@ public class PipeFacturaParser
             detalle.put("unidadMedida", item.getUnidadMedida());
             detalle.put("codTriIGV", item.getCodTipTributoIgv());
             detalle.put("mtoIgvItem", String.valueOf(item.getAfectacionIgv()));
-            detalle.put("mtoBaseIgvItem", item.getValorRefUnitario().compareTo(BigDecimal.ZERO) == 0 ? item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv()) : item.getValorRefUnitario().multiply(item.getCantidad()));
+            detalle.put("mtoBaseIgvItem", item.getValorRefUnitario().compareTo(BigDecimal.ZERO) == 0 ? 
+                    Impresion.df.format(item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv())) : 
+                    Impresion.df.format(item.getValorRefUnitario().multiply(item.getCantidad())));
             detalle.put("nomTributoIgvItem", item.getAfectacionIGVCode().equals("31") ? "GRA" : "IGV");
             detalle.put("codTipTributoIgvItem", item.getAfectacionIGVCode().equals("31") ? "FRE" : "VAT");
             detalle.put("tipAfeIGV", item.getAfectacionIGVCode());
@@ -232,7 +234,9 @@ public class PipeFacturaParser
             detalle.put("mtoTriIcbperUnidad", "-");
 
             detalle.put("mtoPrecioVentaUnitario", item.getPrecioVentaUnitario());
-            detalle.put("mtoValorVentaItem", Impresion.df.format(item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv())));
+            detalle.put("mtoValorVentaItem", 
+                    Impresion.df.format(item.getPrecioVentaUnitario().multiply(item.getCantidad())
+                            .subtract(item.getAfectacionIgv())));
             detalle.put("mtoValorReferencialUnitario", Impresion.df.format(item.getValorRefUnitario()));
             detalle.put("ctdUnidadItem", Impresion.df.format(item.getCantidad()));
             detalle.put("lineaSwf", String.valueOf(contadorItem));
