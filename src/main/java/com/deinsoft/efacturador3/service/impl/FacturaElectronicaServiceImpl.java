@@ -18,6 +18,7 @@ import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.model.FacturaElectronicaCuotas;
 import com.deinsoft.efacturador3.model.FacturaElectronicaDet;
+import com.deinsoft.efacturador3.model.FacturaElectronicaLeyenda;
 import com.deinsoft.efacturador3.model.FacturaElectronicaTax;
 import com.deinsoft.efacturador3.model.ResumenDiarioDet;
 import com.deinsoft.efacturador3.repository.ErrorRepository;
@@ -452,7 +453,21 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             comprobante.setNotaReferenciaSerie(documento.getNota_referencia_serie());
             comprobante.setNotaReferenciaNumero(String.format("%08d", Integer.parseInt(documento.getNota_referencia_numero())));
         }
-
+        
+        //Operacion sujeta a detraccion
+        List<FacturaElectronicaLeyenda> listLeyendas = new ArrayList<>();
+        if (comprobante.getTipoOperacion().equals("1001") || comprobante.getTipoOperacion().equals("1002")) {
+            comprobante.setCtaBancoNacionDetraccion(documento.getCta_banco_nacion_detraccion());
+            comprobante.setPorDetraccion(documento.getPor_detraccion());
+            comprobante.setMtoDetraccion(documento.getMto_detraccion());
+            comprobante.setCodBienDetraccion(documento.getCod_bien_detraccion());
+            
+            
+            listLeyendas.add(new FacturaElectronicaLeyenda("2006", "Operación sujeta a detracción"));
+        }
+        comprobante.setListFacturaElectronicaLeyendas(listLeyendas);
+        
+        
         List<FacturaElectronicaDet> list = new ArrayList<>();
         List<FacturaElectronicaTax> listTax = new ArrayList<>();
         List<FacturaElectronicaCuotas> listCuotas = new ArrayList<>();
@@ -523,6 +538,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         });
         comprobante.getListFacturaElectronicaCuotas().stream().forEach(item -> {
             comprobante.addFacturaElectronicaCuotas(item);
+        });
+        comprobante.getListFacturaElectronicaLeyendas().stream().forEach(item -> {
+            comprobante.addFacturaElectronicaLeyenda(item);
         });
         //constantes o bd
         comprobante.setIndSituacion("01");

@@ -6,6 +6,7 @@ import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.model.FacturaElectronicaCuotas;
 import com.deinsoft.efacturador3.model.FacturaElectronicaDet;
+import com.deinsoft.efacturador3.model.FacturaElectronicaLeyenda;
 import com.deinsoft.efacturador3.model.FacturaElectronicaTax;
 import com.deinsoft.efacturador3.parser.Parser;
 import com.deinsoft.efacturador3.parser.ParserException;
@@ -161,6 +162,12 @@ public class PipeFacturaParser
 //                factura.put("mtoNetoPendientePago", String.format("%.2f",cabecera.getMontoNetoPendiente()).replace(",", "."));
         factura.put("mtoNetoPendientePago", String.format("%.2f", cabecera.getMontoNetoPendiente()).replace(",", "."));
 
+        factura.put("ctaBancoNacionDetraccion", cabecera.getCtaBancoNacionDetraccion());
+        factura.put("codBienDetraccion", cabecera.getCodBienDetraccion());
+        factura.put("porDetraccion", cabecera.getPorDetraccion());
+        factura.put("mtoDetraccion", cabecera.getMtoDetraccion());
+        factura.put("codMedioPago", "001");
+        
         log.debug("cabecera factura plano:" + factura);
 
 //            }
@@ -203,9 +210,9 @@ public class PipeFacturaParser
             detalle.put("unidadMedida", item.getUnidadMedida());
             detalle.put("codTriIGV", item.getCodTipTributoIgv());
             detalle.put("mtoIgvItem", String.valueOf(item.getAfectacionIgv()));
-            detalle.put("mtoBaseIgvItem", item.getValorRefUnitario().compareTo(BigDecimal.ZERO) == 0 ? 
-                    Impresion.df.format(item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv())) : 
-                    Impresion.df.format(item.getValorRefUnitario().multiply(item.getCantidad())));
+            detalle.put("mtoBaseIgvItem", item.getValorRefUnitario().compareTo(BigDecimal.ZERO) == 0
+                    ? Impresion.df.format(item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv()))
+                    : Impresion.df.format(item.getValorRefUnitario().multiply(item.getCantidad())));
             detalle.put("nomTributoIgvItem", item.getAfectacionIGVCode().equals("31") ? "GRA" : "IGV");
             detalle.put("codTipTributoIgvItem", item.getAfectacionIGVCode().equals("31") ? "FRE" : "VAT");
             detalle.put("tipAfeIGV", item.getAfectacionIGVCode());
@@ -234,7 +241,7 @@ public class PipeFacturaParser
             detalle.put("mtoTriIcbperUnidad", "-");
 
             detalle.put("mtoPrecioVentaUnitario", item.getPrecioVentaUnitario());
-            detalle.put("mtoValorVentaItem", 
+            detalle.put("mtoValorVentaItem",
                     Impresion.df.format(item.getPrecioVentaUnitario().multiply(item.getCantidad())
                             .subtract(item.getAfectacionIgv())));
             detalle.put("mtoValorReferencialUnitario", Impresion.df.format(item.getValorRefUnitario()));
@@ -253,7 +260,7 @@ public class PipeFacturaParser
         if (cabecera.getListFacturaElectronicaTax() != null) {
             for (FacturaElectronicaTax itemTax : cabecera.getListFacturaElectronicaTax()) {
                 tributo = new HashMap<>();
-                tributo.put("ideTributo",String.valueOf(itemTax.getTaxId()));
+                tributo.put("ideTributo", String.valueOf(itemTax.getTaxId()));
                 tributo.put("nomTributo", itemTax.getNomTributo());
                 tributo.put("codTipTributo", itemTax.getCodTipTributo());
                 tributo.put("mtoBaseImponible", Impresion.df.format(itemTax.getMtoBaseImponible()));
@@ -309,10 +316,8 @@ public class PipeFacturaParser
             relacionadoFactura.put("mtoDocRelacionado", sumTotalAnticipos);
 
             listaRelaFactura.add(relacionadoFactura);
-            
 
 //            Iterator<Map<String, Object>> listaVariableSGlobalesBloque = listaVariablesGlobalesJson.iterator();
-            
             Map<String, Object> variableGlobalJson = null;
             Map<String, Object> variableGlobalMap = null;
 
@@ -329,7 +334,6 @@ public class PipeFacturaParser
 //            String monBaseImponibleVariableGlobal = (variableGlobalJson.get("monBaseImponibleVariableGlobal") != null) ? (String) variableGlobalJson.get("monBaseImponibleVariableGlobal") : "";
 //
 //            String mtoBaseImpVariableGlobal = (variableGlobalJson.get("mtoBaseImpVariableGlobal") != null) ? (String) variableGlobalJson.get("mtoBaseImpVariableGlobal") : "";
-
             variableGlobalMap = new HashMap<>();
 
             variableGlobalMap.put("tipVariableGlobal", "false");
@@ -341,16 +345,31 @@ public class PipeFacturaParser
             variableGlobalMap.put("mtoBaseImpVariableGlobal", sumTotalAnticipos);
 
             listaVariablesGlobales.add(variableGlobalMap);
-            
-            
-            
+
         }
         factura.put("listaRelacionado", listaRelaFactura);
         factura.put("listaVariablesGlobales", listaVariablesGlobales);
+        
+        //Leyendas para detraccion
+        if (cabecera.getListFacturaElectronicaLeyendas()!= null) {
+            List<Map<String, Object>> listaLeyendas = new ArrayList<>(); 
+            for (FacturaElectronicaLeyenda leyenda : cabecera.getListFacturaElectronicaLeyendas()) {
+                
+                Map<String, Object> leyendaMap = null;
+                leyendaMap = new HashMap<>();
+                leyendaMap.put("codigo", leyenda.getCodigo());
+                leyendaMap.put("descripcion", leyenda.getDescripcion());
+
+                listaLeyendas.add(leyendaMap);
+            }
+            factura.put("listaLeyendas", listaLeyendas);
+        }
+        
         log.debug("SoftwareFacturadorController.formatoResumenBajas...Fin Procesamiento");
         formatoComunes(factura, this.archivoRelacionado, this.archivoAdiCabecera, this.archivoAdiDetalle, this.archivoLeyendas, this.archivoAdiTributos, this.archivoAdiVariableGlobal);
         return factura;
     }
+
     public byte[] parse(String templatesPath) throws ParserException {
         return parse(templatesPath, plantillaSeleccionada);
     }

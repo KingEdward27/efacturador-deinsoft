@@ -5,15 +5,20 @@
  */
 package com.deinsoft.efacturador3.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -73,6 +78,10 @@ public class Empresa implements Serializable {
     
     @Column(name = "estado")
     private Character estado;
+    
+    @OneToMany(mappedBy = "empresa", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JsonIgnoreProperties(value = {"empresa"}, allowSetters = true)
+    private List<Local> listLocales;
 
     public Empresa() {
     }
@@ -185,6 +194,14 @@ public class Empresa implements Serializable {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
+    }
+
+    public List<Local> getListLocales() {
+        return listLocales;
+    }
+
+    public void setListLocales(List<Local> listLocales) {
+        this.listLocales = listLocales;
     }
     
     @Override

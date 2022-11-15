@@ -302,3 +302,14 @@ SELECT * FROM factura_electronica where numero IN ('00002707',
 '00002971',
 '00002794',
 '00002791'
+
+SELECT * FROM factura_electronica where numero IN ('00000037')
+
+select * from factura_electronica_det where m_id = 3357
+
+select * from factura_electronica_tax where factura_electronica_id = 3357
+
+update empresa set nombre_comercial = 'LAVANDERIA CHICK' where idempresa = 1;
+
+insert into local (local_id,empresa_id,nombre,serie,direccion) values (null,1,'LAVANDERIA CHICK - LA MOLINA','BB01','AV FLORA TRISTAN 687 - LA MOLINA');
+insert into local (local_id,empresa_id,nombre,serie,direccion) values (null,1,'LAVANDERIA CHICK - SURCO','BB02','AV PRIMAVERA 1146 - SURCO');

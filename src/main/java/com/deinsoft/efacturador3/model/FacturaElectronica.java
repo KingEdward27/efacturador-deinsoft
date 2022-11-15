@@ -187,6 +187,18 @@ public class FacturaElectronica implements Serializable {
     @Column(name = "estado")
     private String estado;
     
+    @Column(name = "cta_banco_nacion_detraccion")
+    private String ctaBancoNacionDetraccion;
+    
+    @Column(name = "cod_bien_detraccion")
+    private String codBienDetraccion;
+    
+    @Column(name = "por_detraccion")
+    private BigDecimal porDetraccion;
+    
+    @Column(name = "mto_detraccion")
+    private BigDecimal mtoDetraccion;
+    
 //    @Column(name = "nombre_Archivo")
 //    private String nombreArchivo;
     @OneToMany(mappedBy = "facturaElectronica", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -201,6 +213,10 @@ public class FacturaElectronica implements Serializable {
     @JsonIgnoreProperties(value = {"facturaElectronica"}, allowSetters = true)
     private List<FacturaElectronicaCuotas> listFacturaElectronicaCuotas;
 
+    @OneToMany(mappedBy = "facturaElectronica", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JsonIgnoreProperties(value = {"facturaElectronica"}, allowSetters = true)
+    private List<FacturaElectronicaLeyenda> listFacturaElectronicaLeyendas;
+    
     public void addFacturaElectronicaDet(FacturaElectronicaDet item) {
         item.setFacturaElectronica(this);
     }
@@ -210,6 +226,9 @@ public class FacturaElectronica implements Serializable {
     }
 
     public void addFacturaElectronicaCuotas(FacturaElectronicaCuotas item) {
+        item.setFacturaElectronica(this);
+    }
+    public void addFacturaElectronicaLeyenda(FacturaElectronicaLeyenda item) {
         item.setFacturaElectronica(this);
     }
 
@@ -756,6 +775,15 @@ public class FacturaElectronica implements Serializable {
         this.listFacturaElectronicaCuotas = listFacturaElectronicaCuotas;
     }
 
+    public List<FacturaElectronicaLeyenda> getListFacturaElectronicaLeyendas() {
+        return listFacturaElectronicaLeyendas;
+    }
+
+    public void setListFacturaElectronicaLeyendas(List<FacturaElectronicaLeyenda> listFacturaElectronicaLeyendas) {
+        this.listFacturaElectronicaLeyendas = listFacturaElectronicaLeyendas;
+    }
+
+
     public long getTicketOperacion() {
         return ticketOperacion;
     }
@@ -780,13 +808,47 @@ public class FacturaElectronica implements Serializable {
         this.estado = estado;
     }
 
+    
+
+    public String getCtaBancoNacionDetraccion() {
+        return ctaBancoNacionDetraccion;
+    }
+
+    public void setCtaBancoNacionDetraccion(String ctaBancoNacionDetraccion) {
+        this.ctaBancoNacionDetraccion = ctaBancoNacionDetraccion;
+    }
+
+    public String getCodBienDetraccion() {
+        return codBienDetraccion;
+    }
+
+    public void setCodBienDetraccion(String codBienDetraccion) {
+        this.codBienDetraccion = codBienDetraccion;
+    }
+
+    public BigDecimal getPorDetraccion() {
+        return porDetraccion;
+    }
+
+    public void setPorDetraccion(BigDecimal porDetraccion) {
+        this.porDetraccion = porDetraccion;
+    }
+
+    public BigDecimal getMtoDetraccion() {
+        return mtoDetraccion;
+    }
+
+    public void setMtoDetraccion(BigDecimal mtoDetraccion) {
+        this.mtoDetraccion = mtoDetraccion;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
-
+    
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set

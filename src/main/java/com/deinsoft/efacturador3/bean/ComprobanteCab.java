@@ -78,6 +78,14 @@ public class ComprobanteCab {
 //    private String incluir_pdf;
 //    private String incluir_xml;
     
+    private String cta_banco_nacion_detraccion;
+    
+    private String cod_bien_detraccion;
+    
+    private BigDecimal por_detraccion;
+    
+    private BigDecimal mto_detraccion;
+    
     private BigDecimal sumatoriaIGV;
     private BigDecimal sumatoriaISC;
     private BigDecimal sumatoriaOtrosTributos;
@@ -449,6 +457,38 @@ public class ComprobanteCab {
 
     public void setLista_tributos(Set<ComprobanteTax> lista_tributos) {
         this.lista_tributos = lista_tributos;
+    }
+
+    public String getCta_banco_nacion_detraccion() {
+        return cta_banco_nacion_detraccion;
+    }
+
+    public void setCta_banco_nacion_detraccion(String cta_banco_nacion_detraccion) {
+        this.cta_banco_nacion_detraccion = cta_banco_nacion_detraccion;
+    }
+
+    public String getCod_bien_detraccion() {
+        return cod_bien_detraccion;
+    }
+
+    public void setCod_bien_detraccion(String cod_bien_detraccion) {
+        this.cod_bien_detraccion = cod_bien_detraccion;
+    }
+
+    public BigDecimal getPor_detraccion() {
+        return por_detraccion;
+    }
+
+    public void setPor_detraccion(BigDecimal por_detraccion) {
+        this.por_detraccion = por_detraccion;
+    }
+
+    public BigDecimal getMto_detraccion() {
+        return mto_detraccion;
+    }
+
+    public void setMto_detraccion(BigDecimal mto_detraccion) {
+        this.mto_detraccion = mto_detraccion;
     }
 
     

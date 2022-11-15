@@ -10,6 +10,7 @@ package com.deinsoft.efacturador3.util;
 //import entidades.Formatos;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.model.FacturaElectronicaDet;
+import com.deinsoft.efacturador3.model.Local;
 import java.awt.Toolkit;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
@@ -69,12 +71,14 @@ public class Impresion {
             reporte = (JasperReport) JRLoader.loadObject(fileNode);
             Map parametros;
             parametros = new HashMap<String, Object>();
-
+            Local local = comprobante.getEmpresa().getListLocales().stream()
+                    .filter(predicate -> comprobante.getSerie().equals(predicate.getSerie()))
+                    .collect(Collectors.toList()).get(0);
 //            float subTotal = round(comprobante.getTotalValorVenta()/ (ConfiguracionADN.Datos().get(0).getValorIGV()/100+ 1), 2);
 //            float igvTotal = round(comprobante.getVentatotal() - subTotal, 2);
             parametros.put("tipodoc", Catalogos.tipoDocumento(comprobante.getTipo(), null)[1].toUpperCase() + " ELECTRÓNICA" );
             parametros.put("razon_social", comprobante.getEmpresa().getNombreComercial() == null ? comprobante.getEmpresa().getRazonSocial() : comprobante.getEmpresa().getNombreComercial());
-            parametros.put("direccion", comprobante.getEmpresa().getDireccion());
+            parametros.put("direccion", local.getDireccion());
             parametros.put("ruc", comprobante.getEmpresa().getNumdoc());
             System.out.println("comprobante.getEmpresa().getNumdoc(): "+comprobante.getEmpresa().getNumdoc());
             parametros.put("numero", comprobante.getSerie() + "-" + comprobante.getNumero());
@@ -82,13 +86,13 @@ public class Impresion {
             parametros.put("nombreCliente", comprobante.getClienteNombre());
             parametros.put("direccionCliente", comprobante.getClienteDireccion());
             parametros.put("pFechaEmision", comprobante.getFechaEmision().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-            parametros.put("fechaVencimiento", comprobante.getFechaVencimiento());
+            parametros.put("fechaVencimiento", comprobante.getFechaVencimiento()==null?"":comprobante.getFechaVencimiento());
             parametros.put("moneda", descripcionMoneda);
 
             parametros.put("pdescuento2",df.format(comprobante.getDescuentosGlobales()));
-            parametros.put("pgravado",String.valueOf(comprobante.getTotalValorVenta().subtract(comprobante.getSumatoriaIGV())));
-            parametros.put("pigv",String.valueOf(comprobante.getSumatoriaIGV()));
-            parametros.put("ptotal", String.valueOf(comprobante.getTotalValorVenta()));
+            parametros.put("pgravado",df.format(comprobante.getTotalValorVenta().subtract(comprobante.getSumatoriaIGV())));
+            parametros.put("pigv",df.format(comprobante.getSumatoriaIGV()));
+            parametros.put("ptotal", df.format(comprobante.getTotalValorVenta()));
 //            NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
 //            Number number = format.parse(comprobante.getTotalValorVenta().toString());
 //            double d = comprobante.getTotalValorVenta().doubleValue();
