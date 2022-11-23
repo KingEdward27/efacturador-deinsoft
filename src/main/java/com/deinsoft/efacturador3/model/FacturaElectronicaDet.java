@@ -38,7 +38,7 @@ public class FacturaElectronicaDet implements Serializable {
 //    @SequenceGenerator(name = "seq_act_invoice_id", sequenceName = "seq_act_invoice_id", allocationSize = 1)
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "factura_electronica_det_id", nullable = false, unique = true)
-    private long id;
+    private Long id;
     
     @OneToOne
     @JoinColumn(name="m_id")
@@ -90,11 +90,11 @@ public class FacturaElectronicaDet implements Serializable {
     public FacturaElectronicaDet() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

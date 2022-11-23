@@ -37,7 +37,7 @@ public class FacturaElectronicaCuotas implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "factura_electronica_cuota_id", nullable = false, unique = true)
-    private long id;
+    private Long id;
     
     @OneToOne
     @JoinColumn(name="factura_electronica_id")
@@ -56,11 +56,11 @@ public class FacturaElectronicaCuotas implements Serializable {
     public FacturaElectronicaCuotas() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

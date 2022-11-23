@@ -74,6 +74,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -109,6 +110,15 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     @Override
     public FacturaElectronica getById(long id) {
         return facturaElectronicaRepository.getById(id);
+    }
+
+    @Override
+    public FacturaElectronica findById(long id) {
+        Optional<FacturaElectronica> fact = facturaElectronicaRepository.findById(id);
+        if (fact.isPresent()) {
+            return fact.get();
+        }
+        return null;
     }
 
     @Override
@@ -164,6 +174,88 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             throw new TransferirArchivoException(e.getMessage(), exceptionDetail);
         }
     }
+
+    FacturaElectronica setsda(FacturaElectronica facturaElectronicaResult, FacturaElectronica f) throws IllegalAccessException, InvocationTargetException{
+        try {
+            List<FacturaElectronicaDet> list = facturaElectronicaResult.getListFacturaElectronicaDet().stream().map(mapper -> {
+                FacturaElectronicaDet temp = new FacturaElectronicaDet();
+                try {
+                    BeanUtils.copyProperties(temp, mapper);
+                } catch (IllegalAccessException ex) {
+                    ex.printStackTrace();
+                } catch (InvocationTargetException ex) {
+                    ex.printStackTrace();
+                }
+                temp.setId(null);
+                temp.setFacturaElectronica(f);
+                return temp;
+            }).collect(Collectors.toList());
+
+            List<FacturaElectronicaCuotas> listCuotas = facturaElectronicaResult.getListFacturaElectronicaCuotas().stream().map(mapper -> {
+                FacturaElectronicaCuotas temp = new FacturaElectronicaCuotas();
+                try {
+                    BeanUtils.copyProperties(temp, mapper);
+                } catch (IllegalAccessException ex) {
+                    ex.printStackTrace();
+                } catch (InvocationTargetException ex) {
+                    ex.printStackTrace();
+                }
+                temp.setId(null);
+                temp.setFacturaElectronica(f);
+                return temp;
+            }).collect(Collectors.toList());
+
+            List<FacturaElectronicaTax> listTax = facturaElectronicaResult.getListFacturaElectronicaTax().stream().map(mapper -> {
+                FacturaElectronicaTax temp = new FacturaElectronicaTax();
+                try {
+                    BeanUtils.copyProperties(temp, mapper);
+                } catch (IllegalAccessException ex) {
+                    ex.printStackTrace();
+                } catch (InvocationTargetException ex) {
+                    ex.printStackTrace();
+                }
+                temp.setId(null);
+                temp.setFacturaElectronica(f);
+                return temp;
+            }).collect(Collectors.toList());
+
+            List<FacturaElectronicaLeyenda> listLeyendas = facturaElectronicaResult.getListFacturaElectronicaLeyendas().stream().map(mapper -> {
+                FacturaElectronicaLeyenda temp = new FacturaElectronicaLeyenda();
+                try {
+                    BeanUtils.copyProperties(temp, mapper);
+                } catch (IllegalAccessException ex) {
+                    ex.printStackTrace();
+                } catch (InvocationTargetException ex) {
+                    ex.printStackTrace();
+                }
+                temp.setId(null);
+                temp.setFacturaElectronica(f);
+                return temp;
+            }).collect(Collectors.toList());
+
+            f.setListFacturaElectronicaDet(list);
+            f.setListFacturaElectronicaCuotas(listCuotas);
+            f.setListFacturaElectronicaTax(listTax);
+            f.setListFacturaElectronicaLeyendas(listLeyendas);
+
+            f.getListFacturaElectronicaDet().stream().forEach(item -> {
+                f.addFacturaElectronicaDet(item);
+            });
+            f.getListFacturaElectronicaCuotas().stream().forEach(item -> {
+                f.addFacturaElectronicaCuotas(item);
+            });
+            f.getListFacturaElectronicaTax().stream().forEach(item -> {
+                f.addFacturaElectronicaTax(item);
+            });
+            f.getListFacturaElectronicaLeyendas().stream().forEach(item -> {
+                f.addFacturaElectronicaLeyenda(item);
+            });
+        } catch (Exception e) {
+        }
+
+        return f;
+    }
+
     @Override
     @Transactional
     public Map<String, Object> generarNotaCredito(long comprobanteId) throws TransferirArchivoException {
@@ -173,27 +265,63 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         long ticket = Calendar.getInstance().getTimeInMillis();
 
         try {
-            facturaElectronicaResult = getById(comprobanteId);
+            facturaElectronicaResult = findById(comprobanteId);
+//            for (FacturaElectronicaDet facturaElectronicaDet : facturaElectronicaResult.getListFacturaElectronicaDet()) {
+//                log.debug(facturaElectronicaDet.toString());
+//            }
             FacturaElectronica f = new FacturaElectronica();
+//            f = facturaElectronicaResult;
             BeanUtils.copyProperties(f, facturaElectronicaResult);
-            f.setId(0l);
+            f.setId(null);
             f.setTipo("07");
             f.setSerie("FN01");
-            f.setNumero("00000001");
+            f.setNumero("00000007"); 
             f.setNotaReferenciaTipo(facturaElectronicaResult.getTipo());
             f.setNotaReferenciaSerie(facturaElectronicaResult.getSerie());
             f.setNotaReferenciaNumero(facturaElectronicaResult.getNumero());
             f.setNotaTipo("01");
             f.setNotaMotivo("Anulación de la operación");
             f.setIndSituacion("02");
-            f = save(f);
+//            f.setListFacturaElectronicaDet(setsda);
+//            for (FacturaElectronicaDet facturaElectronicaDet : f.getListFacturaElectronicaDet()) {
+//                f.addFacturaElectronicaDet(facturaElectronicaDet);
+//            }
+            FacturaElectronica f0 = setsda(facturaElectronicaResult, f);
+            FacturaElectronica f2 = save(f0); 
+            
+            List<FacturaElectronicaDet> list = f2.getListFacturaElectronicaDet().stream().map(mapper -> {
+                mapper.setFacturaElectronica(f2);
+                return mapper;
+            }).collect(Collectors.toList());
+            
+            List<FacturaElectronicaCuotas> listCuotas = f2.getListFacturaElectronicaCuotas()
+                    .stream().map(mapper -> {
+                        mapper.setFacturaElectronica(f2);
+                        return mapper;
+                    }).collect(Collectors.toList());
+
+            List<FacturaElectronicaTax> listTax = f2.getListFacturaElectronicaTax().stream().map(mapper -> {
+                mapper.setFacturaElectronica(f2);
+                return mapper;
+            }).collect(Collectors.toList());
+
+            List<FacturaElectronicaLeyenda> listLeyendas = f2.getListFacturaElectronicaLeyendas().stream().map(mapper -> {
+                mapper.setFacturaElectronica(f2);
+                return mapper;
+            }).collect(Collectors.toList());
+
+            f2.setListFacturaElectronicaDet(list);
+            f2.setListFacturaElectronicaCuotas(listCuotas);
+            f2.setListFacturaElectronicaTax(listTax);
+            f2.setListFacturaElectronicaLeyendas(listLeyendas);
+//            FacturaElectronica facturaElectronicaResult2 = getById(f.getId());
             if (f.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO)) {
                 retorno.put("code", "003");
                 retorno.put("message", "El comprobante ya se encuentra en estado ENVIADO y ACEPTADO");
                 return retorno;
             }
             retorno.put("ticketOperacion", ticket);
-            retorno.putAll(genXmlAndSignAndValidate(appConfig.getRootPath(), f, ticket));
+            retorno.putAll(genXmlAndSignAndValidate(appConfig.getRootPath(), f2, ticket));
             return retorno;
         } catch (Exception e) {
             log.info(e.getMessage());
@@ -206,6 +334,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             throw new TransferirArchivoException(e.getMessage(), exceptionDetail);
         }
     }
+
     @Override
     @Transactional
     public Map<String, Object> generarComprobantePagoSunat(String rootpath, FacturaElectronica documento) throws TransferirArchivoException {
@@ -320,7 +449,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         for (Empresa empresa : empresaService.getEmpresas()) {
             List<FacturaElectronica> list = facturaElectronicaRepository.
                     findByEmpresaIdAndTipoInAndIndSituacionInAndEstadoOrderByFechaEmisionAsc(
-                            empresa.getId(), Arrays.asList("01","03"), listSituacion,"1");
+                            empresa.getId(), Arrays.asList("01", "03"), listSituacion, "1");
 
             list.forEach((facturaElectronica) -> {
                 try {
@@ -453,7 +582,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             comprobante.setNotaReferenciaSerie(documento.getNota_referencia_serie());
             comprobante.setNotaReferenciaNumero(String.format("%08d", Integer.parseInt(documento.getNota_referencia_numero())));
         }
-        
+
         //Operacion sujeta a detraccion
         List<FacturaElectronicaLeyenda> listLeyendas = new ArrayList<>();
         if (comprobante.getTipoOperacion().equals("1001") || comprobante.getTipoOperacion().equals("1002")) {
@@ -461,13 +590,11 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             comprobante.setPorDetraccion(documento.getPor_detraccion());
             comprobante.setMtoDetraccion(documento.getMto_detraccion());
             comprobante.setCodBienDetraccion(documento.getCod_bien_detraccion());
-            
-            
+
             listLeyendas.add(new FacturaElectronicaLeyenda("2006", "Operación sujeta a detracción"));
         }
         comprobante.setListFacturaElectronicaLeyendas(listLeyendas);
-        
-        
+
         List<FacturaElectronicaDet> list = new ArrayList<>();
         List<FacturaElectronicaTax> listTax = new ArrayList<>();
         List<FacturaElectronicaCuotas> listCuotas = new ArrayList<>();
@@ -800,6 +927,11 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         documento.setIndSituacion(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
 
         documento.setTicketOperacion(ticket);
+//        if (documento.getTipo().equals("07") || documento.getTipo().equals("08")) {
+//            documento.setListFacturaElectronicaCuotas(null);
+//            documento.setListFacturaElectronicaLeyendas(null);
+//            documento.setListFacturaElectronicaTax(null);
+//        }
         save(documento);
 
 //            }
@@ -835,7 +967,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
     @Override
     public List<FacturaElectronica> getByFechaEmisionBetweenAndEmpresaIdInAndEstadoIn(LocalDate fecIni, LocalDate fecFin, List<Integer> empresaIds, List<String> estados) {
-        List<FacturaElectronica> list = facturaElectronicaRepository.findByFechaEmisionBetweenAndEmpresaIdInAndEstadoIn(fecIni, fecFin, empresaIds,estados);
+        List<FacturaElectronica> list = facturaElectronicaRepository.findByFechaEmisionBetweenAndEmpresaIdInAndEstadoIn(fecIni, fecFin, empresaIds, estados);
         list.forEach((item) -> {
             item.setIndSituacion(item.getIndSituacion().equals("03") ? "ACEPTADO"
                     : item.getIndSituacion().equals("02") ? "XML generado"

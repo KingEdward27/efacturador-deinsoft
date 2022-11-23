@@ -313,3 +313,5 @@ update empresa set nombre_comercial = 'LAVANDERIA CHICK' where idempresa = 1;
 
 insert into local (local_id,empresa_id,nombre,serie,direccion) values (null,1,'LAVANDERIA CHICK - LA MOLINA','BB01','AV FLORA TRISTAN 687 - LA MOLINA');
 insert into local (local_id,empresa_id,nombre,serie,direccion) values (null,1,'LAVANDERIA CHICK - SURCO','BB02','AV PRIMAVERA 1146 - SURCO');
+insert into local (empresa_id,nombre,serie,direccion) values (14,'LAVANDERIA CHICK - LA MOLINA','FF01','AV FLORA TRISTAN 687 - LA MOLINA');
+insert into local (empresa_id,nombre,serie,direccion) values (14,'LAVANDERIA CHICK - SURCO','F001','AV PRIMAVERA 1146 - SURCO');

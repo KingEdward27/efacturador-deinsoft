@@ -22,6 +22,8 @@ public interface FacturaElectronicaService {
 
     public FacturaElectronica getById(long id);
 
+    public FacturaElectronica findById(long id);
+            
     public List<FacturaElectronica> getListFacturaElectronica();
 
     FacturaElectronica save(FacturaElectronica facturaElectronica);

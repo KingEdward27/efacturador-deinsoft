@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -85,13 +86,13 @@ public class PipeNotaCreditoParser
         notaCredito.put("tipDocAfectado", cabecera.getNotaReferenciaTipo());
         notaCredito.put("numDocAfectado", cabecera.getNotaReferenciaSerie() + "-" + String.format("%08d", Integer.parseInt(cabecera.getNotaReferenciaNumero())));
 
-        notaCredito.put("sumTotTributos", cabecera.getSumatoriaIGV().add(cabecera.getSumatoriaISC()));
-        notaCredito.put("sumTotValVenta", cabecera.getTotalValorVenta().subtract(cabecera.getSumatoriaIGV()));
-        notaCredito.put("sumPrecioVenta", cabecera.getTotalValorVenta());
+        notaCredito.put("sumTotTributos", Impresion.df.format(cabecera.getSumatoriaIGV().add(cabecera.getSumatoriaISC())));
+        notaCredito.put("sumTotValVenta", Impresion.df.format(cabecera.getTotalValorVenta().subtract(cabecera.getSumatoriaIGV())));
+        notaCredito.put("sumPrecioVenta", Impresion.df.format(cabecera.getTotalValorVenta()));
         notaCredito.put("sumDescTotal", cabecera.getDescuentosGlobales() == null ? "0.00" : cabecera.getDescuentosGlobales());
         notaCredito.put("sumOtrosCargos", cabecera.getSumatoriaOtrosCargos() == null ? "0.00" : cabecera.getSumatoriaOtrosCargos());
         notaCredito.put("sumTotalAnticipos", 0);
-        notaCredito.put("sumImpVenta", cabecera.getTotalValorVenta());
+        notaCredito.put("sumImpVenta", Impresion.df.format(cabecera.getTotalValorVenta()));
 
         notaCredito.put("ublVersionId", "2.1");
         notaCredito.put("customizationId", cabecera.getCustomizationId());
@@ -133,31 +134,76 @@ public class PipeNotaCreditoParser
         notaCredito.put("tipoCodigoMonedaSwf", "01");
         notaCredito.put("identificadorFacturadorSwf", "SISTEMA FACTURADOR DEFACTURADOR - DEINSOFT SRL");
         notaCredito.put("codigoFacturadorSwf", codigoFacturadorSwf.toString());
-        notaCredito.put("identificadorFirmaSwf", identificadorFirmaSwf); 
+        notaCredito.put("identificadorFirmaSwf", identificadorFirmaSwf);
 
         List<Map<String, Object>> listaDetalle = new ArrayList<>();
         Map<String, Object> detalle = null;
 
         Integer linea = Integer.valueOf(0);
 //      
-        if(cabecera.getListFacturaElectronicaDet() != null){
+        if (cabecera.getListFacturaElectronicaDet() != null) {
+            int contadorItem = 0;
             for (FacturaElectronicaDet item : cabecera.getListFacturaElectronicaDet()) {
+                contadorItem++;
                 linea = Integer.valueOf(linea.intValue() + 1);
                 detalle = new HashMap<>();
-                detalle.put("unidadMedida", item.getUnidadMedida());
-                detalle.put("ctdUnidadItem", String.valueOf(item.getCantidad()));
+//                detalle.put("unidadMedida", item.getUnidadMedida());
+//                detalle.put("ctdUnidadItem", String.valueOf(item.getCantidad()));
+//                detalle.put("codProducto", item.getCodigo());
+//                detalle.put("desItem", item.getDescripcion());
+//                detalle.put("mtoValorUnitario", item.getValorUnitario());
+//
+//                detalle.put("sumTotTributosItem", String.valueOf(item.getAfectacionIgv()));
+//
+//                detalle.put("codTriIGV", "1000");
+//                detalle.put("mtoIgvItem", String.valueOf(item.getAfectacionIgv()));
+//                detalle.put("mtoBaseIgvItem", item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv()));
+//                detalle.put("nomTributoIgvItem", "IGV");
+//                detalle.put("codTipTributoIgvItem", "VAT");
+//                detalle.put("tipAfeIGV", item.getAfectacionIGVCode());
+//                detalle.put("porIgvItem", String.valueOf(cabecera.getPorcentajeIGV()));
+//
+//                detalle.put("codTriISC", "-");
+//                detalle.put("mtoIscItem", "-");
+//                detalle.put("mtoBaseIscItem", "-");
+//                detalle.put("nomTributoIscItem", "-");
+//                detalle.put("codTipTributoIscItem", "-");
+//                detalle.put("tipSisISC", "-");
+//                detalle.put("porIscItem", "-");
+//
+//                detalle.put("codTriOtro", "-");
+//                detalle.put("mtoTriOtroItem", "-");
+//                detalle.put("mtoBaseTriOtroItem", "-");
+//                detalle.put("nomTributoOtroItem", "-");
+//                detalle.put("codTipTributoOtroItem", "-");
+//                detalle.put("porTriOtroItem", "-");
+//
+//                detalle.put("codTriIcbper", "-");
+//                detalle.put("mtoTriIcbperItem", "-");
+//                detalle.put("ctdBolsasTriIcbperItem", "-");
+//                detalle.put("nomTributoIcbperItem", "-");
+//                detalle.put("codTipTributoIcbperItem", "-");
+//                detalle.put("mtoTriIcbperUnidad", "-");
+//
+//                detalle.put("mtoPrecioVentaUnitario", item.getPrecioVentaUnitario());
+//                detalle.put("mtoValorVentaItem", String.valueOf(item.getValorVentaItem()));
+//                detalle.put("mtoValorReferencialUnitario", "0.00");
+//                detalle.put("lineaSwf", String.valueOf(linea));
+//                detalle.put("tipoCodiMoneGratiSwf", "02");
+
                 detalle.put("codProducto", item.getCodigo());
-                //        detalle.put("codProductoSUNAT", registro[3]);
                 detalle.put("desItem", item.getDescripcion());
                 detalle.put("mtoValorUnitario", item.getValorUnitario());
 
                 detalle.put("sumTotTributosItem", String.valueOf(item.getAfectacionIgv()));
-
-                detalle.put("codTriIGV", "1000");
+                detalle.put("unidadMedida", item.getUnidadMedida());
+                detalle.put("codTriIGV", item.getCodTipTributoIgv());
                 detalle.put("mtoIgvItem", String.valueOf(item.getAfectacionIgv()));
-                detalle.put("mtoBaseIgvItem", item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv()));
-                detalle.put("nomTributoIgvItem", "IGV");
-                detalle.put("codTipTributoIgvItem", "VAT");
+                detalle.put("mtoBaseIgvItem", item.getValorRefUnitario().compareTo(BigDecimal.ZERO) == 0
+                        ? Impresion.df.format(item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv()))
+                        : Impresion.df.format(item.getValorRefUnitario().multiply(item.getCantidad())));
+                detalle.put("nomTributoIgvItem", item.getAfectacionIGVCode().equals("31") ? "GRA" : "IGV");
+                detalle.put("codTipTributoIgvItem", item.getAfectacionIGVCode().equals("31") ? "FRE" : "VAT");
                 detalle.put("tipAfeIGV", item.getAfectacionIGVCode());
                 detalle.put("porIgvItem", String.valueOf(cabecera.getPorcentajeIGV()));
 
@@ -184,32 +230,48 @@ public class PipeNotaCreditoParser
                 detalle.put("mtoTriIcbperUnidad", "-");
 
                 detalle.put("mtoPrecioVentaUnitario", item.getPrecioVentaUnitario());
-                detalle.put("mtoValorVentaItem", String.valueOf(item.getValorVentaItem()));
-                detalle.put("mtoValorReferencialUnitario", "0.00");
-                detalle.put("lineaSwf", String.valueOf(linea));
+                detalle.put("mtoValorVentaItem",
+                        Impresion.df.format(item.getPrecioVentaUnitario().multiply(item.getCantidad())
+                                .subtract(item.getAfectacionIgv())));
+                detalle.put("mtoValorReferencialUnitario", Impresion.df.format(item.getValorRefUnitario()));
+                detalle.put("ctdUnidadItem", Impresion.df.format(item.getCantidad()));
+                detalle.put("lineaSwf", String.valueOf(contadorItem));
                 detalle.put("tipoCodiMoneGratiSwf", "02");
-
                 listaDetalle.add(detalle);
             }
             notaCredito.put("listaDetalle", listaDetalle);
+        } else {
+            notaCredito.put("listaDetalle", new ArrayList<>());
         }
-        
+
         List<Map<String, Object>> listaTributos = new ArrayList<>();
         Map<String, Object> tributo = null;
-        if(cabecera.getListFacturaElectronicaTax() != null){
+        if (cabecera.getListFacturaElectronicaTax() != null) {
             for (FacturaElectronicaTax itemTax : cabecera.getListFacturaElectronicaTax()) {
                 tributo = new HashMap<>();
-                tributo.put("ideTributo",String.valueOf(itemTax.getTaxId()));
+//                tributo.put("ideTributo", String.valueOf(itemTax.getTaxId()));
+//                tributo.put("nomTributo", itemTax.getNomTributo());
+//                tributo.put("codTipTributo", itemTax.getCodTipTributo());
+//                tributo.put("mtoBaseImponible", Impresion.df.format(itemTax.getMtoBaseImponible()));
+//                tributo.put("mtoTributo", Impresion.df.format(itemTax.getMtoTributo()));
+//                tributo.put("codigoMonedaSolesSwf", cabecera.getMoneda());
+
+                tributo.put("ideTributo", String.valueOf(itemTax.getTaxId()));
                 tributo.put("nomTributo", itemTax.getNomTributo());
                 tributo.put("codTipTributo", itemTax.getCodTipTributo());
                 tributo.put("mtoBaseImponible", Impresion.df.format(itemTax.getMtoBaseImponible()));
                 tributo.put("mtoTributo", Impresion.df.format(itemTax.getMtoTributo()));
                 tributo.put("codigoMonedaSolesSwf", cabecera.getMoneda());
-
                 listaTributos.add(tributo);
             }
             notaCredito.put("listaTributos", listaTributos);
         }
+        List<Map<String, Object>> listaRelacionado = new ArrayList<>();
+        notaCredito.put("listaRelacionado", listaRelacionado); 
+
+        List<Map<String, Object>> listaVariablesGlobales = new ArrayList<>();
+        notaCredito.put("listaVariablesGlobales", listaVariablesGlobales);
+//        notaCredito.put("listaTributos", new ArrayList<>());
         formatoComunes(notaCredito, this.archivoRelacionado, this.archivoAdiCabecera, this.archivoAdiDetalle, this.archivoLeyendas, this.archivoAdiTributos, this.archivoAdiVariableGlobal);
 
         log.debug("SoftwareFacturadorController.formatoNotaCredito...Fin Procesamiento");

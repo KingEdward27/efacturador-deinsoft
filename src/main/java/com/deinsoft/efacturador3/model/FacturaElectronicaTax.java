@@ -25,7 +25,7 @@ public class FacturaElectronicaTax {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "factura_electronica_tax_id", nullable = false, unique = true)
-    private long id;
+    private Long id;
     
     @OneToOne
     @JoinColumn(name="factura_electronica_id")
@@ -46,11 +46,11 @@ public class FacturaElectronicaTax {
     @Column(name = "taxtotal")
     private BigDecimal mtoTributo;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
