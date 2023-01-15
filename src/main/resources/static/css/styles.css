@@ -129,3 +129,32 @@ html, #loading {
 table.dataTable tfoot th, table.dataTable tfoot td {
     padding: 10px 8px 6px 18px !important;
 }
+div.dt-buttons {
+    float: left;
+    padding-left: 20px;
+}
+button.dt-button, div.dt-button, a.dt-button, input.dt-button {
+    border-radius: .75rem !important;
+    color: #fff !important;
+    padding: 10px 20px 10px 20px;
+    color: #fff !important;
+}
+.buttons-excel{
+    background-color: #21b07b !important;
+    border-color: #21b07b !important ;
+}
+.buttons-pdf{
+    background-color: #b34141 !important;
+    border-color: #b34141 !important ;
+}
+#dtTable_paginate {
+    display: block !important;
+}
+.paginate_button{
+    border-radius: .75rem !important;
+    color: #fff !important;
+    padding: 10px 20px 10px 20px;
+    color: #fff !important;
+    background-color: #007bff !important;
+    border-color: #007bff !important ;
+}

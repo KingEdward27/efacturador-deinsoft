@@ -302,8 +302,39 @@ SELECT * FROM factura_electronica where numero IN ('00002707',
 '00002971',
 '00002794',
 '00002791'
+202310722410859
+BB01	00000656
 
-SELECT * FROM factura_electronica where numero IN ('00000037')
+UPDATE factura_electronica set ind_situacion = '03', observacion_envio = 'La Boleta numero BB02-'+NUMERO+', ha sido aceptada'
+where serie = 'BB02' and numero IN (4601
+)
+SELECT M_ID, numero FROM factura_electronica where serie = 'BB01' and numero between 1031 and 1032
+order by numero
+
+update factura_electronica set estado = '0' where m_id IN 
+(
+6105,
+6103,
+6100,
+6101,
+6095,
+6096,
+6097,
+6098)
+
+select * from factura_electronica where m_id IN 
+(
+6105,
+6103,
+6100,
+6101,
+6095,
+6096,
+6097,
+6098)
+select * from resumen_diario
+SELECT * FROM factura_electronica where m_id in
+(4380, 4383, 4687)
 
 select * from factura_electronica_det where m_id = 3357
 
@@ -315,3 +346,5 @@ insert into local (local_id,empresa_id,nombre,serie,direccion) values (null,1,'L
 insert into local (local_id,empresa_id,nombre,serie,direccion) values (null,1,'LAVANDERIA CHICK - SURCO','BB02','AV PRIMAVERA 1146 - SURCO');
 insert into local (empresa_id,nombre,serie,direccion) values (14,'LAVANDERIA CHICK - LA MOLINA','FF01','AV FLORA TRISTAN 687 - LA MOLINA');
 insert into local (empresa_id,nombre,serie,direccion) values (14,'LAVANDERIA CHICK - SURCO','F001','AV PRIMAVERA 1146 - SURCO');
+
+update factura_electronica set estado = '0' where m_id in (4380, 4383, 4687)

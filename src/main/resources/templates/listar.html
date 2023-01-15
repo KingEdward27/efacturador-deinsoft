@@ -53,10 +53,7 @@
                                        style="max-width: 150px;white-space: normal;"
                                        title = "Generar y enviar Resumen Diario"><span class="btn-label"><i class="fa fa-file-zip-o"></i></span></a>
 
-                                    <a class="btn btn-success btn-xs mx-1" 
-                                       th:href="@{/factura/export/excel}" 
-                                       title = "Exportar a Excel"><span class="btn-label"><i class="fa fa-file-excel-o"></i></span></a>
-
+                                   
                                 </div>
 
                             </div>
@@ -96,13 +93,13 @@
                                                style="text-align: center"  />-->
                                     </th>
                                     <th>Tipo</th>
-                                    <th>Serie</th>
-                                    <th>Nro. documento</th>
+                                    <th data-priority="1">Serie</th>
+                                    <th data-priority="2">Nro. documento</th>
                                     <th>Fecha Emisión</th>
                                     <th>Cliente</th>
                                     <th>Monto</th>
                                     <th style = "max-width: 15%;">Situacion</th>
-                                    <th>Estado</th>
+                                    <th data-priority="3">Estado</th>
                                     <th sec:authorize="hasRole('ROLE_ADMIN')">Acciones</th>
                                 </tr>
                             </thead>
@@ -325,7 +322,68 @@
                     },
                     success: function (data) {
                         $("#list").replaceWith(data);
-                        oDatatable();
+                        $('#dtTable').DataTable({
+                                lengthMenu : [5, 25, 50, 100],
+                                dom: 'lBftip',
+                                paging: true,
+                                pagingType: 'full_numbers',
+                                responsive: {
+                                    details: {
+                                        display: $.fn.dataTable.Responsive.display.childRowImmediate,
+                                        type: 'none',
+                                        target: ''
+                                    }
+                                },
+                                columnDefs: [
+                                    { responsivePriority: 1, targets: 0 },
+                                    { responsivePriority: 2, targets: -1 },
+                                    { responsivePriority: 3, targets: -2 }
+                                ],
+                                buttons: [
+                                    {
+                                        extend : 'excel',
+                                        title : "Comprobantes",
+                                        messageTop: "Del: " + $("#fechaIni").val() + " Al: " + $("#fechaFin").val(),
+                                        exportOptions: {
+                                          columns: [2, 3, 4, 5, 6, 7, 8, 9]
+                                        }
+                                    },
+                                    {
+                                        extend : 'pdfHtml5',
+                                        title : "Comprobantes ",
+                                        messageTop: "Del: " + $("#fechaIni").val() + " Al: " + $("#fechaFin").val(),
+                                        orientation : 'landscape',
+                                        pageSize : 'LEGAL',
+                                        exportOptions: {
+                                          columns: [2, 3, 4, 5, 6, 7, 8, 9]
+                                        }
+                                    }
+                                ],
+                                language: {
+                                        "sProcessing":     "Procesando...",
+                                        "sLengthMenu":     "MOSTRAR _MENU_ REGISTROS",
+                                        "sZeroRecords":    "NO SE ENCONTRARON RESULTADOS",
+                                        "sEmptyTable":     "Ningún dato disponible en esta tabla",
+                                        "sInfo":           "MOSTRANDO REGISTROS DEL _START_ AL _END_ DE UN TOTAL DE _TOTAL_ REGISTROS",
+                                        "sInfoEmpty":      "MOSTRANDO REGISTROS DEL 0 AL 0 DE UN TOTAL DE 0 REGISTROS",
+                                        "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                                        "sInfoPostFix":    "",
+                                        "sSearch":         "BUSCAR: ",
+                                        "sUrl":            "",
+                                        "sInfoThousands":  ",",
+                                        "sLoadingRecords": "Cargando...",
+                                        "oPaginate": {
+                                            "sFirst":    "|<",
+                                            "sLast":     ">|",
+                                            "sNext":     ">>",
+                                            "sPrevious": "<<"
+                                        },
+                                        "oAria": {
+                                            "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                                            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                                        }
+                                }
+                             });
                     }, error: function (request, error) {
                         $("#loading").hide();
                         alert("Ocurrió un error inesperado: " + error);
@@ -411,8 +469,7 @@
                         },
                         success: function (data) {
                             $("#list").replaceWith(data);
-                            oDatatable();
-
+                            
                         }, error: function (request, error) {
                             alert("Ocurrió un error inesperado: " + error);
                         }
