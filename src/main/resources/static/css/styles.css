@@ -158,3 +158,16 @@ button.dt-button, div.dt-button, a.dt-button, input.dt-button {
     background-color: #007bff !important;
     border-color: #007bff !important ;
 }
+.ui-dialog{
+    left:40%;
+    top:40%;
+}
+@media(max-width:420px)
+{
+    .ui-dialog{
+        left:0%;
+        padding: 20px;
+        width: 100%;
+        top:10%;
+    }
+ }

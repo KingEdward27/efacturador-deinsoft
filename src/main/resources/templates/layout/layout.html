@@ -85,13 +85,13 @@
             <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             
              <script th:src="@{/jq/jquery-1.10.2.min.js}" type="text/javascript"></script>
-            <script th:src="@{/jq/jquery-ui-1.10.4.custom.min.js}" type="text/javascript"></script>
             <script th:src="@{/js/popper.min.js}"></script>
             <script th:src="@{/js/bootstrap.min.js}"></script>
             <script type="text/javascript" th:src="@{/jq/jquery.dataTables.js}"></script>
             <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
             <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-
+            <script th:src="@{/jq/jquery-ui-1.10.4.custom.min.js}" type="text/javascript"></script>
+             <script th:src="@{/js/util.js}" charset="UTF-8"></script>
             <script th:src="@{/js/bootstrap-datepicker.min.js}"></script>
             <script th:src="@{/js/bootstrap-datepicker.es.js}" charset="UTF-8"></script>
             <script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
@@ -100,35 +100,7 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
             <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script>
             <script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
-        <script>
-            function callConfirmDialog(mensaje, funcion) {
-                //    var patron = /\s+/g;//REGX para saber si lo que trae tiene espacios
-                //    var val = patron.test(mensaje);
-                //    if (!val) {
-                //        if (mensaje !== null || mensaje !== "") {
-                //            mensaje = getMessage(mensaje);
-                //        }
-                //    }
-                $("#msgConfirm").html(mensaje);
-                $("#dlgConfirm").dialog({
-                    modal: true,
-                    width: 300,
-                    dialogClass: 'dlgfixed',
-                    position: "center",
-                    resizable: false,
-                    buttons: {
-                        "SI": function () {
-                            $(this).dialog("close");
-                            funcion();
-                        },
-                        "NO": function () {
-                            $(this).dialog("close");
-                            return 0;
-                        }
-                    }
-                });
-            }
-        </script>
+        
         </footer>
         
     </body>
