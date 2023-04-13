@@ -141,6 +141,7 @@ public class FacturaViewController extends BaseController{
         List<String> estados = new ArrayList<>();
         estados.add("1");
         estados.add("2");
+        estados.add("3");
         List<FacturaElectronica> list = new ArrayList<>();
         if (facturaSearch.getFechaIni() == null || !StringUtils.hasText(facturaSearch.getFechaIni()) ||
                 facturaSearch.getFechaFin() == null || !StringUtils.hasText(facturaSearch.getFechaFin())) {
