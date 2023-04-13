@@ -348,3 +348,73 @@ insert into local (empresa_id,nombre,serie,direccion) values (14,'LAVANDERIA CHI
 insert into local (empresa_id,nombre,serie,direccion) values (14,'LAVANDERIA CHICK - SURCO','F001','AV PRIMAVERA 1146 - SURCO');
 
 update factura_electronica set estado = '0' where m_id in (4380, 4383, 4687)
+
+6089
+6088
+6087
+6086
+6085
+6084
+6083
+6082
+6081
+6080
+6079
+6078
+6077
+6076
+6075
+6074
+6073
+6072
+6071
+6070
+
+select * from [dbo].resumen_diario order by resumen_diario_id desc
+
+select * from [dbo].[resumen_diario_det]
+where resumen_diario_id in 
+(
+8524,8522,8520, 8517, 8515, 8513, 8511, 8509
+)
+
+select m_id, numero,ind_situacion,estado from factura_electronica
+where serie = 'BB01' and numero IN (
+1840,
+1839,
+1839,
+1838,
+1838,
+1837,
+1837,
+1836,
+1836,
+1835,
+1834,
+1834,
+1833,
+1833,
+1832,
+1832
+
+)
+
+UPDATE factura_electronica set estado = '0'
+where serie = 'BB01' and m_id IN (
+8524,8522,8520, 8517, 8515, 8513, 8511, 8509
+)
+
+UPDATE factura_electronica set ind_situacion = '03', observacion_envio = 'La Boleta numero BB01-'+NUMERO+', ha sido aceptada'
+where serie = 'BB01' and estado = '1' and numero IN (
+1699,
+1698,
+1697,
+1696,
+1695,
+1694,
+1693,
+1692,
+1691,
+1690,
+1689
+)

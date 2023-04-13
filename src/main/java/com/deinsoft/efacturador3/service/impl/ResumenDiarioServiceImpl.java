@@ -286,7 +286,7 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
                 det.setTipDocModifico(facturaElectronica.getNotaReferenciaTipo() == null ? "" : facturaElectronica.getNotaReferenciaTipo());
                 det.setSerDocModifico(facturaElectronica.getNotaReferenciaSerie() == null ? "" : facturaElectronica.getNotaReferenciaSerie());
                 det.setNumDocModifico(facturaElectronica.getNotaReferenciaNumero() == null ? "" : facturaElectronica.getNotaReferenciaNumero());
-                det.setCondicion(facturaElectronica.getEstado().equals("2") ? "3" : "1");
+                det.setCondicion(facturaElectronica.getEstado().equals("2") ? "3" :facturaElectronica.getEstado().equals("3") ? "2" : "1");
                 listDet.add(det);
 
                 cont++;
@@ -396,7 +396,7 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
                 ResumenDiario ResumenDiarioResult = save(resumenDiario);
 
                 if (res.getCode() == null && res.getTicket() != null) {
-                    Thread.sleep(5000);
+                    Thread.sleep(15000);
                     res = comunesService.consultarTicketSUNAT(urlWebService, appConfig.getRootPath(), res.getTicket(), ResumenDiarioResult.getEmpresa());
                     if (res == null) {
                         ResumenDiarioResult.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
@@ -427,6 +427,10 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
                         } else if (res.getCode() == 98) {
                             ResumenDiarioResult.setIndSituacion(Constantes.CONSTANTE_SITUACION_ENVIADO_PROCESANDO);
                             ResumenDiarioResult.setObservacionEnvio("En espera: " + res.getCode());
+                            save(ResumenDiarioResult);
+                        } else  {
+                            ResumenDiarioResult.setIndSituacion(Constantes.CONSTANTE_SITUACION_ENVIADO_PROCESANDO);
+                            ResumenDiarioResult.setObservacionEnvio("Error: " + res.getCode()+ " - " +  res.getDescription());
                             save(ResumenDiarioResult);
                         }
                     }
