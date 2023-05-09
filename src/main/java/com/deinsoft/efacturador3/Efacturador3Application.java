@@ -58,9 +58,9 @@ public class Efacturador3Application implements CommandLineRunner {
 //        System.out.println("result "+result.toString());
         
     }
-
-    @Scheduled(cron = "0 0 04 * * *")
+    
 //    @Scheduled(cron = "* */2 * * * *")
+    @Scheduled(cron = "0 0 4 * * *")
     void sendSunat() {
         facturaElectronicaService.sendToSUNAT();
 //        try {
