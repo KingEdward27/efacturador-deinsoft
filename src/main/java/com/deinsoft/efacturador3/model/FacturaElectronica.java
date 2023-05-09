@@ -32,6 +32,7 @@ import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.ColumnDefault;
 
 /**
  *
@@ -198,6 +199,10 @@ public class FacturaElectronica implements Serializable {
     
     @Column(name = "mto_detraccion")
     private BigDecimal mtoDetraccion;
+    
+    @ColumnDefault("1")
+    @Column(name = "nro_intento_envio")
+    private int nroIntentoEnvio;
     
 //    @Column(name = "nombre_Archivo")
 //    private String nombreArchivo;
@@ -862,9 +867,17 @@ public class FacturaElectronica implements Serializable {
         return true;
     }
 
+    public int getNroIntentoEnvio() {
+        return nroIntentoEnvio;
+    }
+
+    public void setNroIntentoEnvio(int nroIntentoEnvio) {
+        this.nroIntentoEnvio = nroIntentoEnvio;
+    }
+
     @Override
     public String toString() {
-        return "com.deinsoft.efacturador3.bean.FacturaElectronica[ mId=" + id + " ]";
+        return "FacturaElectronica{" + "id=" + id + ", empresa=" + empresa + ", fechaEmision=" + fechaEmision + ", tipo=" + tipo + ", serie=" + serie + ", numero=" + numero + ", fechaVencimiento=" + fechaVencimiento + ", tipoOperacion=" + tipoOperacion + ", clienteTipo=" + clienteTipo + ", clienteDocumento=" + clienteDocumento + ", clienteNombre=" + clienteNombre + ", clienteDireccion=" + clienteDireccion + ", clienteEmail=" + clienteEmail + ", clienteTelefono=" + clienteTelefono + ", vendedorNombre=" + vendedorNombre + ", observaciones=" + observaciones + ", placaVehiculo=" + placaVehiculo + ", ordenCompra=" + ordenCompra + ", guiaRemision=" + guiaRemision + ", descuentoGlobalPorcentaje=" + descuentoGlobalPorcentaje + ", moneda=" + moneda + ", notaTipo=" + notaTipo + ", notaMotivo=" + notaMotivo + ", notaReferenciaTipo=" + notaReferenciaTipo + ", notaReferenciaSerie=" + notaReferenciaSerie + ", notaReferenciaNumero=" + notaReferenciaNumero + ", incluirPdf=" + incluirPdf + ", incluirXml=" + incluirXml + ", sumatoriaIGV=" + sumatoriaIGV + ", sumatoriaISC=" + sumatoriaISC + ", sumatoriaOtrosTributos=" + sumatoriaOtrosTributos + ", sumatoriaOtrosCargos=" + sumatoriaOtrosCargos + ", totalValorVentasGravadas=" + totalValorVentasGravadas + ", totalValorVentasInafectas=" + totalValorVentasInafectas + ", totalValorVentasExoneradas=" + totalValorVentasExoneradas + ", descuentosGlobales=" + descuentosGlobales + ", importeTotal=" + importeTotal + ", leyenda1=" + leyenda1 + ", leyenda2=" + leyenda2 + ", leyenda3=" + leyenda3 + ", xmlHash=" + xmlHash + ", totalValorVenta=" + totalValorVenta + ", customizationId=" + customizationId + ", indSituacion=" + indSituacion + ", fechaEnvio=" + fechaEnvio + ", FechaGenXml=" + FechaGenXml + ", observacionEnvio=" + observacionEnvio + ", codLocal=" + codLocal + ", formaPago=" + formaPago + ", tipoMonedaMontoNetoPendiente=" + tipoMonedaMontoNetoPendiente + ", montoNetoPendiente=" + montoNetoPendiente + ", porcentajeIGV=" + porcentajeIGV + ", ticketOperacion=" + ticketOperacion + ", ticketSunat=" + ticketSunat + ", docrefSerie=" + docrefSerie + ", docrefNumero=" + docrefNumero + ", docrefMonto=" + docrefMonto + ", docrefFecha=" + docrefFecha + ", fechaIni=" + fechaIni + ", fechaFin=" + fechaFin + ", estado=" + estado + ", ctaBancoNacionDetraccion=" + ctaBancoNacionDetraccion + ", codBienDetraccion=" + codBienDetraccion + ", porDetraccion=" + porDetraccion + ", mtoDetraccion=" + mtoDetraccion + ", nroIntentoEnvio=" + nroIntentoEnvio + ", listFacturaElectronicaDet=" + listFacturaElectronicaDet + ", listFacturaElectronicaTax=" + listFacturaElectronicaTax + ", listFacturaElectronicaCuotas=" + listFacturaElectronicaCuotas + ", listFacturaElectronicaLeyendas=" + listFacturaElectronicaLeyendas + '}';
     }
 
     public Map<String, Object> toMap(FacturaElectronica facturaElectronica,String[] visibles) throws IllegalArgumentException, IllegalAccessException, IllegalAccessException {
@@ -884,4 +897,5 @@ public class FacturaElectronica implements Serializable {
         }
         return map;
     }
+    
 }

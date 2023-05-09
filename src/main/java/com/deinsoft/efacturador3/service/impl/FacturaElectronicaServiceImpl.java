@@ -53,6 +53,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -449,36 +451,40 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         for (Empresa empresa : empresaService.getEmpresas()) {
             List<FacturaElectronica> list = facturaElectronicaRepository.
                     findByEmpresaIdAndTipoInAndIndSituacionInAndEstadoOrderByFechaEmisionAsc(
-                            empresa.getId(), Arrays.asList("01", "03"), listSituacion, "1");
+                            empresa.getId(), Arrays.asList("01", "03"), listSituacion, "1").stream()
+                    .filter(predicate -> predicate.getNroIntentoEnvio() < 3)
+                    .filter(predicate -> predicate.getFechaEmision().compareTo(LocalDate.now().minus(3, ChronoUnit.DAYS)) >= 0)
+                    .collect(Collectors.toList());
 
             list.forEach((facturaElectronica) -> {
                 try {
-
-                    String filename = facturaElectronica.getEmpresa().getNumdoc()
-                            + "-" + String.format("%02d", Integer.parseInt(facturaElectronica.getTipo()))
-                            + "-" + facturaElectronica.getSerie()
-                            + "-" + String.format("%08d", Integer.parseInt(facturaElectronica.getNumero()));
-                    log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...filename: " + filename);
-                    //resultadoWebService = this.generarDocumentosService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica);
-                    BillServiceModel res = comunesService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica.getEmpresa());
-                    log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getCode());
-                    log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getDescription());
-                    log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getTicket());
-                    facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
-                    facturaElectronica.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
-                    facturaElectronica.setObservacionEnvio(res.getDescription());
-                    facturaElectronica.setTicketSunat(res.getTicket());
-                    save(facturaElectronica);
-                    log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...enviarComprobantePagoSunat Final");
-                    Thread.sleep(3000);
+                    System.out.println(facturaElectronica.toString());
+//                    String filename = facturaElectronica.getEmpresa().getNumdoc()
+//                            + "-" + String.format("%02d", Integer.parseInt(facturaElectronica.getTipo()))
+//                            + "-" + facturaElectronica.getSerie()
+//                            + "-" + String.format("%08d", Integer.parseInt(facturaElectronica.getNumero()));
+//                    log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...filename: " + filename);
+//                    //resultadoWebService = this.generarDocumentosService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica);
+//                    BillServiceModel res = comunesService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica.getEmpresa());
+//                    log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getCode());
+//                    log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getDescription());
+//                    log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getTicket());
+//                    facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
+//                    facturaElectronica.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+//                    facturaElectronica.setObservacionEnvio(res.getDescription());
+//                    facturaElectronica.setTicketSunat(res.getTicket());
+//                    save(facturaElectronica);
+//                    log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...enviarComprobantePagoSunat Final");
+//                    Thread.sleep(3000);
                 } catch (Exception e) {
-                    String mensaje = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
-                    e.printStackTrace();
-                    log.error(mensaje);
-                    facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
-                    facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
-                    facturaElectronica.setObservacionEnvio(mensaje);
-                    save(facturaElectronica);
+//                    String mensaje = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
+//                    e.printStackTrace();
+//                    log.error(mensaje);
+//                    facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
+//                    facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+//                    facturaElectronica.setObservacionEnvio(mensaje);
+//                    facturaElectronica.setNroIntentoEnvio(facturaElectronica.getNroIntentoEnvio() + 1);
+//                    save(facturaElectronica);
                 }
 
             });

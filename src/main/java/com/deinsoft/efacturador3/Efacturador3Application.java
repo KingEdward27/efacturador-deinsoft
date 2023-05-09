@@ -50,8 +50,8 @@ public class Efacturador3Application implements CommandLineRunner {
 //            .username("10414316595EBOLETAS") 
 //            .password("Eboletas123") 
 //            .build();
-//        
-//        BillServiceModel result =   BillServiceManager.getStatus("400000027863513", config);//202208980058201, 202208984136401
+////        
+//        BillServiceModel result =   BillServiceManager.getStatus("400000036155741", config);//202208980058201, 202208984136401
 //        System.out.println("result "+result.getStatus());
 //        System.out.println("result "+result.getDescription());
 //        System.out.println("result "+result.getCode());
@@ -60,7 +60,7 @@ public class Efacturador3Application implements CommandLineRunner {
     }
 
 //    @Scheduled(cron = "0 0 04 * * *")
-//    @Scheduled(cron = "* */5 * * * *")
+//    @Scheduled(cron = "* */2 * * * *")
     void sendSunat() {
         facturaElectronicaService.sendToSUNAT();
 //        try {
