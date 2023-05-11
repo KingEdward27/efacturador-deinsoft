@@ -451,7 +451,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         for (Empresa empresa : empresaService.getEmpresas()) {
             List<FacturaElectronica> list = facturaElectronicaRepository.
                     findToSendSunat(
-                            empresa.getId(), Arrays.asList("01", "03"), listSituacion, "1",LocalDate.now().plusDays(-3));
+                            empresa.getId(), Arrays.asList("01", "03"), listSituacion, "1",LocalDate.now().plusDays(-1));
             log.info("A enviar: " + String.valueOf(list.size()));
             
             list.forEach((facturaElectronica) -> {

@@ -32,7 +32,7 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
             + "and p.empresa.id = :empresaId "
             + "and p.tipo in (:listTipo) "
             + "and p.indSituacion in (:listSituacion) "
-            + "and p.estado = :estado order by p.fechaEmision asc,p.tipo asc,p.numero asc LIMIT 15")
+            + "and p.estado = :estado order by p.fechaEmision asc,p.tipo asc,p.numero asc")
     List<FacturaElectronica> findToSendSunat
         (@Param("empresaId") Integer empresaId,
                 @Param("listTipo") List<String> listTipo,
