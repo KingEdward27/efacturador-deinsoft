@@ -51,4 +51,6 @@ public interface FacturaElectronicaService {
     public Map<String, Object> getPDF(long ticketOperacion,int tipo) throws Exception;
     
     public Map<String, Object> generarNotaCredito(long comprobanteId) throws TransferirArchivoException;
+    
+    public void verifyPending();
 }

@@ -45,6 +45,7 @@ public class Efacturador3Application implements CommandLineRunner {
     
     public static void main(String[] args) throws Exception {
         SpringApplication.run(Efacturador3Application.class, args);
+        
 //        ServiceConfig config = new ServiceConfig.Builder()
 //            .url("https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService")
 //            .username("10414316595EBOLETAS") 
@@ -68,7 +69,11 @@ public class Efacturador3Application implements CommandLineRunner {
 //            Logger.getLogger(Efacturador3Application.class.getName()).log(Level.SEVERE, null, ex);
 //        }
     }
-
+//    @Scheduled(cron = "0 0/1 * * * *")
+    @Scheduled(cron = "0 0 03 * * *")
+    void verifyPending() {
+        facturaElectronicaService.verifyPending();
+    }
     @Override
     public void run(String... args) throws Exception {
         String password = "DEINSOFT202201$$";
