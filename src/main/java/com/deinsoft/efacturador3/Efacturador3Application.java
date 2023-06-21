@@ -69,7 +69,7 @@ public class Efacturador3Application implements CommandLineRunner {
 //            Logger.getLogger(Efacturador3Application.class.getName()).log(Level.SEVERE, null, ex);
 //        }
     }
-//    @Scheduled(cron = "0 0/1 * * * *")
+    
     @Scheduled(cron = "0 0 03 * * *")
     void verifyPending() {
         facturaElectronicaService.verifyPending();
