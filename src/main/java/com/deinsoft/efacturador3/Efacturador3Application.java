@@ -76,7 +76,7 @@ public class Efacturador3Application implements CommandLineRunner {
     }
     @Override
     public void run(String... args) throws Exception {
-        String password = "DEINSOFT202201$$";
+        String password = "DEINSOFT202201$$"; 
 
         for (int i = 0; i < 2; i++) {
             String bcryptPassword = passwordEncoder.encode(password);
