@@ -52,7 +52,7 @@ public class Efacturador3Application implements CommandLineRunner {
 //            .password("Eboletas123") 
 //            .build();
 ////        
-//        BillServiceModel result =   BillServiceManager.getStatus("400000036155741", config);//202208980058201, 202208984136401
+//        BillServiceModel result =   BillServiceManager.getStatus("500000063854286", config);//202208980058201, 202208984136401
 //        System.out.println("result "+result.getStatus());
 //        System.out.println("result "+result.getDescription());
 //        System.out.println("result "+result.getCode());

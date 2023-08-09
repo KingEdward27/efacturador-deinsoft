@@ -281,7 +281,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             f.setId(null);
             f.setTipo("07");
             f.setSerie("FN01");
-            f.setNumero("00000007");
+            f.setNumero("00000008");
             f.setNotaReferenciaTipo(facturaElectronicaResult.getTipo());
             f.setNotaReferenciaSerie(facturaElectronicaResult.getSerie());
             f.setNotaReferenciaNumero(facturaElectronicaResult.getNumero());
@@ -1012,6 +1012,8 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     public void verifyPending() {
         List<String> listSituacion = new ArrayList<>();
         listSituacion.add(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+//        listSituacion.add(Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO);
+//        listSituacion.add(Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO_OBSERVACIONES);
 //        String urlWebService = (appConfig.getUrlServiceCDP() != null) ? appConfig.getUrlServiceCDP() : "XX";
 //        int cont = 1;
 //        boolean connection = false;
@@ -1033,7 +1035,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         for (Empresa empresa : empresaService.getEmpresas()) {
             List<FacturaElectronica> list = facturaElectronicaRepository.
                     findToSendSunat(
-                            empresa.getId(), Arrays.asList("01", "03"), listSituacion, "1", LocalDate.now().plusDays(-20));
+                            empresa.getId(), Arrays.asList("01", "03"), listSituacion, "1", LocalDate.now().plusDays(-23));
             log.info("A enviar: " + String.valueOf(list.size()));
             DateTimeFormatter DD_MM_YYYY_FORMATER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             String token = "";
