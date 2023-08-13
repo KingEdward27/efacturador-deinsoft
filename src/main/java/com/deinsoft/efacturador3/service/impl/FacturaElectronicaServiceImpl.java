@@ -181,7 +181,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         }
     }
 
-    FacturaElectronica setsda(FacturaElectronica facturaElectronicaResult, FacturaElectronica f) throws IllegalAccessException, InvocationTargetException {
+    FacturaElectronica setDetailsReferencedLists(FacturaElectronica facturaElectronicaResult, FacturaElectronica f) throws IllegalAccessException, InvocationTargetException {
         try {
             List<FacturaElectronicaDet> list = facturaElectronicaResult.getListFacturaElectronicaDet().stream().map(mapper -> {
                 FacturaElectronicaDet temp = new FacturaElectronicaDet();
@@ -281,18 +281,19 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             f.setId(null);
             f.setTipo("07");
             f.setSerie("FN01");
-            f.setNumero("00000008");
+            f.setNumero("00000009");
             f.setNotaReferenciaTipo(facturaElectronicaResult.getTipo());
             f.setNotaReferenciaSerie(facturaElectronicaResult.getSerie());
             f.setNotaReferenciaNumero(facturaElectronicaResult.getNumero());
             f.setNotaTipo("01");
             f.setNotaMotivo("Anulación de la operación");
             f.setIndSituacion("02");
+            f.setObservacionEnvio(null);
 //            f.setListFacturaElectronicaDet(setsda);
 //            for (FacturaElectronicaDet facturaElectronicaDet : f.getListFacturaElectronicaDet()) {
 //                f.addFacturaElectronicaDet(facturaElectronicaDet);
 //            }
-            FacturaElectronica f0 = setsda(facturaElectronicaResult, f);
+            FacturaElectronica f0 = setDetailsReferencedLists(facturaElectronicaResult, f);
             FacturaElectronica f2 = save(f0);
 
             List<FacturaElectronicaDet> list = f2.getListFacturaElectronicaDet().stream().map(mapper -> {
