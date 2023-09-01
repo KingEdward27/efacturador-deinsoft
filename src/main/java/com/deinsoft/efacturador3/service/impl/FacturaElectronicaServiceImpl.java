@@ -281,7 +281,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             f.setId(null);
             f.setTipo("07");
             f.setSerie("FN01");
-            f.setNumero("00000010");
+            f.setNumero("00000011");
             f.setNotaReferenciaTipo(facturaElectronicaResult.getTipo());
             f.setNotaReferenciaSerie(facturaElectronicaResult.getSerie());
             f.setNotaReferenciaNumero(facturaElectronicaResult.getNumero());
