@@ -784,9 +784,10 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             }
             if (documento.getForma_pago().equalsIgnoreCase(Constantes.FORMA_PAGO_CREDITO)) {
                 for (ComprobanteCuotas detalle : documento.getLista_cuotas()) {
-                    //                Date fechaPago = null;
+                    Date fechaPago = null, fechaEmision = null;
                     try {
-                        Date fechaPago = new SimpleDateFormat("dd/MM/yyyy").parse(detalle.getFecha_pago());
+                        fechaPago = new SimpleDateFormat("dd/MM/yyyy").parse(detalle.getFecha_pago());
+                        fechaEmision = new SimpleDateFormat("dd/MM/yyyy").parse(documento.getFecha_emision());
                     } catch (Exception ex) {
                         return "Si la forma de pago es Credito la fecha de pago no debe estar vacía y debe tener formato correcto dd/MM/yyyy, campo: fecha_pago";
                     }
@@ -796,7 +797,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                     if (FacturadorUtil.isNullOrEmpty(detalle.getTipo_moneda_pago())) {
                         return "Si la forma de pago es Credito debe indicar el tipo de moneda de la cuota, campo: tipo_moneda_pago";
                     }
-
+                    if (fechaPago.compareTo(fechaEmision) <= 0) {
+                        return "Si la forma de pago es Credito la fecha de pago de las cuotas debe ser mayor o igual a la fecha de emisión";
+                    }
                 }
             }
 
@@ -806,7 +809,10 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 for (ComprobanteCuotas detalle : documento.getLista_cuotas()) {
 
                     sumaCoutas = sumaCoutas.add(detalle.getMonto_pago());
-
+                    
+                }
+                if (FacturadorUtil.isNullOrEmpty(documento.getMoneda_monto_neto_pendiente())) {
+                    return "Si la forma de pago es Credito debe indicar el tipo de moneda del pago pendiente";
                 }
                 if (sumaCoutas.compareTo(documento.getMonto_neto_pendiente()) != 0) {
                     return "La suma de las cuotas debe ser igual al Monto neto pendiente de pago";
