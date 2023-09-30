@@ -101,7 +101,7 @@ public class Impresion {
             parametros.put("pusuario_fecha", "ADMIN el " + comprobante.getFechaEmision());
             parametros.put("presolucion", "Autorizado mediantes resolución N° "+ Constantes.RESOLUCION);
             parametros.put("tipoDocFooter", "Representación impresa de la "+  Catalogos.tipoDocumento(comprobante.getTipo(), null)[1]);
-            parametros.put("ppagina","Para consultar el comprobante visita www.opendeinsoft.com");
+            parametros.put("ppagina","Para consultar el comprobante: www.deinsoft-la.com");
             parametros.put("presumen", comprobante.getXmlHash());
             parametros.put("idTipoDoc", String.valueOf(tipo));
 //            if (comprobante.getTipo() != Constantes.ID_TIPO_DOC_PROFORMA) {
