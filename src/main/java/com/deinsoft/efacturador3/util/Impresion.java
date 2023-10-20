@@ -104,6 +104,7 @@ public class Impresion {
             parametros.put("ppagina","Para consultar el comprobante: www.deinsoft-la.com");
             parametros.put("presumen", comprobante.getXmlHash());
             parametros.put("idTipoDoc", String.valueOf(tipo));
+            parametros.put("pFormaPago", comprobante.getFormaPago());
 //            if (comprobante.getTipo() != Constantes.ID_TIPO_DOC_PROFORMA) {
                 String pathResult = CodigoQR.GenerarQR(rootPath , comprobante.getEmpresa().getNumdoc()+"|"+
                         comprobante.getTipo()+"|"+

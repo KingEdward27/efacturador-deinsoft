@@ -43,6 +43,7 @@
 	<parameter name="pdescuento2" class="java.lang.String"/>
 	<parameter name="idTipoDoc" class="java.lang.String"/>
 	<parameter name="tipoDocFooter" class="java.lang.String"/>
+	<parameter name="pFormaPago" class="java.lang.String"/>
 	<field name="cantidad" class="java.lang.String"/>
 	<field name="nro" class="java.lang.String"/>
 	<field name="um" class="java.lang.String"/>
@@ -102,124 +103,160 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="122" splitType="Stretch">
+		<band height="127" splitType="Stretch">
 			<textField>
-				<reportElement x="73" y="4" width="100" height="14" uuid="a8e2540c-3704-4f80-8c20-061b10b342d8"/>
+				<reportElement x="63" y="-2" width="100" height="12" uuid="a8e2540c-3704-4f80-8c20-061b10b342d8">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement>
-					<font fontName="Georgia" size="9"/>
+					<font fontName="Georgia" size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{ruc_dniCliente}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="2" y="4" width="55" height="14" uuid="50a0433d-679e-4952-b624-4c11d26e763f"/>
+				<reportElement x="2" y="-2" width="55" height="12" uuid="50a0433d-679e-4952-b624-4c11d26e763f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement>
-					<font fontName="Georgia" size="9" isBold="true"/>
+					<font fontName="Georgia" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[RUC/DNI]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2" y="20" width="55" height="14" uuid="67851f97-f909-40a8-93b7-d880f734b3a9"/>
+				<reportElement x="2" y="12" width="55" height="12" uuid="67851f97-f909-40a8-93b7-d880f734b3a9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement>
-					<font fontName="Georgia" size="9" isBold="true"/>
+					<font fontName="Georgia" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CLIENTE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2" y="36" width="71" height="14" uuid="1540bcde-e2bd-436d-a4d8-554110325c5f"/>
+				<reportElement x="2" y="26" width="55" height="12" uuid="1540bcde-e2bd-436d-a4d8-554110325c5f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement>
-					<font fontName="Georgia" size="9" isBold="true"/>
+					<font fontName="Georgia" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DIRECCION]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="75" y="20" width="127" height="14" uuid="4f90173f-4dcb-43b0-985e-8eccf20a734d"/>
+				<reportElement x="63" y="12" width="127" height="12" uuid="4f90173f-4dcb-43b0-985e-8eccf20a734d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement>
-					<font fontName="Georgia" size="9"/>
+					<font fontName="Georgia" size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nombreCliente}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="75" y="36" width="128" height="14" uuid="fb057f01-5feb-4909-b66f-09984aaf291f"/>
+				<reportElement x="63" y="26" width="128" height="12" uuid="fb057f01-5feb-4909-b66f-09984aaf291f">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement>
-					<font fontName="Georgia" size="9"/>
+					<font fontName="Georgia" size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{direccionCliente}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="2" y="53" width="69" height="14" uuid="49c889c5-ab31-4ab2-85d4-01dfd81a838b"/>
+				<reportElement x="2" y="40" width="55" height="12" uuid="49c889c5-ab31-4ab2-85d4-01dfd81a838b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement>
-					<font fontName="Georgia" size="9" isBold="true"/>
+					<font fontName="Georgia" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[F. EMISION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="2" y="69" width="66" height="14" uuid="53c9f892-9cfc-4fcc-8fb2-65ba39580200"/>
+				<reportElement x="2" y="54" width="55" height="12" uuid="53c9f892-9cfc-4fcc-8fb2-65ba39580200">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement>
-					<font fontName="Georgia" size="9" isBold="true"/>
+					<font fontName="Georgia" size="7" isBold="true"/>
 				</textElement>
 				<text><![CDATA[MONEDA]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="75" y="68" width="100" height="14" uuid="87e47d77-0ff9-45cd-b300-27cd6d04ce96"/>
+				<reportElement x="63" y="54" width="100" height="12" uuid="87e47d77-0ff9-45cd-b300-27cd6d04ce96">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement>
-					<font fontName="Georgia" size="9"/>
+					<font fontName="Georgia" size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{moneda}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="75" y="52" width="100" height="15" uuid="b244de18-55a4-4722-9543-b8bcb1570381"/>
+				<reportElement x="63" y="40" width="100" height="12" uuid="b244de18-55a4-4722-9543-b8bcb1570381">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement>
-					<font fontName="Georgia" size="9"/>
+					<font fontName="Georgia" size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pFechaEmision}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="3" y="86" width="201" height="1" uuid="578a5ab4-9e1b-4155-a429-b9b7348a2f77"/>
+				<reportElement x="3" y="85" width="201" height="1" uuid="578a5ab4-9e1b-4155-a429-b9b7348a2f77"/>
 			</line>
 			<textField>
-				<reportElement x="75" y="89" width="129" height="26" uuid="dd5fd9a4-ee61-428c-ab1d-bc321e7919bb"/>
+				<reportElement x="75" y="88" width="129" height="26" uuid="dd5fd9a4-ee61-428c-ab1d-bc321e7919bb"/>
 				<textElement>
 					<font fontName="Georgia" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pusuario_fecha}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="3" y="89" width="60" height="26" uuid="6f201bb8-a96b-4e2a-a12e-f73ca22e6e6c"/>
+				<reportElement x="3" y="88" width="60" height="26" uuid="6f201bb8-a96b-4e2a-a12e-f73ca22e6e6c"/>
 				<textElement textAlignment="Left">
 					<font fontName="Georgia" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[ATENDIDO POR]]></text>
 			</staticText>
 			<line>
-				<reportElement x="2" y="118" width="202" height="1" uuid="bc4595dd-e419-406f-85ad-4cd0ef55250c"/>
+				<reportElement x="2" y="119" width="202" height="1" uuid="bc4595dd-e419-406f-85ad-4cd0ef55250c"/>
 			</line>
+			<staticText>
+				<reportElement x="2" y="69" width="55" height="11" uuid="9f9b629c-2dab-4d6d-86e1-43789941cb58"/>
+				<textElement>
+					<font fontName="SansSerif" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FORMA PAGO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="63" y="68" width="112" height="12" uuid="83ba01d0-75c2-4d75-8426-407a05127c94">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pFormaPago}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="14" splitType="Stretch">
 			<staticText>
-				<reportElement mode="Transparent" x="2" y="0" width="26" height="14" forecolor="#000000" backcolor="#000000" uuid="6963353c-f54b-488c-97ea-ee9b1aa1b20b"/>
+				<reportElement mode="Transparent" x="2" y="-7" width="26" height="14" forecolor="#000000" backcolor="#000000" uuid="6963353c-f54b-488c-97ea-ee9b1aa1b20b"/>
 				<textElement textAlignment="Center">
 					<font fontName="Georgia" size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CANT.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="29" y="0" width="120" height="14" forecolor="#000000" backcolor="#000000" uuid="bbd79e43-4253-45b6-929c-08e36f1deb44"/>
+				<reportElement mode="Transparent" x="29" y="-7" width="120" height="14" forecolor="#000000" backcolor="#000000" uuid="bbd79e43-4253-45b6-929c-08e36f1deb44"/>
 				<textElement textAlignment="Center">
 					<font fontName="Georgia" size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DESCRIPCIÓN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="148" y="0" width="26" height="14" forecolor="#000000" backcolor="#000000" uuid="3700a22b-7976-4663-a89b-697cb2c7c89b"/>
+				<reportElement mode="Transparent" x="148" y="-7" width="26" height="14" forecolor="#000000" backcolor="#000000" uuid="3700a22b-7976-4663-a89b-697cb2c7c89b"/>
 				<textElement textAlignment="Center">
 					<font fontName="Georgia" size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[P/U]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="174" y="0" width="30" height="14" forecolor="#000000" backcolor="#000000" uuid="e346c69a-e5e9-4fa7-9f7b-ddd4e356b734"/>
+				<reportElement mode="Transparent" x="174" y="-7" width="30" height="14" forecolor="#000000" backcolor="#000000" uuid="e346c69a-e5e9-4fa7-9f7b-ddd4e356b734"/>
 				<textElement textAlignment="Center">
 					<font fontName="Georgia" size="8" isBold="true"/>
 				</textElement>
@@ -228,9 +265,9 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="16" splitType="Stretch">
+		<band height="13" splitType="Stretch">
 			<textField>
-				<reportElement x="2" y="0" width="26" height="16" uuid="45ca2465-8446-4413-b826-3e7ff3f85c63"/>
+				<reportElement x="2" y="-7" width="26" height="16" uuid="45ca2465-8446-4413-b826-3e7ff3f85c63"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
 				<textElement textAlignment="Center">
 					<font fontName="Georgia" size="7" isBold="false"/>
@@ -238,7 +275,7 @@
 				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="148" y="0" width="26" height="16" uuid="0ca1fbdb-0938-48ca-b14d-764d6ac3488c"/>
+				<reportElement x="148" y="-7" width="26" height="16" uuid="0ca1fbdb-0938-48ca-b14d-764d6ac3488c"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
 				<textElement textAlignment="Right">
 					<font fontName="Georgia" size="7" isBold="false"/>
@@ -246,7 +283,7 @@
 				<textFieldExpression><![CDATA[$F{pu}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
-				<reportElement x="28" y="0" width="121" height="16" uuid="7171b7d5-1d4b-4f17-b504-a6ffd1a9591d"/>
+				<reportElement x="28" y="-7" width="121" height="16" uuid="7171b7d5-1d4b-4f17-b504-a6ffd1a9591d"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
 				<textElement>
 					<font fontName="Georgia" size="7" isBold="false"/>
@@ -254,7 +291,7 @@
 				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="175" y="0" width="29" height="16" uuid="7bb5ba91-390a-4229-a68e-c376c7ff2d9a"/>
+				<reportElement x="175" y="-7" width="29" height="16" uuid="7bb5ba91-390a-4229-a68e-c376c7ff2d9a"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
 				<textElement textAlignment="Right">
 					<font fontName="Georgia" size="7"/>
@@ -264,136 +301,136 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="101" splitType="Stretch">
+		<band height="103" splitType="Stretch">
 			<staticText>
-				<reportElement x="4" y="8" width="71" height="14" uuid="9d3498a1-ce78-4e5a-abda-347c4af1c67b"/>
+				<reportElement x="4" y="7" width="71" height="14" uuid="9d3498a1-ce78-4e5a-abda-347c4af1c67b"/>
 				<textElement textAlignment="Left">
 					<font fontName="Georgia" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DESCUENTO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="4" y="36" width="71" height="14" uuid="d9a5be04-8b0a-49c0-a781-06a16c1a46c9"/>
+				<reportElement x="4" y="35" width="71" height="14" uuid="d9a5be04-8b0a-49c0-a781-06a16c1a46c9"/>
 				<textElement textAlignment="Left">
 					<font fontName="Georgia" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[IGV 18%]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="4" y="22" width="71" height="14" uuid="18b202b7-aed2-4392-90b7-aada36eed29c"/>
+				<reportElement x="4" y="21" width="71" height="14" uuid="18b202b7-aed2-4392-90b7-aada36eed29c"/>
 				<textElement textAlignment="Left">
 					<font fontName="Georgia" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[GRAVADO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="4" y="50" width="71" height="14" uuid="f12be1fa-49d2-44ac-8101-ce2f1a5b5441"/>
+				<reportElement x="4" y="49" width="71" height="14" uuid="f12be1fa-49d2-44ac-8101-ce2f1a5b5441"/>
 				<textElement textAlignment="Left">
 					<font fontName="Georgia" size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[TOTAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="120" y="8" width="16" height="14" uuid="9c4257e3-e33d-46de-8be1-cfdcb8705cd5"/>
+				<reportElement x="120" y="7" width="16" height="14" uuid="9c4257e3-e33d-46de-8be1-cfdcb8705cd5"/>
 				<textElement>
 					<font fontName="Georgia" size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[S/.]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="153" y="22" width="50" height="14" uuid="97cfb966-9cda-4495-9280-924c649c3e76"/>
+				<reportElement x="153" y="21" width="50" height="14" uuid="97cfb966-9cda-4495-9280-924c649c3e76"/>
 				<textElement textAlignment="Right">
 					<font fontName="Georgia" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pgravado}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="153" y="36" width="50" height="14" uuid="cccedc6d-0d2a-44e1-8d59-4afefe4f8a45"/>
+				<reportElement x="153" y="35" width="50" height="14" uuid="cccedc6d-0d2a-44e1-8d59-4afefe4f8a45"/>
 				<textElement textAlignment="Right">
 					<font fontName="Georgia" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pigv}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="153" y="50" width="50" height="14" uuid="e956ed14-4b36-455e-8923-9bb852e56fe0"/>
+				<reportElement x="153" y="49" width="50" height="14" uuid="e956ed14-4b36-455e-8923-9bb852e56fe0"/>
 				<textElement textAlignment="Right">
 					<font fontName="Georgia" size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{ptotal}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="120" y="22" width="16" height="14" uuid="1f273c46-0ad3-441d-b2a1-7fedf2bdd7b2"/>
+				<reportElement x="120" y="21" width="16" height="14" uuid="1f273c46-0ad3-441d-b2a1-7fedf2bdd7b2"/>
 				<textElement>
 					<font fontName="Georgia" size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[S/.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="120" y="36" width="16" height="14" uuid="d8079c44-a2fb-4c6f-b0c4-b787620deb9e"/>
+				<reportElement x="120" y="35" width="16" height="14" uuid="d8079c44-a2fb-4c6f-b0c4-b787620deb9e"/>
 				<textElement>
 					<font fontName="Georgia" size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[S/.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="120" y="50" width="16" height="14" uuid="f9315cca-ebbb-4723-b343-6427274d1358"/>
+				<reportElement x="120" y="49" width="16" height="14" uuid="f9315cca-ebbb-4723-b343-6427274d1358"/>
 				<textElement>
 					<font fontName="Georgia" size="8" isBold="false"/>
 				</textElement>
 				<text><![CDATA[S/.]]></text>
 			</staticText>
 			<textField textAdjust="StretchHeight">
-				<reportElement x="2" y="73" width="198" height="23" uuid="8fa7d931-1ff3-4e32-bd4f-b7d2272dddd3"/>
+				<reportElement x="2" y="75" width="198" height="23" uuid="8fa7d931-1ff3-4e32-bd4f-b7d2272dddd3"/>
 				<textElement textAlignment="Center">
 					<font fontName="Georgia" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{ptotal_letras}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="153" y="8" width="50" height="14" uuid="8c0f3e9c-8d59-4dd9-ad82-6daff12c8824"/>
+				<reportElement x="153" y="7" width="50" height="14" uuid="8c0f3e9c-8d59-4dd9-ad82-6daff12c8824"/>
 				<textElement textAlignment="Right">
 					<font fontName="Georgia" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pdescuento2}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="3" y="69" width="201" height="1" uuid="9810106d-675b-4717-aa0b-145334e375d1"/>
+				<reportElement x="3" y="68" width="201" height="1" uuid="9810106d-675b-4717-aa0b-145334e375d1"/>
 			</line>
 			<line>
-				<reportElement x="3" y="4" width="201" height="1" uuid="1b14824b-21a8-4300-917c-df467a697034"/>
+				<reportElement x="3" y="3" width="201" height="1" uuid="1b14824b-21a8-4300-917c-df467a697034"/>
 			</line>
 		</band>
 	</columnFooter>
 	<pageFooter>
-		<band height="132" splitType="Stretch">
+		<band height="148" splitType="Stretch">
 			<printWhenExpression><![CDATA[$P{idTipoDoc}.equals("1") || $P{idTipoDoc}.equals("2") ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
 			<textField>
-				<reportElement x="3" y="64" width="197" height="14" uuid="e7769181-79e8-4d3a-84e2-615f91b03ecb"/>
+				<reportElement x="3" y="77" width="197" height="14" uuid="e7769181-79e8-4d3a-84e2-615f91b03ecb"/>
 				<textElement textAlignment="Center">
 					<font fontName="Georgia" size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{presumen}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="3" y="106" width="197" height="14" uuid="20345d27-b8bf-4996-abc2-bf94e0323c29"/>
+				<reportElement x="3" y="119" width="197" height="14" uuid="20345d27-b8bf-4996-abc2-bf94e0323c29"/>
 				<textElement textAlignment="Center">
 					<font fontName="Georgia" size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{ppagina}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="3" y="78" width="197" height="14" uuid="59eaacb7-aa99-42a7-9b3e-91cb9291bd0b"/>
+				<reportElement x="3" y="91" width="197" height="14" uuid="59eaacb7-aa99-42a7-9b3e-91cb9291bd0b"/>
 				<textElement textAlignment="Center">
 					<font fontName="Georgia" size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{presolucion}]]></textFieldExpression>
 			</textField>
 			<image>
-				<reportElement x="65" y="2" width="73" height="60" uuid="e5846ffa-5fcd-4941-8f9a-f3c7259477d5"/>
+				<reportElement x="65" y="15" width="73" height="60" uuid="e5846ffa-5fcd-4941-8f9a-f3c7259477d5"/>
 				<imageExpression><![CDATA[$P{rutaimagen}]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="3" y="92" width="197" height="14" uuid="4699bfa3-729b-4c0d-bc9f-b0ccbfae6fbd"/>
+				<reportElement x="3" y="105" width="197" height="14" uuid="4699bfa3-729b-4c0d-bc9f-b0ccbfae6fbd"/>
 				<textElement textAlignment="Center">
 					<font fontName="Georgia" size="7"/>
 				</textElement>

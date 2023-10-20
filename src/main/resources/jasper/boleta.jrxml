@@ -42,6 +42,7 @@
 	<parameter name="tipodoc" class="java.lang.String"/>
 	<parameter name="idTipoDoc" class="java.lang.String"/>
 	<parameter name="tipoDocFooter" class="java.lang.String"/>
+	<parameter name="pFormaPago" class="java.lang.String"/>
 	<field name="cantidad" class="java.lang.String"/>
 	<field name="nro" class="java.lang.String"/>
 	<field name="um" class="java.lang.String"/>
@@ -96,71 +97,107 @@
 				<reportElement x="0" y="0" width="555" height="70" uuid="ec364fc5-8999-418b-a366-9e87d9c4aafd"/>
 			</rectangle>
 			<textField>
-				<reportElement x="75" y="15" width="100" height="14" uuid="a8e2540c-3704-4f80-8c20-061b10b342d8"/>
+				<reportElement x="77" y="4" width="100" height="14" uuid="a8e2540c-3704-4f80-8c20-061b10b342d8"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{ruc_dniCliente}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="6" y="15" width="55" height="14" uuid="50a0433d-679e-4952-b624-4c11d26e763f"/>
+				<reportElement x="6" y="4" width="55" height="14" uuid="50a0433d-679e-4952-b624-4c11d26e763f"/>
 				<textElement>
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[RUC/DNI]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="6" y="31" width="55" height="14" uuid="67851f97-f909-40a8-93b7-d880f734b3a9"/>
+				<reportElement x="6" y="20" width="55" height="14" uuid="67851f97-f909-40a8-93b7-d880f734b3a9"/>
 				<textElement>
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[CLIENTE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="6" y="47" width="71" height="14" uuid="1540bcde-e2bd-436d-a4d8-554110325c5f"/>
+				<reportElement x="6" y="36" width="71" height="14" uuid="1540bcde-e2bd-436d-a4d8-554110325c5f"/>
 				<textElement>
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[DIRECCION]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="77" y="31" width="198" height="14" uuid="4f90173f-4dcb-43b0-985e-8eccf20a734d"/>
+				<reportElement x="77" y="20" width="198" height="14" uuid="4f90173f-4dcb-43b0-985e-8eccf20a734d"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{nombreCliente}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="77" y="47" width="198" height="14" uuid="fb057f01-5feb-4909-b66f-09984aaf291f"/>
+				<reportElement x="77" y="36" width="198" height="14" uuid="fb057f01-5feb-4909-b66f-09984aaf291f"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{direccionCliente}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="285" y="15" width="108" height="14" uuid="49c889c5-ab31-4ab2-85d4-01dfd81a838b"/>
+				<reportElement x="285" y="4" width="108" height="14" uuid="49c889c5-ab31-4ab2-85d4-01dfd81a838b"/>
 				<textElement>
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FECHA DE EMISION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="285" y="30" width="108" height="14" uuid="c0c6ef6b-2d44-4072-815a-579c12131891"/>
+				<reportElement x="285" y="19" width="108" height="14" uuid="c0c6ef6b-2d44-4072-815a-579c12131891"/>
 				<textElement>
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FECHA DE VCTO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="285" y="45" width="108" height="14" uuid="53c9f892-9cfc-4fcc-8fb2-65ba39580200"/>
+				<reportElement x="285" y="34" width="108" height="14" uuid="53c9f892-9cfc-4fcc-8fb2-65ba39580200"/>
 				<textElement>
-					<font isBold="true"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[MONEDA]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="400" y="15" width="100" height="14" uuid="048c0889-3797-4817-a5e5-3b7fc996b637"/>
+				<reportElement x="400" y="4" width="100" height="14" uuid="048c0889-3797-4817-a5e5-3b7fc996b637"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{pFechaEmision}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="400" y="30" width="100" height="15" uuid="4861c1d9-84f6-4f2d-8c6d-1fbd644277e2"/>
+				<reportElement x="400" y="19" width="100" height="15" uuid="4861c1d9-84f6-4f2d-8c6d-1fbd644277e2"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{fechaVencimiento}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="400" y="47" width="100" height="14" uuid="87e47d77-0ff9-45cd-b300-27cd6d04ce96"/>
+				<reportElement x="400" y="35" width="100" height="14" uuid="87e47d77-0ff9-45cd-b300-27cd6d04ce96"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{moneda}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="77" y="53" width="198" height="12" uuid="7acdcd53-34c9-4874-bc15-f3dfaf98c8dc">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pFormaPago}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="6" y="53" width="71" height="12" uuid="e937f095-cba7-45ed-aad6-a0287aad5a18">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FORMA PAGO]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
