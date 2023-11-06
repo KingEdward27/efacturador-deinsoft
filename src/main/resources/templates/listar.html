@@ -10,6 +10,8 @@
             <div class="card bg-light">
                 <div class="card-header" th:text="${titulo}"></div>
                 <div class="card-body">
+                    <input id="role" type="hidden" th:value="${#authentication.getAuthorities()[0].getAuthority()}"  />
+                    
                     <form method="get" >
                         <div class = "row">
                             <div class="form-group col-xl-2 col-lg-2 col-sm-3 col-xs-3">
@@ -58,7 +60,7 @@
 
                             </div>
                         </div>
-
+                        
                     </form>
 
                     <div class="table-responsive" id = "list"  th:fragment="lista">
@@ -322,6 +324,13 @@
                     },
                     success: function (data) {
                         $("#list").replaceWith(data);
+                        alert();
+                        let columnsToExport;
+                        if ($("#role").val() === 'ROLE_ADMIN') {
+                            columnsToExport = [2, 3, 4, 5, 6, 7, 8, 9];
+                        } else {
+                            columnsToExport = [2, 3, 4, 5, 6, 7, 8];
+                        }
                         $('#dtTable').DataTable({
                                 lengthMenu : [5, 25, 50, 100],
                                 dom: 'lBftip',
@@ -345,7 +354,7 @@
                                         title : "Comprobantes",
                                         messageTop: "Del: " + $("#fechaIni").val() + " Al: " + $("#fechaFin").val(),
                                         exportOptions: {
-                                          columns: [2, 3, 4, 5, 6, 7, 8, 9]
+                                          columns: columnsToExport
                                         }
                                     },
                                     {
@@ -355,7 +364,7 @@
                                         orientation : 'landscape',
                                         pageSize : 'LEGAL',
                                         exportOptions: {
-                                          columns: [2, 3, 4, 5, 6, 7, 8, 9]
+                                          columns: columnsToExport
                                         }
                                     }
                                 ],
