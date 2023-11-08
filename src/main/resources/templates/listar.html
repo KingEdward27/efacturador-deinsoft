@@ -148,22 +148,25 @@
                             <tfoot>
 
                                 <tr>
-                                    <td sec:authorize="hasRole('ROLE_ADMIN')" >
-                                    <td colspan="6" style="text-align: right;font-weight: bold;">Total:</td>
+                                    <td sec:authorize="hasRole('ROLE_ADMIN')" colspan="7" style="text-align: right;font-weight: bold;">Total:</td>
+                                    <td sec:authorize="!hasRole('ROLE_ADMIN')" colspan="6" style="text-align: right;font-weight: bold;">Total:</td>
                                     <td style="text-align: right;font-weight: bold;" th:text="${#numbers.formatDecimal(#aggregates.sum(facturas.![totalValorVenta])== null?0:#aggregates.sum(facturas.![totalValorVenta]),3,'COMMA',2,'POINT')}" />
-                                    <td colspan="3"></td>
+                                    <td sec:authorize="hasRole('ROLE_ADMIN')" colspan="3"></td>
+                                    <td sec:authorize="!hasRole('ROLE_ADMIN')" colspan="2"></td>
                                 </tr>
                                 <tr>
-                                    <td sec:authorize="hasRole('ROLE_ADMIN')" >
-                                    <td colspan="6" style="text-align: right;font-weight: bold;">Total Anulado:</td>
+                                    <td sec:authorize="hasRole('ROLE_ADMIN')" colspan="7" style="text-align: right;font-weight: bold;">Total Anulado:</td>
+                                    <td sec:authorize="!hasRole('ROLE_ADMIN')" colspan="6" style="text-align: right;font-weight: bold;">Total Anulado:</td>
                                     <td style="text-align: right;font-weight: bold;" th:text="${#numbers.formatDecimal(#aggregates.sum(facturas.?[estado == 'ANULADO'].![totalValorVenta])== null?0:#aggregates.sum(facturas.?[estado == 'ANULADO'].![totalValorVenta]),3,'COMMA',2,'POINT')}" />
-                                    <td colspan="3"></td>
+                                    <td sec:authorize="hasRole('ROLE_ADMIN')" colspan="3"></td>
+                                    <td sec:authorize="!hasRole('ROLE_ADMIN')" colspan="2"></td>
                                 </tr>
                                 <tr>
-                                    <td sec:authorize="hasRole('ROLE_ADMIN')" >
-                                    <td colspan="6" style="text-align: right;font-weight: bold;">Total Activo:</td>
+                                    <td sec:authorize="hasRole('ROLE_ADMIN')" colspan="7" style="text-align: right;font-weight: bold;">Total Activo:</td>
+                                    <td sec:authorize="!hasRole('ROLE_ADMIN')" colspan="6" style="text-align: right;font-weight: bold;">Total Activo:</td>
                                     <td style="text-align: right;font-weight: bold;" th:text="${#numbers.formatDecimal(#aggregates.sum(facturas.?[estado == 'ACTIVO'].![totalValorVenta]) == null?0:#aggregates.sum(facturas.?[estado == 'ACTIVO'].![totalValorVenta]),3,'COMMA',2,'POINT')}" />
-                                    <td colspan="3"></td>
+                                    <td sec:authorize="hasRole('ROLE_ADMIN')" colspan="3"></td>
+                                    <td sec:authorize="!hasRole('ROLE_ADMIN')" colspan="2"></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -324,13 +327,13 @@
                     },
                     success: function (data) {
                         $("#list").replaceWith(data);
-                        alert();
                         let columnsToExport;
                         if ($("#role").val() === 'ROLE_ADMIN') {
                             columnsToExport = [2, 3, 4, 5, 6, 7, 8, 9];
                         } else {
                             columnsToExport = [2, 3, 4, 5, 6, 7, 8];
                         }
+                        
                         $('#dtTable').DataTable({
                                 lengthMenu : [5, 25, 50, 100],
                                 dom: 'lBftip',
@@ -393,6 +396,7 @@
                                         }
                                 }
                              });
+                             $.fn.dataTable.ext.errMode = 'none';
                     }, error: function (request, error) {
                         $("#loading").hide();
                         alert("Ocurrió un error inesperado: " + error);
@@ -437,7 +441,6 @@
                 });
 
             }
-            //alert(dt);
             if (typeof dt !== 'undefined') {
                 dt.destroy();
             }
