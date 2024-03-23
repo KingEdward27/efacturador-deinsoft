@@ -5,6 +5,7 @@
  */
 package com.deinsoft.efacturador3.repository;
 
+import com.deinsoft.efacturador3.bean.ParamBean;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import java.time.LocalDate;
 import java.util.List;
@@ -53,7 +54,12 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
             + "and p.empresa.id = :#{#facturaElectronica.empresa.id} ")
     List<FacturaElectronica> findByDocrefSerieAndDocrefNumero(@Param("facturaElectronica") FacturaElectronica facturaElectronica);
     
-    List<FacturaElectronica> findByIdIn(List<Long> ids);
+    List<FacturaElectronica> findByIdIn(List<Long> ids); 
     
     List<FacturaElectronica> findByTicketOperacion(long ticketOperacion);
+    
+    @Query(value = "select p from facturaElectronica p "
+            + "where (p.fechaEmision between :#{#paramBean.fechaDesde} and :#{#paramBean.fechaHasta}) "
+            + "order by p.tipo desc, p.serie desc, p.numero desc,p.fechaEmision desc")
+    List<FacturaElectronica> getReportActComprobante(@Param("paramBean") ParamBean paramBean);
 }

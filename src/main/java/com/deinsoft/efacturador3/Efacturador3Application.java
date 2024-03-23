@@ -3,36 +3,21 @@ package com.deinsoft.efacturador3;
 import com.deinsoft.efacturador3.model.ResumenDiario;
 import com.deinsoft.efacturador3.service.FacturaElectronicaService;
 import com.deinsoft.efacturador3.service.ResumenDiarioService;
-import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
-import io.github.project.openubl.xmlsenderws.webservices.managers.BillServiceManager;
-import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
-import io.github.project.openubl.xmlsenderws.webservices.wrappers.ServiceConfig;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
-import java.security.MessageDigest;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import com.deinsoft.efacturador3.config.AppConfig;
 
 @EnableScheduling
 @SpringBootApplication
-public class Efacturador3Application implements CommandLineRunner {
+@EnableConfigurationProperties(AppConfig.class)
+public class Efacturador3Application extends WebMvcConfigurerAdapter implements CommandLineRunner {
 
     @Autowired
     FacturaElectronicaService facturaElectronicaService;
@@ -43,6 +28,9 @@ public class Efacturador3Application implements CommandLineRunner {
     @Autowired
     ResumenDiarioService resumenDiarioService;
     
+    @Autowired
+    AppConfig appConfig;
+    
     public static void main(String[] args) throws Exception {
         SpringApplication.run(Efacturador3Application.class, args);
         
@@ -51,17 +39,22 @@ public class Efacturador3Application implements CommandLineRunner {
 //            .username("10414316595EBOLETAS") 
 //            .password("Eboletas123") 
 //            .build();
-////        
-//        BillServiceModel result =   BillServiceManager.getStatus("500000063854286", config);//202208980058201, 202208984136401
+//////        
+//        BillServiceModel result =   BillServiceManager.getStatus("500000113137499", config);//202208980058201, 202208984136401
 //        System.out.println("result "+result.getStatus());
 //        System.out.println("result "+result.getDescription());
 //        System.out.println("result "+result.getCode());
-//        System.out.println("result "+result.toString());
+//        if (result.getCdr() != null) {
+//            FileUtils.writeByteArrayToFile(
+//                    new File("C:/Users/user/DocumentsRPTA/500000113137499.zip"),
+//                    result.getCdr());
+//        }
         
     }
     
     @Scheduled(cron = "0 0 04 * * *")
     void sendSunat() {
+        System.out.println("init sendSunat()");
         facturaElectronicaService.sendToSUNAT();
 //        try {
 //            resumenDiarioService.sendSUNAT();
@@ -72,6 +65,7 @@ public class Efacturador3Application implements CommandLineRunner {
     
     @Scheduled(cron = "0 0 03 * * *")
     void verifyPending() {
+        System.out.println("init verifyPending()");
         facturaElectronicaService.verifyPending();
     }
     @Override

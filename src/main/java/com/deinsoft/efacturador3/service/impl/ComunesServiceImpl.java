@@ -123,7 +123,7 @@ public class ComunesServiceImpl implements ComunesService {
     }
 
     @Override
-    public BillServiceModel enviarArchivoSunat(String wsUrl, String rootPath, String filename, Empresa empresa) {
+    public BillServiceModel enviarArchivoSunat(String wsUrl, String rootPath, String filename, Empresa empresa) throws Exception{
 //        return null;
         ServiceConfig config = new ServiceConfig.Builder()
                 .url(wsUrl)
@@ -147,12 +147,16 @@ public class ComunesServiceImpl implements ComunesService {
             if(result.getCdr() == null){
                 return result;
             }
+            log.debug("result getStatus"+result.getStatus());
+            log.debug("result getCode"+result.getCode());
+            log.debug("result getDescription"+result.getDescription());
             FileUtils.writeByteArrayToFile(
                     new File(rootPath + empresa.getNumdoc() + "/RPTA/" + "R-" + filename + ".zip"),
                     result.getCdr());
 
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(GenerarDocumentosServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new Exception(ex.toString());
         }
         return result;
     }

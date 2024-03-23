@@ -145,21 +145,10 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
         String idXml = "";
 //        String tipoComprobante = facturaElectronica.getTipo();
         try {
+            log.debug("SoftwareFacturadorController.formatoPlantillaXml...Final Procesamiento");
             PipeParserFactory parserFactory = new PipeParserFactory();
             Parser xmlParser = parserFactory.createParserResumenDiario(resumenDiario);
 
-//            StringBuilder rutaSalida = new StringBuilder();
-//            rutaSalida.setLength(0);
-//            rutaSalida.append(rootPath + "/" + resumenDiario.getEmpresa().getNumdoc() + "/TEMP/").
-//                    append(resumenDiario.getNombreArchivo()).append(".xml");
-//            String templatesPath = rootPath + "/VALI/";
-//
-//            byte[] myByteArray = xmlParser.parse(templatesPath);
-//
-//            try (FileOutputStream fos = new FileOutputStream(rutaSalida.toString())) {
-//                fos.write(myByteArray);
-//            }
-            log.debug("SoftwareFacturadorController.formatoPlantillaXml...Final Procesamiento");
             return getByteArray(rootPath, xmlParser,resumenDiario.getNombreArchivo(), resumenDiario.getEmpresa().getNumdoc());
         } catch (Exception e) {
             e.printStackTrace();

@@ -6,6 +6,7 @@
 package com.deinsoft.efacturador3.service;
 
 import com.deinsoft.efacturador3.model.Empresa;
+import com.deinsoft.efacturador3.model.Local;
 import java.util.HashMap;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,21 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * @author EDWARD-PC
  */
-public interface EmpresaService {
+public interface LocalService {
 
-    public Empresa getEmpresaById(int id);
+    public List<Local> getLocales();
 
-    public List<Empresa> getEmpresas();
+    public Local save(Local local);
 
-    public void prepareAndUpload(Empresa empresa,MultipartFile file);
-    
-    public Empresa save(Empresa empresa);
-
-    public Empresa findByNumdoc(String numdoc);
-
-    public Empresa findByToken(String token);
-
-    void createDirsIfNotExists(Empresa empresa);
-    
     
 }

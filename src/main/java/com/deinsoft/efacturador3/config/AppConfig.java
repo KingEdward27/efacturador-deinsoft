@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Configuration
+@ConfigurationProperties
 public class AppConfig
 {
   @NotEmpty

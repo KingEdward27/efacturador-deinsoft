@@ -10,6 +10,7 @@ import com.deinsoft.efacturador3.bean.ComprobanteCuotas;
 import com.deinsoft.efacturador3.bean.ComprobanteDet;
 import com.deinsoft.efacturador3.bean.ComprobanteTax;
 import com.deinsoft.efacturador3.bean.MailBean;
+import com.deinsoft.efacturador3.bean.ParamBean;
 import com.deinsoft.efacturador3.config.AppConfig;
 import com.deinsoft.efacturador3.config.XsltCpePath;
 import com.deinsoft.efacturador3.exception.XsdException;
@@ -83,6 +84,7 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.data.repository.query.Param;
 
 /**
  *
@@ -146,7 +148,10 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     public List<FacturaElectronica> getByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(FacturaElectronica facturaElectronica) {
         return facturaElectronicaRepository.findByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(facturaElectronica);
     }
-
+    @Override
+    public List<FacturaElectronica> getReportActComprobante(ParamBean paramBean) {
+        return facturaElectronicaRepository.getReportActComprobante(paramBean);
+    }
     @Override
     @Transactional
     public Map<String, Object> generarComprobantePagoSunat(long comprobanteId) throws TransferirArchivoException {
@@ -162,7 +167,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
             facturaElectronicaResult = getById(comprobanteId);
             if (facturaElectronicaResult.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO)) {
-                retorno.put("code", "003");
+                retorno.put("code", "-2");
                 retorno.put("message", "El comprobante ya se encuentra en estado ENVIADO y ACEPTADO");
                 return retorno;
             }
@@ -172,7 +177,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         } catch (Exception e) {
             log.info(e.getMessage());
             retorno = new HashMap<>();
-            retorno.put("code", "003");
+            retorno.put("code", "9999");
             retorno.put("message", e.getMessage());
             e.printStackTrace();
             ExceptionDetail exceptionDetail = new ExceptionDetail();
@@ -396,8 +401,8 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 log.debug("FacturaController.enviarXML...filename: " + filename);
                 log.debug("FacturaController.enviarXML...tipoComprobante: " + tipoComprobante);
                 BillServiceModel res = this.comunesService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica.getEmpresa());
-
-                facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
+                
+                facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours())); 
                 facturaElectronica.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
                 facturaElectronica.setObservacionEnvio(res.getDescription());
                 facturaElectronica.setTicketSunat(res.getTicket());
@@ -407,7 +412,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 //                retorno.put("resultadoWebService", resultadoWebService);
             } else {
                 mensajeValidacion = "El documento se encuentra en una situación incrrecta o ya fue enviado";
-                resultadoProceso = "003";
+                resultadoProceso = "-2";
             }
 
             log.debug("FacturaController.enviarXML...enviarComprobantePagoSunat Final");
@@ -415,7 +420,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         } catch (Exception e) {
             mensajeValidacion = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
             e.printStackTrace();
-            resultadoProceso = "003";
+            resultadoProceso = "9999";
             facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
             facturaElectronica.setIndSituacion("06");
             facturaElectronica.setObservacionEnvio(mensajeValidacion);
@@ -977,6 +982,25 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         return retorno;
     }
 
+    @Override
+    public byte[] getPDFInBtyes(long id, int tipo) throws Exception {
+        Map<String, Object> retorno = new HashMap<>();
+        FacturaElectronica fact = getById(id);
+        if (fact == null) {
+            return null;
+        }
+        if (fact.getId() == null) {
+            return null;
+        }
+        log.info("fact.getId(): " + fact.getId());
+        byte[] data = print(this.appConfig.getRootPath(), fact, tipo, "SOLES");
+        if (!appConfig.getEnvironment().equals("PRODUCTION")) {
+            FileUtils.writeByteArrayToFile(new File("C:/Users/user/Documents/report.pdf"), data);
+        }
+//        retorno.put("pdfBase64", bytes);
+        return data;
+    }
+    
     private byte[] print(String rootpath, FacturaElectronica documento, int tipo, String tempDescripcionPluralMoneda) throws Exception {
         ByteArrayInputStream stream = Impresion.Imprimir(rootpath, tipo, documento, tempDescripcionPluralMoneda);
         int n = stream.available();
@@ -1018,27 +1042,10 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     @Override
     public void verifyPending() {
         List<String> listSituacion = new ArrayList<>();
+        listSituacion.add(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
         listSituacion.add(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
-//        listSituacion.add(Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO);
-//        listSituacion.add(Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO_OBSERVACIONES);
-//        String urlWebService = (appConfig.getUrlServiceCDP() != null) ? appConfig.getUrlServiceCDP() : "XX";
-//        int cont = 1;
-//        boolean connection = false;
-//        while (cont <= 3) {
-//            log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...Validando Conexión a Internet");
-//            String[] rutaUrl = urlWebService.split("\\/");
-//            log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...tokens: " + rutaUrl[2]);
-//            if (this.comunesService.validarConexion(rutaUrl[2], 443)) {
-//                connection = true;
-//                break;
-//            }
-//            cont++;
-//        }
-//        if (!connection) {
-//            log.debug("sunat connection down");
-//            return;
-//        }
-
+        listSituacion.add(Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO);
+        listSituacion.add(Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO_OBSERVACIONES);
         for (Empresa empresa : empresaService.getEmpresas()) {
             List<FacturaElectronica> list = facturaElectronicaRepository.
                     findToSendSunat(
@@ -1054,6 +1061,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
                     for (FacturaElectronica facturaElectronica : list) {
                         try {
+                            if (facturaElectronica.getFechaEmision().compareTo(LocalDate.now().plusDays(-1)) >= 0) {
+                                continue;
+                            }
                             ValidationBody valBody = new ValidationBody();
                             valBody.setNumRuc(empresa.getNumdoc());
                             valBody.setCodComp(facturaElectronica.getTipo());

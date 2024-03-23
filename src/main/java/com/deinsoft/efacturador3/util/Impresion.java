@@ -80,7 +80,6 @@ public class Impresion {
             parametros.put("razon_social", comprobante.getEmpresa().getNombreComercial() == null ? comprobante.getEmpresa().getRazonSocial() : comprobante.getEmpresa().getNombreComercial());
             parametros.put("direccion", local.getDireccion());
             parametros.put("ruc", comprobante.getEmpresa().getNumdoc());
-            System.out.println("comprobante.getEmpresa().getNumdoc(): "+comprobante.getEmpresa().getNumdoc());
             parametros.put("numero", comprobante.getSerie() + "-" + comprobante.getNumero());
             parametros.put("ruc_dniCliente", comprobante.getClienteDocumento());
             parametros.put("nombreCliente", comprobante.getClienteNombre());
@@ -106,7 +105,7 @@ public class Impresion {
             parametros.put("idTipoDoc", String.valueOf(tipo));
             parametros.put("pFormaPago", comprobante.getFormaPago());
 //            if (comprobante.getTipo() != Constantes.ID_TIPO_DOC_PROFORMA) {
-                String pathResult = CodigoQR.GenerarQR(rootPath , comprobante.getEmpresa().getNumdoc()+"|"+
+                String pathResult = CodigoQR.GenerarQR(comprobante.getEmpresa().getNumdoc()+"|"+
                         comprobante.getTipo()+"|"+
                         comprobante.getSerie()+"-"+comprobante.getNumero()+"|"+
                         String.valueOf(comprobante.getSumatoriaIGV())+"|"+
@@ -121,6 +120,10 @@ public class Impresion {
             
             List<Map<String, String>> listaBean = new ArrayList();
             Integer count = 0;
+            //si no hay detalle no imprimirá nada
+            if (comprobante.getListFacturaElectronicaDet().isEmpty()) {
+                throw new Exception("El comprobante no tiene items, no se puede imprimir");
+            }
             for (FacturaElectronicaDet item : comprobante.getListFacturaElectronicaDet()) {
                 ++count;
                 Map<String, String> beanMap = new HashMap<>();

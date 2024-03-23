@@ -7,6 +7,7 @@ package com.deinsoft.efacturador3.controllers;
 
 import com.deinsoft.efacturador3.bean.ComprobanteCab;
 import com.deinsoft.efacturador3.bean.ComprobanteDet;
+import com.deinsoft.efacturador3.bean.ParamBean;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.config.AppConfig;
@@ -68,6 +69,7 @@ public class FacturaController extends BaseController {
     public ResponseEntity<?> getDocuments(){
         return ResponseEntity.status(HttpStatus.OK).body(facturaElectronicaService.getListFacturaElectronica());
     }
+    
     @PostMapping(value = "/send-document")
     public ResponseEntity<?> sendDocument(@Valid @RequestBody ComprobanteCab documento, 
             BindingResult bindingResult,HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException {
@@ -109,7 +111,10 @@ public class FacturaController extends BaseController {
                 result  = new HashMap<>();
                 result.put("code","002");
                 result.put("message","El documento ya existe");
-                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(result);
+                result.put("ticketOperacion",listFact.get(0).getTicketOperacion());
+                result.put("xmlHash",listFact.get(0).getXmlHash());
+                
+                return ResponseEntity.status(HttpStatus.CREATED).body(result);
             }
             if (comprobante.getTipo().equals("07") || comprobante.getTipo().equals("08")) {
                 listFact = facturaElectronicaService.getByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(comprobante);

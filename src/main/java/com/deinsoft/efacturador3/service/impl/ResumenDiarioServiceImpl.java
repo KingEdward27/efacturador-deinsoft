@@ -258,7 +258,7 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
             for (FacturaElectronica facturaElectronica : list) {
                 if (fechaAnterior != null && fechaAnterior.compareTo(facturaElectronica.getFechaEmision()) != 0) {
                     retorno.clear();
-                    retorno.put("code", "003");
+                    retorno.put("code", "-2");
                     retorno.put("message", "Los comprobantes seleccionados tienen diferente fecha de emisión");
                     return retorno;
                 }
@@ -332,10 +332,13 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
                 log.debug("BandejaDocumentosServiceImpl.generarComprobantePagoSunat...tipoComprobante: " + tipo);
 
                 this.generarDocumentosService.formatoPlantillaXmlResumenDiario(appConfig.getRootPath(), resumenDiario);
+                log.debug("ResumenDiarioServiceImpl.formatoPlantillaXmlResumenDiario");
 
                 retorno.putAll(this.generarDocumentosService.firmarXml(appConfig.getRootPath(), resumenDiario.getEmpresa(), nomFile));
+                log.debug("ResumenDiarioServiceImpl/firmarXml");
 
                 xsdCpeValidator.validarSchemaXML(appConfig.getRootPath(), tipo, appConfig.getRootPath() + "/" + resumenDiario.getEmpresa().getNumdoc() + "/PARSE/" + nomFile + ".xml");
+                log.debug("ResumenDiarioServiceImpl/validarSchemaXML");
 
                 xsltCpeValidator.validarXMLYComprimir(appConfig.getRootPath(), resumenDiario.getEmpresa(), tipo, appConfig.getRootPath() + "/" + resumenDiario.getEmpresa().getNumdoc() + "/PARSE/", nomFile);
 
@@ -351,7 +354,7 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
         } catch (Exception e) {
             e.printStackTrace();
             retorno.clear();
-            retorno.put("code", "003");
+            retorno.put("code", "9999");
             retorno.put("message", e.getMessage());
             return retorno;
 //            throw new TransferirArchivoException(e.getMessage(), exceptionDetail);

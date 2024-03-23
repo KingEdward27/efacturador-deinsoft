@@ -5,6 +5,7 @@
  */
 package com.deinsoft.efacturador3.controllers.web;
 
+import com.deinsoft.efacturador3.bean.ParamBean;
 import com.deinsoft.efacturador3.controllers.BaseController;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.model.ResumenDiario;
@@ -56,6 +57,7 @@ import java.util.HashMap;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  *
@@ -172,7 +174,10 @@ public class FacturaViewController extends BaseController{
         }
         return list;
     }
-    
+    @PostMapping(value = "/listar")
+    public List<FacturaElectronica> getReportActComprobante(@RequestBody ParamBean paramBean) {
+        return facturaElectronicaService.getReportActComprobante(paramBean);
+    }
     @RequestMapping(value = {"/listar"}, method = RequestMethod.GET)
     public String listar(@RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(value = "fechaIni",required = false) String fechaIni,

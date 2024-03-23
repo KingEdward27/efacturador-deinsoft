@@ -31,6 +31,10 @@ public class FacturaElectronicaTax {
     @JoinColumn(name="factura_electronica_id")
     private FacturaElectronica facturaElectronica;
     
+    
+    @Column(name = "baseamt")
+    private BigDecimal baseamt;
+    
     @Column(name = "tax_id")
     private String taxId;
     
@@ -102,6 +106,12 @@ public class FacturaElectronicaTax {
         this.mtoTributo = mtoTributo;
     }
 
-    
-    
+    public BigDecimal getBaseamt() {
+        return baseamt;
+    }
+
+    public void setBaseamt(BigDecimal baseamt) {
+        this.baseamt = baseamt;
+    }
+
 }

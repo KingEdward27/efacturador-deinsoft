@@ -13,12 +13,11 @@
     <artifactId>efacturador3</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>efacturador3</name>
+    <packaging>war</packaging>
     <description>facturador deinsoft</description>
     <properties>
         <java.version>8</java.version>
         <jwt.version>0.7.0</jwt.version>
-        <bootstrap.version>4.0.0-2</bootstrap.version>
-        <webjars-locator.version>0.30</webjars-locator.version>
     </properties>
     <dependencies>
         <dependency>
@@ -144,35 +143,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-fonts</artifactId>
-            <version>6.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>${bootstrap.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>webjars-locator</artifactId>
-            <version>${webjars-locator.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.thymeleaf.extras</groupId>
-            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.librepdf</groupId>
-            <artifactId>openpdf</artifactId>
-            <version>1.0.5</version>
-        </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -215,10 +185,22 @@
             <artifactId>json</artifactId>
             <version>20211205</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.1.0</version>
+                <scope>provided</scope>
+        </dependency>
     </dependencies>
     
 
     <build>
+        <finalName>deinsoft-facturador</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

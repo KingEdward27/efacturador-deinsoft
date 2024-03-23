@@ -45,15 +45,18 @@ public class SecUser implements Serializable{
 //	        inverseJoinColumns = {@JoinColumn(name="sec_role_id", referencedColumnName="sec_role_id")}
 //    )
 //    private List<SecRoleUser> listSecRoleUser;
-	
-	@OneToMany(mappedBy = "secUser", orphanRemoval = true,fetch=FetchType.LAZY)
+    @OneToMany(mappedBy = "secUser", orphanRemoval = true,fetch=FetchType.EAGER)
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "secUser" }, allowSetters = true)
+    @JsonIgnore
     private Set<SecRoleUser> listSecRoleUser ;
 	
 	@Column(name = "isactive")
 	private int state;
 	
+        @Transient
+        private String empresaPrincipal;
+        
 	public long getId() {
 		return id;
 	}
@@ -96,6 +99,14 @@ public class SecUser implements Serializable{
 //	public String toString() {
 //		return "Company [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password +"]";	
 //		}
+
+    public String getEmpresaPrincipal() {
+        return empresaPrincipal;
+    }
+
+    public void setEmpresaPrincipal(String empresaPrincipal) {
+        this.empresaPrincipal = empresaPrincipal;
+    }
 
 	
 	

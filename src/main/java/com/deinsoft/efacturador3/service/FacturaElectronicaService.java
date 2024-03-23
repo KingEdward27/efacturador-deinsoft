@@ -6,6 +6,7 @@
 package com.deinsoft.efacturador3.service;
 
 import com.deinsoft.efacturador3.bean.ComprobanteCab;
+import com.deinsoft.efacturador3.bean.ParamBean;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
@@ -50,7 +51,11 @@ public interface FacturaElectronicaService {
     
     public Map<String, Object> getPDF(long ticketOperacion,int tipo) throws Exception;
     
+    public byte[] getPDFInBtyes(long id, int tipo) throws Exception;
+    
     public Map<String, Object> generarNotaCredito(long comprobanteId) throws TransferirArchivoException;
     
     public void verifyPending();
+    
+    public List<FacturaElectronica> getReportActComprobante(ParamBean paramBean);
 }

@@ -24,7 +24,7 @@ public interface ComunesService {
   Parametro obtenerParametro(Parametro paramParametro);
   
   Properties getProperties(String paramString);
-  public BillServiceModel enviarArchivoSunat(String wsUrl, String rootPath, String filename, Empresa Empresa);
+  public BillServiceModel enviarArchivoSunat(String wsUrl, String rootPath, String filename, Empresa Empresa)  throws Exception;
   
   public BillServiceModel consultarTicketSUNAT(String wsUrl, String rootPath,String ticket, Empresa empresa);
 }
