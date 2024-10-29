@@ -8,14 +8,20 @@ package com.deinsoft.efacturador3.controllers.web;
 import com.deinsoft.efacturador3.bean.ParamBean;
 import com.deinsoft.efacturador3.bean.Response;
 import com.deinsoft.efacturador3.controllers.BaseController;
+import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.model.ResumenDiario;
 import com.deinsoft.efacturador3.model.SecRoleUser;
 import com.deinsoft.efacturador3.model.SecUser;
+import com.deinsoft.efacturador3.security.util.AuthenticationHelper;
+import com.deinsoft.efacturador3.service.EmpresaService;
 import com.deinsoft.efacturador3.service.FacturaElectronicaService;
 import com.deinsoft.efacturador3.service.ResumenDiarioService;
 import com.deinsoft.efacturador3.service.SecUserService;
 import com.deinsoft.efacturador3.util.ExportUtil;
+import com.deinsoft.efacturador3.util.validacion.PeriodoDetail;
+import com.deinsoft.efacturador3.util.validacion.PeriodoResponse;
+import com.deinsoft.efacturador3.util.validacion.SireClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -56,8 +62,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.HashMap;
+import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -86,9 +95,19 @@ public class FacturaViewController1 extends BaseController {
     @Autowired
     private ResumenDiarioService resumenDiarioService;
     
+    @Autowired
+    AuthenticationHelper auth;
 
+    SireClient sireClient;
+    
+    @Autowired
+    EmpresaService empresaService;
+    
     @PostMapping(value = "/listar")
-    public List<FacturaElectronica> getReportActComprobante(@RequestBody ParamBean paramBean) {
+    public List<FacturaElectronica> getReportActComprobante(@RequestBody ParamBean paramBean,HttpServletRequest request) {
+        Map<String,Object> map = auth.getJwtLoggedUserData(request);
+        String idUser = ((Map<String,Object>) map.get("user")).get("id").toString();
+        paramBean.setIdUser(Long.parseLong(idUser));
         return facturaElectronicaService.getReportActComprobante(paramBean);
     }
 
@@ -205,5 +224,35 @@ public class FacturaViewController1 extends BaseController {
         }
         
         return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
+    }
+    
+    @GetMapping(value = "/get-empresa-by-user")
+    public ResponseEntity<?> getListEmpresaByUser(@Param("id") Long id, HttpServletRequest request) {
+        logger.info("getSecUser received: " + id);
+        List<Empresa> listSecRoleUser = secUserService.getSecRoleUserById(id).stream()
+                .map(mapper -> mapper.getEmpresa())
+                .collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(listSecRoleUser);
+    }
+    
+    @GetMapping(value = "/get-periodos")
+    public ResponseEntity<?> getPeriodos(@Param("idEmpresa") int idEmpresa, HttpServletRequest request) throws Exception {
+        Empresa empresa = empresaService.getEmpresaById(idEmpresa);
+        sireClient = new SireClient("330c5519-61fc-40a9-af27-986b23220b3e", "h1/G6vS+YH2zk0waeQfI7A==",
+            empresa.getNumdoc().concat(empresa.getUsuariosol()),empresa.getClavesol());
+        List<PeriodoResponse> listSecRoleUser = sireClient.getPeriodos();
+        return ResponseEntity.status(HttpStatus.OK).body(listSecRoleUser);
+    }
+    
+    @GetMapping(value = "/get-periodos-detail")
+    public ResponseEntity<?> getPeriodosDetail(@Param("idEmpresa") int idEmpresa,@Param("anio") String anio, HttpServletRequest request) throws Exception {
+        Empresa empresa = empresaService.getEmpresaById(idEmpresa);
+        sireClient = new SireClient("330c5519-61fc-40a9-af27-986b23220b3e", "h1/G6vS+YH2zk0waeQfI7A==",
+            empresa.getNumdoc().concat(empresa.getUsuariosol()),empresa.getClavesol());
+        List<PeriodoDetail> list = sireClient.getPeriodos().stream()
+                .filter(predicate -> predicate.getNumEjercicio().equals(anio))
+                .findFirst().orElse(new PeriodoResponse()).getLisPeriodos();
+        
+        return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 }

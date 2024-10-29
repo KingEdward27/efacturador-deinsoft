@@ -4,6 +4,7 @@
  */
 package com.deinsoft.efacturador3.bean;
 
+import com.deinsoft.efacturador3.model.Empresa;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 
@@ -27,6 +28,10 @@ public class ParamBean {
     
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate fechaVencimiento;
+    
+    private Long idUser;
+    
+    private Empresa empresa;
     
     public ParamBean() {
     }
@@ -79,6 +84,22 @@ public class ParamBean {
 
     public void setFlagEstado(int flagEstado) {
         this.flagEstado = flagEstado;
+    }
+
+    public Long getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(Long idUser) {
+        this.idUser = idUser;
+    }
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
     
     

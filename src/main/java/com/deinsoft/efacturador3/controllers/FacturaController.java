@@ -114,7 +114,7 @@ public class FacturaController extends BaseController {
                 result.put("ticketOperacion",listFact.get(0).getTicketOperacion());
                 result.put("xmlHash",listFact.get(0).getXmlHash());
                 
-                return ResponseEntity.status(HttpStatus.CREATED).body(result);
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(result);
             }
             if (comprobante.getTipo().equals("07") || comprobante.getTipo().equals("08")) {
                 listFact = facturaElectronicaService.getByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(comprobante);

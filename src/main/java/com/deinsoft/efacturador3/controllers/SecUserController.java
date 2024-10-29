@@ -1,5 +1,7 @@
 package com.deinsoft.efacturador3.controllers;
 
+import com.deinsoft.efacturador3.model.Empresa;
+import com.deinsoft.efacturador3.model.SecRoleUser;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ import javax.validation.Valid;
 import com.deinsoft.efacturador3.model.SecUser;
 import com.deinsoft.efacturador3.service.SecUserService;
 import java.security.Principal;
+import java.util.stream.Collectors;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -65,4 +68,12 @@ public class SecUserController {
         return ResponseEntity.status(HttpStatus.OK).body(secUserResult);
     }
 
+    @GetMapping(value = "/get-empresa-by-user")
+    public ResponseEntity<?> getListEmpresaByUser(@Param("id") Long id, HttpServletRequest request) {
+        logger.info("getSecUser received: " + id);
+        List<Empresa> listSecRoleUser = secUserService.getSecRoleUserById(id).stream()
+                .map(mapper -> mapper.getEmpresa())
+                .collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(listSecRoleUser);
+    }
 }

@@ -5,7 +5,9 @@
  */
 package com.deinsoft.efacturador3.service.impl;
 
+import com.deinsoft.efacturador3.model.SecRoleUser;
 import com.deinsoft.efacturador3.model.SecUser;
+import com.deinsoft.efacturador3.repository.SecRoleUserRepository;
 import com.deinsoft.efacturador3.repository.SecUserRepository;
 import com.deinsoft.efacturador3.util.CertificadoFacturador;
 import com.deinsoft.efacturador3.service.SecUserService;
@@ -31,6 +33,9 @@ public class SecUserServiceImpl implements SecUserService{
     @Autowired
     SecUserRepository secUserRepository;
     
+    @Autowired
+    SecRoleUserRepository secRoleUserRepository;
+    
     @Override
     public SecUser getSecUserById(long id) {
         return secUserRepository.getById(id);
@@ -49,5 +54,9 @@ public class SecUserServiceImpl implements SecUserService{
     @Override
     public SecUser getSecUserByName(String name) {
         return secUserRepository.findByName(name);
+    }
+    @Override
+    public List<SecRoleUser> getSecRoleUserById(long userId) {
+        return secRoleUserRepository.findBySecUserId(userId);
     }
 }

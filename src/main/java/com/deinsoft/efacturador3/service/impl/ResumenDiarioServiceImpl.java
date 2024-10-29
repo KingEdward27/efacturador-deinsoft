@@ -276,7 +276,8 @@ public class ResumenDiarioServiceImpl implements ResumenDiarioService {
                 det.setTipDocUsuario(facturaElectronica.getClienteTipo());
                 det.setNumDocUsuario(facturaElectronica.getClienteDocumento());
                 det.setMoneda(facturaElectronica.getMoneda());
-                det.setTotValGrabado(Impresion.df.format(facturaElectronica.getTotalValorVentasGravadas()));
+                det.setTotValGrabado(Impresion.df.format(facturaElectronica.getTotalValorVentasGravadas()
+                        .subtract(facturaElectronica.getSumatoriaIGV())));
                 det.setTotValExonerado(Impresion.df.format(facturaElectronica.getTotalValorVentasExoneradas()));
                 det.setTotValInafecto(Impresion.df.format(facturaElectronica.getTotalValorVentasInafectas()));
                 det.setTotValExportado("0.00");

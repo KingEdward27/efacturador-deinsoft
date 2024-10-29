@@ -286,7 +286,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             f.setId(null);
             f.setTipo("07");
             f.setSerie("FN01");
-            f.setNumero("00000011");
+            f.setNumero("00000012");
             f.setNotaReferenciaTipo(facturaElectronicaResult.getTipo());
             f.setNotaReferenciaSerie(facturaElectronicaResult.getSerie());
             f.setNotaReferenciaNumero(facturaElectronicaResult.getNumero());
@@ -920,32 +920,32 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         String[] adjuntos = {rootpath + "/" + documento.getEmpresa().getNumdoc() + "/PARSE/" + nomFile + ".xml",
             rootpath + "TEMP/" + nomFile + ".pdf"};
 
-        if (!documento.getClienteEmail().equals("")) {
-            if (SendMail.validaCorreo(nomFile)) {
-                throw new Exception("Formato de correo inválido, si no se desea enviar correo al cliente dejar en blanco");
-            }
-            String nroDocumento = documento.getSerie() + "-" + String.format("%08d", Integer.parseInt(documento.getNumero()));
-            String cuerpo = "Estimado Cliente, \n\n"
-                    + "Informamos a usted que el documento " + nroDocumento + " ya se encuentra disponible.  \n"
-                    + "Tipo	:	" + Catalogos.tipoDocumento(documento.getTipo(), "")[1].toUpperCase() + " ELECTRÓNICA" + " \n"
-                    + "Número	:	" + nroDocumento + "\n"
-                    + "Monto	:	S/ " + String.valueOf(documento.getTotalValorVenta()) + "\n"
-                    + "Fecha Emisión	:	" + documento.getFechaEmision() + "\n"
-                    + "Saluda atentamente, \n\n"
-                    + (documento.getEmpresa().getNombreComercial() == null ? documento.getEmpresa().getRazonSocial() : documento.getEmpresa().getNombreComercial());
-            try {
-                SendMail.sendEmail(new MailBean("Comprobante electrónico",
-                        cuerpo,
-                        appConfig.getSendEmailEmail(),
-                        appConfig.getSendEmailPassword(),
-                        documento.getClienteEmail(),
-                        adjuntos));
-            } catch (Exception e) {
-                e.printStackTrace();
-                log.debug("BandejaDocumentosServiceImpl.generarComprobantePagoSunat...SendMail: Correo no enviado" + e.getMessage());
-            }
-
-        }
+//        if (!documento.getClienteEmail().equals("")) {
+//            if (SendMail.validaCorreo(nomFile)) {
+//                throw new Exception("Formato de correo inválido, si no se desea enviar correo al cliente dejar en blanco");
+//            }
+//            String nroDocumento = documento.getSerie() + "-" + String.format("%08d", Integer.parseInt(documento.getNumero()));
+//            String cuerpo = "Estimado Cliente, \n\n"
+//                    + "Informamos a usted que el documento " + nroDocumento + " ya se encuentra disponible.  \n"
+//                    + "Tipo	:	" + Catalogos.tipoDocumento(documento.getTipo(), "")[1].toUpperCase() + " ELECTRÓNICA" + " \n"
+//                    + "Número	:	" + nroDocumento + "\n"
+//                    + "Monto	:	S/ " + String.valueOf(documento.getTotalValorVenta()) + "\n"
+//                    + "Fecha Emisión	:	" + documento.getFechaEmision() + "\n"
+//                    + "Saluda atentamente, \n\n"
+//                    + (documento.getEmpresa().getNombreComercial() == null ? documento.getEmpresa().getRazonSocial() : documento.getEmpresa().getNombreComercial());
+//            try {
+//                SendMail.sendEmail(new MailBean("Comprobante electrónico",
+//                        cuerpo,
+//                        appConfig.getSendEmailEmail(),
+//                        appConfig.getSendEmailPassword(),
+//                        documento.getClienteEmail(),
+//                        adjuntos));
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                log.debug("BandejaDocumentosServiceImpl.generarComprobantePagoSunat...SendMail: Correo no enviado" + e.getMessage());
+//            }
+//
+//        }
         LocalDateTime current = LocalDateTime.now().plusHours(appConfig.getDiferenceHours());
 
         documento.setFechaGenXml(current);

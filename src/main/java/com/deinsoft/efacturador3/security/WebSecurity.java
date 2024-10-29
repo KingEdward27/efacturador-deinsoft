@@ -81,8 +81,7 @@ public class WebSecurity {
                 
 		.logout().permitAll()
                 .and().addFilter((Filter) new JWTAuthenticationFilterWeb(authenticationManager(),secUserRepository))
-					.addFilter(new JWTAuthorizationFilter(authenticationManager()))
-		.exceptionHandling().accessDeniedPage("/error_403");
+					.addFilter(new JWTAuthorizationFilter(authenticationManager()));
 
 	}
 

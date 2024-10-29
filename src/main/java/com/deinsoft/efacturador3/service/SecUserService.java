@@ -5,6 +5,7 @@
  */
 package com.deinsoft.efacturador3.service;
 
+import com.deinsoft.efacturador3.model.SecRoleUser;
 import com.deinsoft.efacturador3.model.SecUser;
 import java.util.HashMap;
 import java.util.List;
@@ -19,4 +20,5 @@ public interface SecUserService {
     public List<SecUser> getSecUsers();
     public SecUser save(SecUser empresa);
     public SecUser getSecUserByName(String name) ;
+    public List<SecRoleUser> getSecRoleUserById(long userId);
 }

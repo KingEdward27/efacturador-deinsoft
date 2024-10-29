@@ -60,6 +60,8 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
     
     @Query(value = "select p from facturaElectronica p "
             + "where (p.fechaEmision between :#{#paramBean.fechaDesde} and :#{#paramBean.fechaHasta}) "
-            + "order by p.tipo desc, p.serie desc, p.numero desc,p.fechaEmision desc")
+            //+ "and exists (select 1 from secRoleUser ru where ru.empresa.id = p.empresa.id and ru.secUser.id = :#{#paramBean.idUser}) "
+            + "and p.empresa.id = :#{#paramBean.empresa.id} "
+            + "order by p.tipo desc, p.serie desc, p.numero desc,p.fechaEmision desc ")
     List<FacturaElectronica> getReportActComprobante(@Param("paramBean") ParamBean paramBean);
 }
