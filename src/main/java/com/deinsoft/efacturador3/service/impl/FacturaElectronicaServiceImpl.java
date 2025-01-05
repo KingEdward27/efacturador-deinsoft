@@ -13,6 +13,8 @@ import com.deinsoft.efacturador3.bean.MailBean;
 import com.deinsoft.efacturador3.bean.ParamBean;
 import com.deinsoft.efacturador3.config.AppConfig;
 import com.deinsoft.efacturador3.config.XsltCpePath;
+import com.deinsoft.efacturador3.dto.NumeroDocumentoDto;
+import com.deinsoft.efacturador3.dto.ResumentRleDto;
 import com.deinsoft.efacturador3.exception.XsdException;
 import com.deinsoft.efacturador3.exception.XsltException;
 import com.deinsoft.efacturador3.model.Empresa;
@@ -21,6 +23,7 @@ import com.deinsoft.efacturador3.model.FacturaElectronicaCuotas;
 import com.deinsoft.efacturador3.model.FacturaElectronicaDet;
 import com.deinsoft.efacturador3.model.FacturaElectronicaLeyenda;
 import com.deinsoft.efacturador3.model.FacturaElectronicaTax;
+import com.deinsoft.efacturador3.model.Local;
 import com.deinsoft.efacturador3.model.ResumenDiarioDet;
 import com.deinsoft.efacturador3.repository.ErrorRepository;
 import com.deinsoft.efacturador3.repository.FacturaElectronicaRepository;
@@ -28,6 +31,7 @@ import com.deinsoft.efacturador3.service.ComunesService;
 import com.deinsoft.efacturador3.service.EmpresaService;
 import com.deinsoft.efacturador3.service.FacturaElectronicaService;
 import com.deinsoft.efacturador3.service.GenerarDocumentosService;
+import com.deinsoft.efacturador3.service.LocalService;
 import com.deinsoft.efacturador3.soap.gencdp.ExceptionDetail;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
 import com.deinsoft.efacturador3.util.Catalogos;
@@ -115,6 +119,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     @Autowired
     private EmpresaService empresaService;
 
+    @Autowired
+    private LocalService localService;
+    
     @Override
     public FacturaElectronica getById(long id) {
         return facturaElectronicaRepository.getById(id);
@@ -141,7 +148,10 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
     @Override
     public List<FacturaElectronica> getBySerieAndNumeroAndEmpresaId(FacturaElectronica facturaElectronica) {
-        return facturaElectronicaRepository.findBySerieAndNumeroAndEmpresaId(facturaElectronica.getSerie(), facturaElectronica.getNumero(), facturaElectronica.getEmpresa().getId());
+        return facturaElectronicaRepository.findBySerieAndNumeroAndEmpresaId(facturaElectronica.getSerie(), facturaElectronica.getNumero(), 
+                facturaElectronica.getEmpresa().getId())
+                .stream().filter(predicate -> predicate.getEstado().equals("1"))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -269,24 +279,64 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
     @Override
     @Transactional
-    public Map<String, Object> generarNotaCredito(long comprobanteId) throws TransferirArchivoException {
-        log.debug("FacturaController.generarComprobantePagoSunat...inicio/params: " + String.valueOf(comprobanteId));
+    public Map<String, Object> generarNotaCredito(FacturaElectronica facturaElectronicaParam) throws TransferirArchivoException {
+        log.debug("FacturaController.generarComprobantePagoSunat...inicio/params: " + String.valueOf(facturaElectronicaParam.getId()));
         Map<String, Object> retorno = new HashMap<>();
         FacturaElectronica facturaElectronicaResult = null;
         long ticket = Calendar.getInstance().getTimeInMillis();
 
         try {
-            facturaElectronicaResult = findById(comprobanteId);
+            if (facturaElectronicaParam.getId() == null) {
+                FacturaElectronica f = new FacturaElectronica();
+                f.setSerie(facturaElectronicaParam.getSerie());
+                f.setNumero(facturaElectronicaParam.getNumero());
+                f.setEmpresa(facturaElectronicaParam.getEmpresa());
+                
+                facturaElectronicaResult = facturaElectronicaRepository.
+                        findBySerieRefAndNumeroRefAndEmpresaId(facturaElectronicaParam.getSerie(),
+                                facturaElectronicaParam.getNumero(),
+                                facturaElectronicaParam.getEmpresa().getId()).stream().findFirst().orElse(null);
+                if (facturaElectronicaResult != null) {
+                    throw new Exception("Ya existe una nota de crédito relacionada al comprobante: " 
+                            + facturaElectronicaResult.getSerie()
+                            + "-"+ facturaElectronicaResult.getNumero());
+                }
+                
+                facturaElectronicaResult = getBySerieAndNumeroAndEmpresaId(f).stream().findFirst().orElse(null);
+            } else {
+                facturaElectronicaResult = findById(facturaElectronicaParam.getId());
+            }
+            
 //            for (FacturaElectronicaDet facturaElectronicaDet : facturaElectronicaResult.getListFacturaElectronicaDet()) {
 //                log.debug(facturaElectronicaDet.toString());
 //            }
+
+            NumeroDocumentoDto lastNumberRegistered = getNextNumberForNc(facturaElectronicaResult.getEmpresa().getId(),
+                    facturaElectronicaResult.getSerie());
+            
+            
             FacturaElectronica f = new FacturaElectronica();
-//            f = facturaElectronicaResult;
+            
             BeanUtils.copyProperties(f, facturaElectronicaResult);
+            long newNumber = 1;
+            if (lastNumberRegistered.getSerie() == null) {
+                Local local = localService.getByEmpresaIdAndSerieRelacion(
+                        facturaElectronicaResult.getEmpresa().getId(),facturaElectronicaResult.getSerie())
+                        .stream().findFirst().orElse(null);
+                if (local == null) {
+                    throw new Exception("No se encontró serie relacionada para la empresa y serie: " + facturaElectronicaResult.getSerie());
+                }
+                f.setSerie(local.getSerie());
+                newNumber = 1;
+            } else{
+                f.setSerie(lastNumberRegistered.getSerie());
+                newNumber = Long.parseLong(lastNumberRegistered.getNumero()) + 1;
+            }
+            
+            
             f.setId(null);
-            f.setTipo("07");
-            f.setSerie("FN01");
-            f.setNumero("00000012");
+            f.setTipo(Constantes.CONSTANTE_TIPO_DOCUMENTO_NCREDITO);
+            f.setNumero(String.format("%08d", newNumber));
             f.setNotaReferenciaTipo(facturaElectronicaResult.getTipo());
             f.setNotaReferenciaSerie(facturaElectronicaResult.getSerie());
             f.setNotaReferenciaNumero(facturaElectronicaResult.getNumero());
@@ -586,6 +636,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             comprobante.setDocrefNumero(String.format("%08d", Integer.parseInt(documento.getNumero_ref())));
             comprobante.setDocrefMonto(new BigDecimal(documento.getMonto_ref()));
             comprobante.setTotalValorVenta(totalValorVenta.subtract(comprobante.getDocrefMonto()));
+            
+//            comprobante.setSumatoriaIGV(SumatoriaIGV);
+//            comprobante.setTotalValorVentasGravadas(totalValorVentasGravadas);
             comprobante.setEmpresa(e);
             List<FacturaElectronica> comprobanteRel = facturaElectronicaRepository.findByDocrefSerieAndDocrefNumero(comprobante);
 //            comprobante.setSumatoriaIGV(SumatoriaIGV.add(comprobanteRel.get(0).getSumatoriaIGV()));
@@ -833,9 +886,14 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 }
             }
             sumTotalTributos = sumTotalTributos.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-            if (comprobanteTax.getMto_tributo().compareTo(sumTotalTributos) != 0) {
+            BigDecimal igvRef = BigDecimal.ZERO;
+            if (!FacturadorUtil.isNullOrEmpty(documento.getMonto_ref()) && !FacturadorUtil.isNullOrEmpty(documento.getIgv_ref())) {
+                igvRef = new BigDecimal(documento.getIgv_ref());
+            }
+            if (comprobanteTax.getMto_tributo().add(igvRef).compareTo(sumTotalTributos) != 0) {
                 return "La suma del monto del tributo no equivale al del detalle. Código tributo: " + comprobanteTax.getIde_tributo();
             }
+            
         }
         String res = validarPlazo(documento);
         if (!res.equals("")) {
@@ -866,9 +924,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                         log.debug("El XML fue generado, pero el Comprobante tiene mas de " + nroDias + " dís. Emisión: " + documento.getFecha_emision() + ". Use el resumen diario para generar y enviar.");
                     }
 
-                    if (documento.getTipo().equals("01")) {
-                        result = "No se puede generar el XML, el Comprobante tiene mas de " + nroDias + " días. Emisión: " + documento.getFecha_emision();
-                    }
+//                    if (documento.getTipo().equals("01")) {
+//                        result = "No se puede generar el XML, el Comprobante tiene mas de " + nroDias + " días. Emisión: " + documento.getFecha_emision();
+//                    }
 
                 }
 
@@ -1122,5 +1180,20 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         //findByCurrentMonth
         //verify api rest sunat
         //1 => update 02, else send and update
+    }
+    @Override
+    public NumeroDocumentoDto getNextNumberForNc(long empresaId,String serie) {
+        return facturaElectronicaRepository.getNextNumberForNc(empresaId,serie);
+    }
+    
+    @Override
+    public List<ResumentRleDto> getResumenRlie(long empresaId, String periodo) {
+        LocalDate initial = LocalDate.of(
+                Integer.valueOf( periodo.substring(0,4)), 
+                Integer.valueOf( periodo.substring(4,6)), 1);
+        
+        LocalDate fechaDesde = initial.withDayOfMonth(1);
+        LocalDate fechaHasta = initial.withDayOfMonth(initial.getMonth().length(initial.isLeapYear()));
+        return facturaElectronicaRepository.getResumenRlie(empresaId, fechaDesde, fechaHasta);
     }
 }

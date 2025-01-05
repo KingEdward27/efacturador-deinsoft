@@ -111,6 +111,7 @@ public class ComprobanteCab {
     private String numero_ref;
     private String monto_ref;
     private String fecha_ref;
+    private String igv_ref;
     
     public String getTipo() {
         return tipo;
@@ -489,6 +490,14 @@ public class ComprobanteCab {
 
     public void setMto_detraccion(BigDecimal mto_detraccion) {
         this.mto_detraccion = mto_detraccion;
+    }
+
+    public String getIgv_ref() {
+        return igv_ref;
+    }
+
+    public void setIgv_ref(String igv_ref) {
+        this.igv_ref = igv_ref;
     }
 
     

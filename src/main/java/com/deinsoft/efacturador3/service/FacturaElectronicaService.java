@@ -7,6 +7,8 @@ package com.deinsoft.efacturador3.service;
 
 import com.deinsoft.efacturador3.bean.ComprobanteCab;
 import com.deinsoft.efacturador3.bean.ParamBean;
+import com.deinsoft.efacturador3.dto.NumeroDocumentoDto;
+import com.deinsoft.efacturador3.dto.ResumentRleDto;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
@@ -14,6 +16,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import org.springframework.data.repository.query.Param;
 
 /**
  *
@@ -53,9 +56,13 @@ public interface FacturaElectronicaService {
     
     public byte[] getPDFInBtyes(long id, int tipo) throws Exception;
     
-    public Map<String, Object> generarNotaCredito(long comprobanteId) throws TransferirArchivoException;
+    public Map<String, Object> generarNotaCredito(FacturaElectronica facturaElectronicaParam) throws TransferirArchivoException;
     
     public void verifyPending();
     
     public List<FacturaElectronica> getReportActComprobante(ParamBean paramBean);
+    
+    public NumeroDocumentoDto getNextNumberForNc(long empresaId, String serie);
+    
+    public List<ResumentRleDto> getResumenRlie(long empresaId, String periodo);
 }

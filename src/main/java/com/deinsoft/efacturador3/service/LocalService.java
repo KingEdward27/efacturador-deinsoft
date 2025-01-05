@@ -21,5 +21,6 @@ public interface LocalService {
 
     public Local save(Local local);
 
+    public List<Local> getByEmpresaIdAndSerieRelacion(long empresaId, String serie);
     
 }

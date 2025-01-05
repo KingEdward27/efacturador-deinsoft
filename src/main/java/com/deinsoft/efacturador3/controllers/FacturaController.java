@@ -11,6 +11,7 @@ import com.deinsoft.efacturador3.bean.ParamBean;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.config.AppConfig;
+import com.deinsoft.efacturador3.dto.NumeroDocumentoDto;
 import com.deinsoft.efacturador3.service.ComunesService;
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +28,10 @@ import com.deinsoft.efacturador3.service.FacturaElectronicaService;
 import com.deinsoft.efacturador3.service.GenerarDocumentosService;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
 import com.deinsoft.efacturador3.util.Constantes;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
@@ -159,7 +162,9 @@ public class FacturaController extends BaseController {
             HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException {
         Map<String,Object> result = null;
         try {
-            result = this.facturaElectronicaService.generarNotaCredito(new Long(id));
+            FacturaElectronica facturaElectronicaParam = new FacturaElectronica();
+            facturaElectronicaParam.setId(new Long(id));
+            result = this.facturaElectronicaService.generarNotaCredito(facturaElectronicaParam);
         } catch (Exception e) {
             e.printStackTrace();
             result  = new HashMap<>();
@@ -170,6 +175,9 @@ public class FacturaController extends BaseController {
  
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
+    
+    
+    
     @PostMapping(value = "/send-sunat")
     public ResponseEntity<?> enviarXML(@RequestParam(name = "id") String id,
             HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -203,6 +211,7 @@ public class FacturaController extends BaseController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
     }
+    
     
 
     

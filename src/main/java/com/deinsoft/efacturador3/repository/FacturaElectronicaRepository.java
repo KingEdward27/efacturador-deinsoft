@@ -6,6 +6,8 @@
 package com.deinsoft.efacturador3.repository;
 
 import com.deinsoft.efacturador3.bean.ParamBean;
+import com.deinsoft.efacturador3.dto.NumeroDocumentoDto;
+import com.deinsoft.efacturador3.dto.ResumentRleDto;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import java.time.LocalDate;
 import java.util.List;
@@ -25,8 +27,19 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
 		      "empresa"
 		    }
 		  )
+    @Query(value="select p from facturaElectronica p "
+            + "where p.serie = :serie "
+            + "and CAST(p.numero AS int) = CAST(:numero AS int) "
+            + "and p.empresa.id = :empresaId ")
     List<FacturaElectronica> findBySerieAndNumeroAndEmpresaId(String serie,String numero,int empresaId);
 
+    @Query(value="select p from facturaElectronica p "
+            + "where p.tipo = '07' and p.estado = '1' "
+            + "and p.docrefSerie = :serie "
+            + "and CAST(p.docrefNumero AS int) = CAST(:numero AS int) "
+            + "and p.empresa.id = :empresaId ")
+    List<FacturaElectronica> findBySerieRefAndNumeroRefAndEmpresaId(String serie,String numero,int empresaId);
+    
     @Query(value="select p from facturaElectronica p "
             + "where p.fechaEmision >= :fecha "
             + "and p.nroIntentoEnvio < 3"
@@ -64,4 +77,20 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
             + "and p.empresa.id = :#{#paramBean.empresa.id} "
             + "order by p.tipo desc, p.serie desc, p.numero desc,p.fechaEmision desc ")
     List<FacturaElectronica> getReportActComprobante(@Param("paramBean") ParamBean paramBean);
+    
+    @Query(value = "select max(serie) as serie, max(numero) as numero from factura_electronica\n" +
+                    "where empresa_id = :empresaId\n" +
+                    "and tipo = '07' and nota_referencia_serie = :serie",nativeQuery = true)
+    NumeroDocumentoDto getNextNumberForNc(@Param("empresaId") long empresaId,@Param("serie") String serie);
+    
+    @Query(value = "select new com.deinsoft.efacturador3.dto.ResumentRleDto(tipo,count(1),sum(totalValorVenta - sumatoriaIGV),"
+                    + "sum(sumatoriaIGV),sum(totalValorVenta)) "
+                    + "from facturaElectronica p " 
+                    + "where empresa_id = :empresaId "
+                    + "and (p.fechaEmision between :fechaDesde and :fechaHasta)" 
+                    + "group by tipo")
+    List<ResumentRleDto> getResumenRlie(@Param("empresaId") long empresaId,
+                                        @Param("fechaDesde") LocalDate fechaDesde,
+                                        @Param("fechaHasta") LocalDate fechaHasta);
+    
 }

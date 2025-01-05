@@ -23,7 +23,7 @@ import javax.validation.constraints.Size;
  *
  * @author EDWARD-PC
  */
-@Entity
+@Entity(name = "local")
 @Table(name = "local")
 public class Local implements Serializable {
 
@@ -52,6 +52,14 @@ public class Local implements Serializable {
     @Column(name = "direccion")
     private String direccion;
 
+    @Size(max = 2)
+    @Column(name = "tipo_documento")
+    private String tipoDocumento;
+    
+    @Size(max = 4)
+    @Column(name = "serie_relacion")
+    private String serieRelacion;
+    
     public Integer getId() {
         return id;
     }
@@ -90,6 +98,22 @@ public class Local implements Serializable {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
+    }
+
+    public String getTipoDocumento() {
+        return tipoDocumento;
+    }
+
+    public void setTipoDocumento(String tipoDocumento) {
+        this.tipoDocumento = tipoDocumento;
+    }
+
+    public String getSerieRelacion() {
+        return serieRelacion;
+    }
+
+    public void setSerieRelacion(String serieRelacion) {
+        this.serieRelacion = serieRelacion;
     }
     
     

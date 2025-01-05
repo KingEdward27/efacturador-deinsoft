@@ -13,11 +13,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import com.deinsoft.efacturador3.config.AppConfig;
+import org.springframework.core.env.Environment;
 
 @EnableScheduling
 @SpringBootApplication
 @EnableConfigurationProperties(AppConfig.class)
 public class Efacturador3Application extends WebMvcConfigurerAdapter implements CommandLineRunner {
+
+    static String cronExpresion = "-";
 
     @Autowired
     FacturaElectronicaService facturaElectronicaService;
@@ -27,13 +30,16 @@ public class Efacturador3Application extends WebMvcConfigurerAdapter implements 
 
     @Autowired
     ResumenDiarioService resumenDiarioService;
-    
+
     @Autowired
     AppConfig appConfig;
-    
+
+    @Autowired
+    private Environment environment;
+
     public static void main(String[] args) throws Exception {
         SpringApplication.run(Efacturador3Application.class, args);
-        
+
 //        ServiceConfig config = new ServiceConfig.Builder()
 //            .url("https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService")
 //            .username("10414316595EBOLETAS") 
@@ -49,29 +55,34 @@ public class Efacturador3Application extends WebMvcConfigurerAdapter implements 
 //                    new File("C:/Users/user/DocumentsRPTA/500000113137499.zip"),
 //                    result.getCdr());
 //        }
-        
     }
-    
+
     @Scheduled(cron = "0 0 04 * * *")
     void sendSunat() {
-        System.out.println("init sendSunat()");
-        facturaElectronicaService.sendToSUNAT();
+        if (!this.environment.getActiveProfiles()[0].equalsIgnoreCase("local")) {
+            System.out.println("init sendSunat()");
+            facturaElectronicaService.sendToSUNAT();
+
+        }
 //        try {
 //            resumenDiarioService.sendSUNAT();
 //        } catch (TransferirArchivoException ex) {
 //            Logger.getLogger(Efacturador3Application.class.getName()).log(Level.SEVERE, null, ex);
 //        }
     }
-    
+
     @Scheduled(cron = "0 0 03 * * *")
     void verifyPending() {
-        System.out.println("init verifyPending()");
-        facturaElectronicaService.verifyPending();
+        if (!this.environment.getActiveProfiles()[0].equalsIgnoreCase("local")) {
+            System.out.println("init verifyPending()");
+            facturaElectronicaService.verifyPending();
+        }
+
     }
+
     @Override
     public void run(String... args) throws Exception {
-        String password = "DEINSOFT202201$$"; 
-
+        String password = "DEINSOFT202201$$";
         for (int i = 0; i < 2; i++) {
             String bcryptPassword = passwordEncoder.encode(password);
             System.out.println(bcryptPassword);

@@ -7,6 +7,7 @@ package com.deinsoft.efacturador3.bean;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
+import java.util.Map;
 
 /**
  *
@@ -32,6 +33,8 @@ public class ParamBean {
     private Long idUser;
     
     private Empresa empresa;
+    
+    private Map<String,String> periodo;
     
     public ParamBean() {
     }
@@ -101,6 +104,15 @@ public class ParamBean {
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
     }
+
+    public Map<String, String> getPeriodo() {
+        return periodo;
+    }
+
+    public void setPeriodo(Map<String, String> periodo) {
+        this.periodo = periodo;
+    }
+
     
     
 }

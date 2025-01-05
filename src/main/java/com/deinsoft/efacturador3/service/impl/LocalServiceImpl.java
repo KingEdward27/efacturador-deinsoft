@@ -9,6 +9,7 @@ import com.deinsoft.efacturador3.repository.LocalRepository;
 import com.deinsoft.efacturador3.service.LocalService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,4 +32,8 @@ public class LocalServiceImpl implements LocalService{
         return localRepository.save(local);
     }
     
+    @Override
+    public List<Local> getByEmpresaIdAndSerieRelacion(long empresaId, String serie){
+        return localRepository.getByEmpresaIdAndSerieRelacion(empresaId, serie);
+    }
 }

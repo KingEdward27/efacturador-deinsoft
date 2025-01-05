@@ -92,17 +92,54 @@ public class SireClient {
         return token;
     }
 
-    public List<PeriodoResponse> getPeriodos() throws JsonProcessingException, Exception {
+    public List<PeriodoResponse> getPeriodos(String codLibro) throws JsonProcessingException, Exception {
         ObjectMapper mapper = new ObjectMapper();
         GenericHttpClient client = new GenericHttpClient();
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "Bearer " + token);
-        HttpResponse<String> bodyPeriodos = client.sendRequestJsonBody(
-                HttpMethod.GET.toString(),"https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/padron/web/omisos/140000/periodos",
+        HttpResponse<String> bodyPeriodos = client.sendRequestJsonBody(//140000
+                HttpMethod.GET.toString(),"https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/padron/web/omisos/{{codLibro}}/periodos"
+                .replace("{{codLibro}}", codLibro),
                 headers,
                  "",HttpResponse.BodyHandlers.ofString());
         return mapper.readValue(bodyPeriodos.body(), new TypeReference<List<PeriodoResponse>>() {});
         //return mapper.readValue(bodyPeriodos.body(), PeriodoRootResponse.class);
     }
 
+    public List<String> getResumen(String periodo, String codTipoResumen, String CodTipoArchivo, String codLibro) throws JsonProcessingException, Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        GenericHttpClient client = new GenericHttpClient();
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + token);
+        HttpResponse<String> bodyPeriodos = client.sendRequestJsonBody(
+                HttpMethod.GET.toString(),"https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/resumen/web/resumencomprobantes/"
+                        + "{{perTributario}}/{{codTipoResumen}}/{{codTipoArchivo}}/exporta?codLibro={{codLibro}}"
+                .replace("{{perTributario}}", periodo)
+                .replace("{{codTipoResumen}}", codTipoResumen)
+                .replace("{{codTipoArchivo}}", CodTipoArchivo)
+                .replace("{{codLibro}}", codLibro),
+                headers,
+                 "",HttpResponse.BodyHandlers.ofString());
+        return mapper.readValue(bodyPeriodos.body(), new TypeReference<List<String>>() {});
+        //return mapper.readValue(bodyPeriodos.body(), PeriodoRootResponse.class);
+    }
+    
+    
+    public List<PeriodoResponse> getPropuestaRce(String periodo, String codTipoArchivo, String codOrigenEnvio) throws JsonProcessingException, Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        GenericHttpClient client = new GenericHttpClient();
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + token);
+        HttpResponse<String> bodyPeriodos = client.sendRequestJsonBody(
+                HttpMethod.GET.toString(),"https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rce/propuesta/web/propuesta/"
+                        + "{{perTributario}}/exportacioncomprobantepropuesta?codTipoArchivo={{codTipoArchivo}}&codOrigenEnvio={{codOrigenEnvio}}"
+                .replace("{{perTributario}}", periodo)
+                .replace("{{codTipoArchivo}}", codTipoArchivo)
+                .replace("{{codOrigenEnvio}}", codOrigenEnvio),
+                headers,
+                 "",HttpResponse.BodyHandlers.ofString());
+        //response: numTicket
+        return mapper.readValue(bodyPeriodos.body(), new TypeReference<List<PeriodoResponse>>() {});
+        //return mapper.readValue(bodyPeriodos.body(), PeriodoRootResponse.class);
+    }
 }
