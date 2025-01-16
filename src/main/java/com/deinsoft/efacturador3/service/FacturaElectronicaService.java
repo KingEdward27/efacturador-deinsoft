@@ -8,6 +8,7 @@ package com.deinsoft.efacturador3.service;
 import com.deinsoft.efacturador3.bean.ComprobanteCab;
 import com.deinsoft.efacturador3.bean.ParamBean;
 import com.deinsoft.efacturador3.dto.NumeroDocumentoDto;
+import com.deinsoft.efacturador3.dto.ResumentRle2Dto;
 import com.deinsoft.efacturador3.dto.ResumentRleDto;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
@@ -64,5 +65,13 @@ public interface FacturaElectronicaService {
     
     public NumeroDocumentoDto getNextNumberForNc(long empresaId, String serie);
     
-    public List<ResumentRleDto> getResumenRlie(long empresaId, String periodo);
+    public List<ResumentRleDto> getResumenRlieFromBd(long empresaId, String periodo);
+    
+    public List<ResumentRle2Dto> getResumenRlieCombined(long empresaId, String periodo, 
+            String codTipoResumen, 
+            String CodTipoArchivo, String libro) throws Exception;
+    
+    public List<FacturaElectronica> getPropuestaRlieCombined(long empresaId, String periodo,
+            String codTipoResumen,
+            String CodTipoArchivo, String libro) throws Exception;
 }

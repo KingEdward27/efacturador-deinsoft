@@ -5,11 +5,14 @@
 package com.deinsoft.efacturador3.util;
 
 import com.google.common.io.Files;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,9 +46,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -82,6 +90,12 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
+//import net.sf.sevenzipjbinding.*;
+//import net.sf.sevenzipjbinding.impl.RandomAccessFileInStream;
+//import net.sf.sevenzipjbinding.simple.ISimpleInArchive;
+//import net.sf.sevenzipjbinding.simple.ISimpleInArchiveItem;
 
 /**
  *
@@ -117,6 +131,7 @@ public class Util {
         }
         return os.toByteArray();
     }
+
     public static boolean isNullOrEmpty(Object o) {
         try {
             if (o == null) {
@@ -131,7 +146,7 @@ public class Util {
         }
 
     }
-    
+
     public static Map<String, Object> toMap(Object object, String[] visibles) {
         Map<String, Object> map = new HashMap<>();
         try {
@@ -184,20 +199,21 @@ public class Util {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
-        for (Map.Entry<String, String> entry : params.entrySet())
+        for (Map.Entry<String, String> entry : params.entrySet()) {
             multiValueMap.put(entry.getKey(), Arrays.asList(entry.getValue()));
+        }
 
         String urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
-//                .queryParam("numero", "{numero}")
+                //                .queryParam("numero", "{numero}")
                 .queryParams(multiValueMap)
                 .encode()
                 .toUriString();
-        
+
         HttpEntity<MultiValueMap<String, String>> entityReq = new HttpEntity<>(body, headers);
         ResponseEntity<Map> response = getRestTemplate().exchange(urlTemplate,
                 httpMethod, entityReq,
                 Map.class, params);
-        
+
         if (response.hasBody() && (response.getStatusCode() == HttpStatus.OK || response.getStatusCode() == HttpStatus.CREATED)) {
             respuesta = response.getBody();
             if (respuesta != null) {
@@ -307,9 +323,9 @@ public class Util {
         return new String(encoded, encoding);
     }
 
-    public static String simpleApiWithJsonBody(String urlParam, String jsonBody,  HttpMethod httpMethod, String authorization,
-             String accept,
-             String contentType) {
+    public static String simpleApiWithJsonBody(String urlParam, String jsonBody, HttpMethod httpMethod, String authorization,
+            String accept,
+            String contentType) {
         boolean result = false;
         System.out.println("jsonBody: " + jsonBody);
         try {
@@ -354,11 +370,11 @@ public class Util {
             return null;
         }
     }
-    
-    public static String simpleApiWithJsonBody2(String urlParam,  HttpMethod httpMethod, String authorization, 
+
+    public static String simpleApiWithJsonBody2(String urlParam, HttpMethod httpMethod, String authorization,
             String body,
-             String accept,
-             MediaType contentType) throws Exception {
+            String accept,
+            MediaType contentType) throws Exception {
         Map<String, Object> respuesta = null;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(contentType);//MediaType.APPLICATION_FORM_URLENCODED);
@@ -374,13 +390,12 @@ public class Util {
 //        body.add("scope", "https://api.sunat.gob.pe/v1/contribuyente/contribuyentes");
 //        body.add("client_id", client_id);
 //        body.add("client_secret", client_secret);
-        
 
         HttpEntity<String> entityReq = new HttpEntity<>(body, headers);
         ResponseEntity<Map> response = getRestTemplate().exchange(urlTemplate,
                 httpMethod, entityReq,
                 Map.class, params);
-        
+
         if (response.hasBody() && (response.getStatusCode() == HttpStatus.OK || response.getStatusCode() == HttpStatus.CREATED)) {
             respuesta = response.getBody();
             if (respuesta != null) {
@@ -394,12 +409,12 @@ public class Util {
             System.out.println(response.getBody());
             String msg = "Llamada fallida al API, HttpStatus: " + response.getStatusCode().value();
 //            this.logger.warning(msg);
-            
+
             throw new Exception(msg);
         }
     }
-    
-    public static Map<String, Object> simpleApiWithFormBody(String urlParam,  HttpMethod httpMethod, String authorization, MultiValueMap<String, String> formBody) throws Exception {
+
+    public static Map<String, Object> simpleApiWithFormBody(String urlParam, HttpMethod httpMethod, String authorization, MultiValueMap<String, String> formBody) throws Exception {
         Map<String, Object> respuesta = null;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -415,13 +430,12 @@ public class Util {
 //        body.add("scope", "https://api.sunat.gob.pe/v1/contribuyente/contribuyentes");
 //        body.add("client_id", client_id);
 //        body.add("client_secret", client_secret);
-        
 
         HttpEntity<MultiValueMap<String, String>> entityReq = new HttpEntity<>(formBody, headers);
         ResponseEntity<Map> response = getRestTemplate().exchange(urlTemplate,
                 httpMethod, entityReq,
                 Map.class, params);
-        
+
         if (response.hasBody() && (response.getStatusCode() == HttpStatus.OK || response.getStatusCode() == HttpStatus.CREATED)) {
             respuesta = response.getBody();
             if (respuesta != null) {
@@ -435,7 +449,7 @@ public class Util {
             System.out.println(response.getBody());
             String msg = "Llamada fallida al API, HttpStatus: " + response.getStatusCode().value();
 //            this.logger.warning(msg);
-            
+
             throw new Exception(msg);
         }
     }
@@ -517,6 +531,7 @@ public class Util {
         }
 
     }
+
     public static String getStringValue(Object o) {
         if (o == null) {
             return null;
@@ -526,6 +541,7 @@ public class Util {
         }
         return null;
     }
+
     public static boolean validateFormatDate(String inputTimeString) {
         try {
             if (isNullOrEmpty(inputTimeString)) {
@@ -537,12 +553,239 @@ public class Util {
             return false;
         }
     }
+
     public static String generateSafeToken() {
         SecureRandom random = new SecureRandom();
         byte[] bytes = new byte[36]; // 36 bytes * 8 = 288 bits, a little bit more than
-                                     // the 256 required bits 
+        // the 256 required bits 
         random.nextBytes(bytes);
         Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
         return encoder.encodeToString(bytes);
     }
+
+    public static void decompressZip(InputStream zipFileInputStream, String outputDir) throws IOException {
+        File outputDirectory = new File(outputDir);
+
+        // Crear el directorio de salida si no existe
+        if (!outputDirectory.exists()) {
+            outputDirectory.mkdirs();
+        }
+
+        try (ZipArchiveInputStream zipInputStream = new ZipArchiveInputStream(zipFileInputStream, "ISO-8859-1", true, true, true)) {
+            ZipArchiveEntry entry;
+
+            // Leer cada entrada del ZIP
+            while ((entry = zipInputStream.getNextZipEntry()) != null) {
+                File outputFile = new File(outputDirectory, entry.getName());
+
+                if (entry.isDirectory()) {
+                    // Crear directorios si es necesario
+                    outputFile.mkdirs();
+                } else {
+                    // Asegurarse de que los directorios padres existan
+                    outputFile.getParentFile().mkdirs();
+
+                    // Escribir el archivo descomprimido
+                    try (FileOutputStream fileOutputStream = new FileOutputStream(outputFile)) {
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = zipInputStream.read(buffer)) != -1) {
+                            fileOutputStream.write(buffer, 0, bytesRead);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public static void descomprimirZip(String ficheroZip, String directorioSalida)
+            throws Exception {
+        final int TAM_BUFFER = 4096;
+        byte[] buffer = new byte[TAM_BUFFER];
+
+        ZipInputStream flujo = null;
+        
+        // Crear el directorio de destino si no existe
+        File dir = new File(directorioSalida);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        
+        try {
+            flujo = new ZipInputStream(new BufferedInputStream(
+                    new FileInputStream(ficheroZip)));
+            ZipEntry entrada;
+            while ((entrada = flujo.getNextEntry()) != null) {
+                String nombreSalida = directorioSalida + File.separator
+                        + entrada.getName();
+                if (entrada.isDirectory()) {
+                    File directorio = new File(nombreSalida);
+                    directorio.mkdir();
+                } else {
+                    BufferedOutputStream salida = null;
+                    try {
+                        int leido;
+                        salida = new BufferedOutputStream(
+                                new FileOutputStream(nombreSalida), TAM_BUFFER);
+                        while ((leido = flujo.read(buffer, 0, TAM_BUFFER)) != -1) {
+                            salida.write(buffer, 0, leido);
+                        }
+                    } finally {
+                        if (salida != null) {
+                            salida.close();
+                        }
+                    }
+                }
+            }
+        } finally {
+            if (flujo != null) {
+                flujo.close();
+            }
+
+        }
+    }
+
+    public static void unzip(String zipFilePath, String destDir) throws IOException {
+        // Crear el directorio de destino si no existe
+        File dir = new File(destDir);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        String FileName = "91.zip";
+        File zipFile = new File(System.getProperty("java.io.tmpdir"), FileName);
+
+        FileInputStream fin = new FileInputStream(zipFile);
+//        ZipInputStream zis = new ZipInputStream(fin);
+        
+        // Abrir el archivo ZIP
+        //try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFilePath))) {
+        try (ZipInputStream zis = new ZipInputStream(fin)) {
+            ZipEntry entry;
+
+            // Iterar sobre las entradas del archivo ZIP
+            while ((entry = zis.getNextEntry()) != null) {
+                String filePath = destDir + File.separator + entry.getName();
+
+                if (entry.isDirectory()) {
+                    // Si es un directorio, crear el directorio
+                    new File(filePath).mkdirs();
+                } else {
+                    // Si es un archivo, escribir su contenido
+                    extractFile(zis, filePath);
+                }
+
+                zis.closeEntry();
+            }
+        }
+    }
+
+    private static void extractFile(ZipInputStream zis, String filePath) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(filePath)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = zis.read(buffer)) != -1) {
+                fos.write(buffer, 0, bytesRead);
+            }
+        }
+    }
+    
+    public static <T> List<T> parseAndMap(List<String> inputList, String separator, Function<String[], T> mapper) {
+        List<T> resultList = new ArrayList<>();
+
+        for (String input : inputList) {
+            if (input != null && !input.isEmpty()) {
+                // Divide la cadena en un array usando el separador
+                String[] parts = input.split(separator);
+
+                // Usa el mapper para convertir el array en un objeto genérico
+                T mappedObject = mapper.apply(parts);
+
+                // Añade el objeto mapeado a la lista de resultados
+                resultList.add(mappedObject);
+            }
+        }
+
+        return resultList;
+    }
+
+    public static <A, B, C> Stream<C> zip(Stream<A> streamA, Stream<B> streamB, BiFunction<A, B, C> zipper) {
+        final Iterator<A> iteratorA = streamA.iterator();
+        final Iterator<B> iteratorB = streamB.iterator();
+        final Iterator<C> iteratorC = new Iterator<C>() {
+            @Override
+            public boolean hasNext() {
+                return iteratorA.hasNext();// && iteratorB.hasNext();
+            }
+
+            @Override
+            public C next() {
+                return zipper.apply(iteratorA.next(), iteratorB == null? null: iteratorB.next());
+            }
+        };
+        final boolean parallel = streamA.isParallel() || streamB.isParallel();
+        return iteratorToFiniteStream(iteratorC, parallel);
+    }
+
+    public static <T> Stream<T> iteratorToFiniteStream(Iterator<T> iterator, boolean parallel) {
+        final Iterable<T> iterable = () -> iterator;
+        return StreamSupport.stream(iterable.spliterator(), parallel);
+    }
+    
+    public static byte[] createZipInMemory(String content, String fileName) throws IOException {
+        // Crear un ByteArrayOutputStream para almacenar el ZIP en memoria
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        // Usar un ZipOutputStream para escribir el archivo ZIP
+        try ( ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
+            // Crear una entrada ZIP con el nombre del archivo
+            ZipEntry zipEntry = new ZipEntry(fileName);
+            zipOutputStream.putNextEntry(zipEntry);
+
+            // Escribir el contenido del archivo en la entrada ZIP
+            zipOutputStream.write(content.getBytes());
+
+            // Cerrar la entrada ZIP
+            zipOutputStream.closeEntry();
+        }
+
+        // Retornar los bytes del ZIP generado
+        return byteArrayOutputStream.toByteArray();
+    }
+    
+//    public static void decompressSplitZip(String splitZipFilePath, String outputDir) throws Exception {
+//        File file = new File(splitZipFilePath);
+//        if (!file.exists()) {
+//            throw new RuntimeException("Archivo no encontrado: " + splitZipFilePath);
+//        }
+//
+//        RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
+//
+//        try (ISevenZipInArchive inArchive = SevenZip.openInArchive(
+//                SevenZipArchiveFormat.ZIP, new RandomAccessFileInStream(randomAccessFile))) {
+//
+//            ISimpleInArchive simpleInArchive = inArchive.getSimpleInterface();
+//
+//            for (ISimpleInArchiveItem item : simpleInArchive.getArchiveItems()) {
+//                if (item.isFolder()) {
+//                    continue; // Crear carpetas después si es necesario
+//                }
+//
+//                File outFile = new File(outputDir, item.getPath());
+//                outFile.getParentFile().mkdirs();
+//
+//                try (FileOutputStream fos = new FileOutputStream(outFile)) {
+//                    ExtractOperationResult result = item.extractSlow(data -> {
+//                        fos.write(data);
+//                        return data.length;
+//                    });
+//
+//                    if (result != ExtractOperationResult.OK) {
+//                        System.err.println("Error extrayendo archivo: " + item.getPath());
+//                    }
+//                }
+//            }
+//        }
+//    }
+    
 }

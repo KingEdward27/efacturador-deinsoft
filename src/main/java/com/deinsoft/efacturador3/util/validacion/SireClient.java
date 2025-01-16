@@ -51,19 +51,19 @@ public class SireClient {
         body.put("client_secret", clientSecret);
         body.put("username", username);
         body.put("password", password);
-        
+
         String url = "https://api-seguridad.sunat.gob.pe/v1/clientessol/330c5519-61fc-40a9-af27-986b23220b3e/oauth2/token/";
-        
+
         Map<String, String> headers = new HashMap<>();
 
         try {
             HttpResponse<String> response = client.sendRequestFormBody("POST", url, headers, body, HttpResponse.BodyHandlers.ofString());
             System.out.println("Status Code: " + response.statusCode());
             System.out.println("Response Body: " + response.body());
-            
-            Map<String,Object> result =
-                    new ObjectMapper().readValue(response.body(), HashMap.class);
-            
+
+            Map<String, Object> result
+                    = new ObjectMapper().readValue(response.body(), HashMap.class);
+
             token = result.get("access_token").toString();
             return token;
         } catch (Exception e) {
@@ -98,48 +98,149 @@ public class SireClient {
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "Bearer " + token);
         HttpResponse<String> bodyPeriodos = client.sendRequestJsonBody(//140000
-                HttpMethod.GET.toString(),"https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/padron/web/omisos/{{codLibro}}/periodos"
+                HttpMethod.GET.toString(), "https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/padron/web/omisos/{{codLibro}}/periodos"
                 .replace("{{codLibro}}", codLibro),
                 headers,
-                 "",HttpResponse.BodyHandlers.ofString());
-        return mapper.readValue(bodyPeriodos.body(), new TypeReference<List<PeriodoResponse>>() {});
+                "", HttpResponse.BodyHandlers.ofString());
+        return mapper.readValue(bodyPeriodos.body(), new TypeReference<List<PeriodoResponse>>() {
+        });
         //return mapper.readValue(bodyPeriodos.body(), PeriodoRootResponse.class);
     }
 
-    public List<String> getResumen(String periodo, String codTipoResumen, String CodTipoArchivo, String codLibro) throws JsonProcessingException, Exception {
+    public String getResumen(String periodo, String codTipoResumen, String CodTipoArchivo, String codLibro) throws JsonProcessingException, Exception {
         ObjectMapper mapper = new ObjectMapper();
         GenericHttpClient client = new GenericHttpClient();
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "Bearer " + token);
+        headers.put("Authorization", "Bearer " + token);
         HttpResponse<String> bodyPeriodos = client.sendRequestJsonBody(
-                HttpMethod.GET.toString(),"https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/resumen/web/resumencomprobantes/"
-                        + "{{perTributario}}/{{codTipoResumen}}/{{codTipoArchivo}}/exporta?codLibro={{codLibro}}"
-                .replace("{{perTributario}}", periodo)
-                .replace("{{codTipoResumen}}", codTipoResumen)
-                .replace("{{codTipoArchivo}}", CodTipoArchivo)
-                .replace("{{codLibro}}", codLibro),
+                HttpMethod.GET.toString(), "https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/resumen/web/resumencomprobantes/"
+                + "{{perTributario}}/{{codTipoResumen}}/{{codTipoArchivo}}/exporta?codLibro={{codLibro}}"
+                        .replace("{{perTributario}}", periodo)
+                        .replace("{{codTipoResumen}}", codTipoResumen)
+                        .replace("{{codTipoArchivo}}", CodTipoArchivo)
+                        .replace("{{codLibro}}", codLibro),
                 headers,
-                 "",HttpResponse.BodyHandlers.ofString());
-        return mapper.readValue(bodyPeriodos.body(), new TypeReference<List<String>>() {});
+                "", HttpResponse.BodyHandlers.ofString());
+        return bodyPeriodos.body();
         //return mapper.readValue(bodyPeriodos.body(), PeriodoRootResponse.class);
     }
-    
-    
-    public List<PeriodoResponse> getPropuestaRce(String periodo, String codTipoArchivo, String codOrigenEnvio) throws JsonProcessingException, Exception {
+
+    public Map<String, Object> getPropuestaRce(String periodo, String codTipoArchivo, String codOrigenEnvio) throws JsonProcessingException, Exception {
         ObjectMapper mapper = new ObjectMapper();
         GenericHttpClient client = new GenericHttpClient();
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "Bearer " + token);
         HttpResponse<String> bodyPeriodos = client.sendRequestJsonBody(
-                HttpMethod.GET.toString(),"https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rce/propuesta/web/propuesta/"
-                        + "{{perTributario}}/exportacioncomprobantepropuesta?codTipoArchivo={{codTipoArchivo}}&codOrigenEnvio={{codOrigenEnvio}}"
-                .replace("{{perTributario}}", periodo)
-                .replace("{{codTipoArchivo}}", codTipoArchivo)
-                .replace("{{codOrigenEnvio}}", codOrigenEnvio),
+                HttpMethod.GET.toString(), "https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rce/propuesta/web/propuesta/"
+                + "{{perTributario}}/exportacioncomprobantepropuesta?codTipoArchivo={{codTipoArchivo}}&codOrigenEnvio={{codOrigenEnvio}}"
+                        .replace("{{perTributario}}", periodo)
+                        .replace("{{codTipoArchivo}}", codTipoArchivo)
+                        .replace("{{codOrigenEnvio}}", codOrigenEnvio),
                 headers,
-                 "",HttpResponse.BodyHandlers.ofString());
+                "", HttpResponse.BodyHandlers.ofString());
         //response: numTicket
-        return mapper.readValue(bodyPeriodos.body(), new TypeReference<List<PeriodoResponse>>() {});
+        return mapper.readValue(bodyPeriodos.body(), new TypeReference<Map<String, Object>>() {
+        });
         //return mapper.readValue(bodyPeriodos.body(), PeriodoRootResponse.class);
     }
+
+    public Map<String, Object> getPropuestaRvie(String periodo, String codTipoArchivo) throws JsonProcessingException, Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        GenericHttpClient client = new GenericHttpClient();
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + token);
+        HttpResponse<String> bodyPeriodos = client.sendRequestJsonBody(
+                HttpMethod.GET.toString(), "https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvie/propuesta/web/propuesta"
+                        + "/{{perTributario}}/exportapropuesta?codTipoArchivo={{codTipoArchivo}}"
+                        .replace("{{perTributario}}", periodo)
+                        .replace("{{codTipoArchivo}}", codTipoArchivo),
+                headers,
+                "", HttpResponse.BodyHandlers.ofString());
+        //response: numTicket
+        return mapper.readValue(bodyPeriodos.body(), new TypeReference<Map<String, Object>>() {
+        });
+        //return mapper.readValue(bodyPeriodos.body(), PeriodoRootResponse.class);
+    }
+    
+    public Map<String, Object> getEstadoTicket(String periodo, String numTicket) throws JsonProcessingException, Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        GenericHttpClient client = new GenericHttpClient();
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + token);
+        HttpResponse<String> bodyPeriodos = client.sendRequestJsonBody(
+                HttpMethod.GET.toString(), "https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/gestionprocesosmasivos/web/masivo/consultaestadotickets?"
+                + "perIni={{perTributario}}&perFin={{perTributario}}&page=1&perPage=1&numTicket={{numTicket}}"
+                        .replace("{{perTributario}}", periodo)
+                        .replace("{{numTicket}}", numTicket),
+                headers,
+                "", HttpResponse.BodyHandlers.ofString());
+        //response: numTicket
+        return mapper.readValue(bodyPeriodos.body(), new TypeReference<Map<String, Object>>() {
+        });
+        //return mapper.readValue(bodyPeriodos.body(), PeriodoRootResponse.class);
+    }
+
+    public byte[] getArchivo(String periodo, String nomArchivo, String codTipoArchivo, String codLibro, String numTicket) throws JsonProcessingException, Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        GenericHttpClient client = new GenericHttpClient();
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + token);
+        String url = "https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/gestionprocesosmasivos/web/masivo/archivoreporte?"
+                + "nomArchivoReporte=" + nomArchivo
+                + "&codTipoArchivoReporte=" + codTipoArchivo
+                + "&codLibro=" + codLibro
+                + "&perTributario=" + periodo
+                + "&codProceso=10"
+                + "&numTicket=" + numTicket;
+//                .replace("{{nomArchivoReporte}}", nomArchivo)
+//                .replace("{{codTipoArchivo}}", codTipoArchivo)
+//                .replace("{{codLibro}}", codLibro)
+//                .replace("{{perTributario}}", periodo)
+//                .replace("{{numTicket}}", numTicket);
+
+        HttpResponse<byte[]> bodyFile = client.sendRequestJsonBody(
+                HttpMethod.GET.toString(), url,
+                headers,
+                "", HttpResponse.BodyHandlers.ofByteArray());
+        //response: numTicket
+        return bodyFile.body();
+        //return mapper.readValue(bodyPeriodos.body(), PeriodoRootResponse.class);
+    }
+
+//    public Object getArchivo2(String periodo, String nomArchivo, String codTipoArchivo, String codLibro, String numTicket) throws JsonProcessingException, Exception {
+//        ObjectMapper mapper = new ObjectMapper();
+//        GenericHttpClient client = new GenericHttpClient();
+//        Map<String, String> headers = new HashMap<>();
+//        headers.put("Authorization", "Bearer " + token);
+//        headers.put("Accept", "application/zip");
+//        String outputZipFilePath = "output.zip";
+//        String url = "https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/gestionprocesosmasivos/web/masivo/archivoreporte?"
+//                + "nomArchivoReporte=" + nomArchivo
+//                + "&codTipoArchivoReporte=" + codTipoArchivo
+//                + "&codLibro=" + codLibro
+//                + "&perTributario=" + periodo
+//                + "&codProceso=10"
+//                + "&numTicket=" + numTicket;
+////                .replace("{{nomArchivoReporte}}", nomArchivo)
+////                .replace("{{codTipoArchivo}}", codTipoArchivo)
+////                .replace("{{codLibro}}", codLibro)
+////                .replace("{{perTributario}}", periodo)
+////                .replace("{{numTicket}}", numTicket);
+//
+//        Object response = client.sendRequest(
+//                HttpMethod.GET.toString(), url,
+//                headers,
+//                "application/zip", null, null, outputZipFilePath);
+//
+//        if (response instanceof String) {
+//            System.out.println("Response as String: " + response);
+//        } else if (response instanceof String) { // Path to ZIP file
+//            System.out.println("ZIP file saved at: " + response);
+//        }
+//
+//        //response: numTicket
+//        return response;
+//        //return mapper.readValue(bodyPeriodos.body(), PeriodoRootResponse.class);
+//    }
 }

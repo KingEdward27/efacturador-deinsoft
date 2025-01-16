@@ -17,6 +17,8 @@ public class ResumentRleDto {
     private BigDecimal totalIgv;
     private BigDecimal totalTotal;
 
+    
+    
     public String getTipo() {
         return tipo;
     }

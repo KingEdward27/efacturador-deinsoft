@@ -260,23 +260,23 @@ public class FacturaBackendController extends BaseController {
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
     
-    @GetMapping(value = "/get-sire-resumen")
-    public ResponseEntity<?> getSireResumen(
-            @RequestParam("idEmpresa") int idEmpresa,
-            @RequestParam("periodo") String periodo, 
-            @RequestParam("codTipoResumen") String codTipoResumen, 
-            @RequestParam("CodTipoArchivo") String CodTipoArchivo, 
-            @RequestParam("libro") String libro,
-            HttpServletRequest request) throws Exception {
-        Empresa empresa = empresaService.getEmpresaById(idEmpresa);
-        
-        sireClient = new SireClient(appConfig.getClientId(), appConfig.getClientSecret(),
-            empresa.getNumdoc().concat(empresa.getUsuariosol()),empresa.getClavesol());
-        
-        List<String> list = sireClient.getResumen(periodo, codTipoResumen, CodTipoArchivo, libro);
-        
-        return ResponseEntity.status(HttpStatus.OK).body(list);
-    }
+//    @GetMapping(value = "/get-sire-resumen")
+//    public ResponseEntity<?> getSireResumen(
+//            @RequestParam("idEmpresa") int idEmpresa,
+//            @RequestParam("periodo") String periodo, 
+//            @RequestParam("codTipoResumen") String codTipoResumen, 
+//            @RequestParam("CodTipoArchivo") String CodTipoArchivo, 
+//            @RequestParam("libro") String libro,
+//            HttpServletRequest request) throws Exception {
+//        Empresa empresa = empresaService.getEmpresaById(idEmpresa);
+//        
+//        sireClient = new SireClient(appConfig.getClientId(), appConfig.getClientSecret(),
+//            empresa.getNumdoc().concat(empresa.getUsuariosol()),empresa.getClavesol());
+//        
+//        List<String> list = sireClient.getResumen(periodo, codTipoResumen, CodTipoArchivo, libro);
+//        
+//        return ResponseEntity.status(HttpStatus.OK).body(list);
+//    }
     
     @PostMapping(value = "/gen-xml-notacredito-by-numdoc")
     public ResponseEntity<?> genXmlNotaCredito(
@@ -305,8 +305,17 @@ public class FacturaBackendController extends BaseController {
     }
     
     @PostMapping(value = "/get-resumen-rlie")
-    public  ResponseEntity<?> getResumenRlie(@RequestBody ParamBean paramBean,HttpServletRequest request){
-        return ResponseEntity.status(HttpStatus.CREATED).body(facturaElectronicaService.getResumenRlie(paramBean.getEmpresa().getId(), 
-                paramBean.getPeriodo().get("perTributario")));
+    public  ResponseEntity<?> getResumenRlie(@RequestBody ParamBean paramBean,HttpServletRequest request) throws Exception{
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                facturaElectronicaService.getResumenRlieCombined(paramBean.getEmpresa().getId(), 
+                paramBean.getPeriodo().get("perTributario"),"1","0",paramBean.getLibro()));
     }
+    
+    @PostMapping(value = "/get-propuesta-rlie")
+    public  ResponseEntity<?> getPropuestaRlie(@RequestBody ParamBean paramBean,HttpServletRequest request) throws Exception{
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                facturaElectronicaService.getPropuestaRlieCombined(paramBean.getEmpresa().getId(), 
+                paramBean.getPeriodo().get("perTributario"),"1","0",paramBean.getLibro()));
+    }
+    
 }

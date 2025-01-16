@@ -14,6 +14,7 @@ import com.deinsoft.efacturador3.bean.ParamBean;
 import com.deinsoft.efacturador3.config.AppConfig;
 import com.deinsoft.efacturador3.config.XsltCpePath;
 import com.deinsoft.efacturador3.dto.NumeroDocumentoDto;
+import com.deinsoft.efacturador3.dto.ResumentRle2Dto;
 import com.deinsoft.efacturador3.dto.ResumentRleDto;
 import com.deinsoft.efacturador3.exception.XsdException;
 import com.deinsoft.efacturador3.exception.XsltException;
@@ -39,6 +40,8 @@ import com.deinsoft.efacturador3.util.Constantes;
 import com.deinsoft.efacturador3.util.FacturadorUtil;
 import com.deinsoft.efacturador3.util.Impresion;
 import com.deinsoft.efacturador3.util.SendMail;
+import com.deinsoft.efacturador3.util.Util;
+import com.deinsoft.efacturador3.util.validacion.SireClient;
 import com.deinsoft.efacturador3.validationapirest.ValidacionRespuestaApi;
 import com.deinsoft.efacturador3.validationapirest.ValidacionSUNAT;
 import com.deinsoft.efacturador3.validationapirest.ValidationBody;
@@ -48,14 +51,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.project.openubl.xmlsenderws.webservices.managers.BillServiceManager;
 import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
 import io.github.project.openubl.xmlsenderws.webservices.wrappers.ServiceConfig;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -85,10 +99,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import javax.imageio.ImageIO;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.data.repository.query.Param;
+import org.springframework.util.StreamUtils;
 
 /**
  *
@@ -99,6 +118,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
     private static final Logger log = LoggerFactory.getLogger(FacturaElectronicaServiceImpl.class);
 
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy").withLocale( Locale.getDefault() );  
+// Locale specifies human language for translating, and cultural norms for lowercase/uppercase and abbreviations and such. Example: Locale.US or Locale.CANADA_FRENCH
+    
     @Autowired
     FacturaElectronicaRepository facturaElectronicaRepository;
 
@@ -121,7 +143,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
     @Autowired
     private LocalService localService;
-    
+
     @Override
     public FacturaElectronica getById(long id) {
         return facturaElectronicaRepository.getById(id);
@@ -148,7 +170,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
     @Override
     public List<FacturaElectronica> getBySerieAndNumeroAndEmpresaId(FacturaElectronica facturaElectronica) {
-        return facturaElectronicaRepository.findBySerieAndNumeroAndEmpresaId(facturaElectronica.getSerie(), facturaElectronica.getNumero(), 
+        return facturaElectronicaRepository.findBySerieAndNumeroAndEmpresaId(facturaElectronica.getSerie(), facturaElectronica.getNumero(),
                 facturaElectronica.getEmpresa().getId())
                 .stream().filter(predicate -> predicate.getEstado().equals("1"))
                 .collect(Collectors.toList());
@@ -158,10 +180,12 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     public List<FacturaElectronica> getByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(FacturaElectronica facturaElectronica) {
         return facturaElectronicaRepository.findByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(facturaElectronica);
     }
+
     @Override
     public List<FacturaElectronica> getReportActComprobante(ParamBean paramBean) {
         return facturaElectronicaRepository.getReportActComprobante(paramBean);
     }
+
     @Override
     @Transactional
     public Map<String, Object> generarComprobantePagoSunat(long comprobanteId) throws TransferirArchivoException {
@@ -291,49 +315,46 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 f.setSerie(facturaElectronicaParam.getSerie());
                 f.setNumero(facturaElectronicaParam.getNumero());
                 f.setEmpresa(facturaElectronicaParam.getEmpresa());
-                
+
                 facturaElectronicaResult = facturaElectronicaRepository.
                         findBySerieRefAndNumeroRefAndEmpresaId(facturaElectronicaParam.getSerie(),
                                 facturaElectronicaParam.getNumero(),
                                 facturaElectronicaParam.getEmpresa().getId()).stream().findFirst().orElse(null);
                 if (facturaElectronicaResult != null) {
-                    throw new Exception("Ya existe una nota de crédito relacionada al comprobante: " 
+                    throw new Exception("Ya existe una nota de crédito relacionada al comprobante: "
                             + facturaElectronicaResult.getSerie()
-                            + "-"+ facturaElectronicaResult.getNumero());
+                            + "-" + facturaElectronicaResult.getNumero());
                 }
-                
+
                 facturaElectronicaResult = getBySerieAndNumeroAndEmpresaId(f).stream().findFirst().orElse(null);
             } else {
                 facturaElectronicaResult = findById(facturaElectronicaParam.getId());
             }
-            
+
 //            for (FacturaElectronicaDet facturaElectronicaDet : facturaElectronicaResult.getListFacturaElectronicaDet()) {
 //                log.debug(facturaElectronicaDet.toString());
 //            }
-
             NumeroDocumentoDto lastNumberRegistered = getNextNumberForNc(facturaElectronicaResult.getEmpresa().getId(),
                     facturaElectronicaResult.getSerie());
-            
-            
+
             FacturaElectronica f = new FacturaElectronica();
-            
+
             BeanUtils.copyProperties(f, facturaElectronicaResult);
             long newNumber = 1;
             if (lastNumberRegistered.getSerie() == null) {
                 Local local = localService.getByEmpresaIdAndSerieRelacion(
-                        facturaElectronicaResult.getEmpresa().getId(),facturaElectronicaResult.getSerie())
+                        facturaElectronicaResult.getEmpresa().getId(), facturaElectronicaResult.getSerie())
                         .stream().findFirst().orElse(null);
                 if (local == null) {
                     throw new Exception("No se encontró serie relacionada para la empresa y serie: " + facturaElectronicaResult.getSerie());
                 }
                 f.setSerie(local.getSerie());
                 newNumber = 1;
-            } else{
+            } else {
                 f.setSerie(lastNumberRegistered.getSerie());
                 newNumber = Long.parseLong(lastNumberRegistered.getNumero()) + 1;
             }
-            
-            
+
             f.setId(null);
             f.setTipo(Constantes.CONSTANTE_TIPO_DOCUMENTO_NCREDITO);
             f.setNumero(String.format("%08d", newNumber));
@@ -451,8 +472,8 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 log.debug("FacturaController.enviarXML...filename: " + filename);
                 log.debug("FacturaController.enviarXML...tipoComprobante: " + tipoComprobante);
                 BillServiceModel res = this.comunesService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica.getEmpresa());
-                
-                facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours())); 
+
+                facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
                 facturaElectronica.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
                 facturaElectronica.setObservacionEnvio(res.getDescription());
                 facturaElectronica.setTicketSunat(res.getTicket());
@@ -636,7 +657,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             comprobante.setDocrefNumero(String.format("%08d", Integer.parseInt(documento.getNumero_ref())));
             comprobante.setDocrefMonto(new BigDecimal(documento.getMonto_ref()));
             comprobante.setTotalValorVenta(totalValorVenta.subtract(comprobante.getDocrefMonto()));
-            
+
 //            comprobante.setSumatoriaIGV(SumatoriaIGV);
 //            comprobante.setTotalValorVentasGravadas(totalValorVentasGravadas);
             comprobante.setEmpresa(e);
@@ -867,7 +888,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 for (ComprobanteCuotas detalle : documento.getLista_cuotas()) {
 
                     sumaCoutas = sumaCoutas.add(detalle.getMonto_pago());
-                    
+
                 }
                 if (FacturadorUtil.isNullOrEmpty(documento.getMoneda_monto_neto_pendiente())) {
                     return "Si la forma de pago es Credito debe indicar el tipo de moneda del pago pendiente";
@@ -893,7 +914,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             if (comprobanteTax.getMto_tributo().add(igvRef).compareTo(sumTotalTributos) != 0) {
                 return "La suma del monto del tributo no equivale al del detalle. Código tributo: " + comprobanteTax.getIde_tributo();
             }
-            
+
         }
         String res = validarPlazo(documento);
         if (!res.equals("")) {
@@ -927,7 +948,6 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 //                    if (documento.getTipo().equals("01")) {
 //                        result = "No se puede generar el XML, el Comprobante tiene mas de " + nroDias + " días. Emisión: " + documento.getFecha_emision();
 //                    }
-
                 }
 
             }
@@ -1058,7 +1078,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 //        retorno.put("pdfBase64", bytes);
         return data;
     }
-    
+
     private byte[] print(String rootpath, FacturaElectronica documento, int tipo, String tempDescripcionPluralMoneda) throws Exception {
         ByteArrayInputStream stream = Impresion.Imprimir(rootpath, tipo, documento, tempDescripcionPluralMoneda);
         int n = stream.available();
@@ -1136,7 +1156,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                                 if (validacionRespuestaApi == null) {
                                     cont++;
                                     continue;
-                                    
+
                                 }
                                 if (validacionRespuestaApi.isSuccess()) {
                                     if (validacionRespuestaApi.getData() != null && validacionRespuestaApi.getData().getEstadoCp() != null) {
@@ -1181,19 +1201,173 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         //verify api rest sunat
         //1 => update 02, else send and update
     }
+
     @Override
-    public NumeroDocumentoDto getNextNumberForNc(long empresaId,String serie) {
-        return facturaElectronicaRepository.getNextNumberForNc(empresaId,serie);
+    public NumeroDocumentoDto getNextNumberForNc(long empresaId, String serie) {
+        return facturaElectronicaRepository.getNextNumberForNc(empresaId, serie);
     }
-    
+
     @Override
-    public List<ResumentRleDto> getResumenRlie(long empresaId, String periodo) {
+    public List<ResumentRleDto> getResumenRlieFromBd(long empresaId, String periodo) {
         LocalDate initial = LocalDate.of(
-                Integer.valueOf( periodo.substring(0,4)), 
-                Integer.valueOf( periodo.substring(4,6)), 1);
-        
+                Integer.valueOf(periodo.substring(0, 4)),
+                Integer.valueOf(periodo.substring(4, 6)), 1);
+
         LocalDate fechaDesde = initial.withDayOfMonth(1);
         LocalDate fechaHasta = initial.withDayOfMonth(initial.getMonth().length(initial.isLeapYear()));
-        return facturaElectronicaRepository.getResumenRlie(empresaId, fechaDesde, fechaHasta);
+        return facturaElectronicaRepository.getResumenRlie(empresaId, fechaDesde, fechaHasta).stream().map(mapper -> {
+            mapper.setTipo(Constantes.mapTipoDocSunat.get(mapper.getTipo()));
+            return mapper;
+        }).collect(Collectors.toList());
     }
+
+    @Override
+    public List<ResumentRle2Dto> getResumenRlieCombined(long empresaId, String periodo,
+            String codTipoResumen,
+            String CodTipoArchivo, String libro) throws Exception {
+
+        Empresa empresa = empresaService.getEmpresaById(Integer.valueOf(String.valueOf(empresaId)));
+
+        SireClient sireClient = new SireClient(appConfig.getClientId(), appConfig.getClientSecret(),
+                empresa.getNumdoc().concat(empresa.getUsuariosol()), empresa.getClavesol());
+
+        String pipeList = sireClient.getResumen(periodo, codTipoResumen, CodTipoArchivo, libro);
+
+        String[] linesArray = pipeList.replace("|", ",").split("\\R");
+        String[] linesArrayFrom2ndRow = Arrays.copyOfRange(linesArray, 1, linesArray.length);
+        List<String> linesList = Arrays.asList(linesArrayFrom2ndRow);
+
+        List<ResumentRleDto> resumen = Util.parseAndMap(linesList, ",", parts
+                -> new ResumentRleDto(parts[0], Long.valueOf(parts[1]),
+                        new BigDecimal(parts[2]),
+                        new BigDecimal(parts[3]),
+                        new BigDecimal(parts[12]))
+        );
+        List<ResumentRleDto> list = getResumenRlieFromBd(empresaId, periodo);
+
+        return resumen.stream().map(mapper -> {
+
+            if (list.stream().anyMatch(predicate -> predicate.getTipo().equals(mapper.getTipo()))) {
+                return new ResumentRle2Dto(mapper, list.stream()
+                        .filter(predicate -> predicate.getTipo().equals(mapper.getTipo()))
+                        .findFirst().orElse(null));
+            }
+            return new ResumentRle2Dto(mapper, null);
+        }).collect(Collectors.toList());
+
+//        return Util.zip(resumen.stream(),
+//                                      getResumenRlieFromBd(empresaId,periodo).stream(),
+//                                      (a, b) -> {
+//                                          if (a.getTipo().equals(b.getTipo())) {
+//                                              return new ResumentRle2Dto(a,b);
+//                                          }
+//                                          else return new ResumentRle2Dto(a,null);
+//                                      })
+//                                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FacturaElectronica> getPropuestaRlieCombined(long empresaId, String periodo,
+            String codTipoResumen,
+            String CodTipoArchivo, String libro) throws Exception {
+
+        Empresa empresa = empresaService.getEmpresaById(Integer.valueOf(String.valueOf(empresaId)));
+
+        SireClient sireClient = new SireClient(appConfig.getClientId(), appConfig.getClientSecret(),
+                empresa.getNumdoc().concat(empresa.getUsuariosol()), empresa.getClavesol());
+
+        //1. get propuesta
+        Map<String, Object> ticketPropuestaMap = null;
+        
+        switch (libro) {
+            case Constantes.COD_LIBRO_VENTAS:
+                ticketPropuestaMap = sireClient.getPropuestaRvie(periodo, "0");
+                break;
+            case Constantes.COD_LIBRO_COMPRAS:
+                ticketPropuestaMap = sireClient.getPropuestaRce(periodo, "0", "2");
+                break;
+            default:
+                throw new Exception("Código de libro no soportado");
+        }
+        
+        if (ticketPropuestaMap == null) {
+            throw new Exception("Respuesta incorrecta del api SIRE para generar la propuesta");
+        }
+
+        String numTicket = String.valueOf(ticketPropuestaMap.get("numTicket"));
+
+        Thread.sleep(2000);
+        //2. get estado Ticket
+        Map<String, Object> reporteMap = sireClient.getEstadoTicket(periodo, numTicket);
+        if (reporteMap == null) {
+            throw new Exception("Respuesta incorrecta del api SIRE para obtener el estado del ticket");
+        }
+
+        List<Map<String, Object>> reporteJson = (List<Map<String, Object>>) reporteMap.get("registros");
+
+        List<Map<String, Object>> archivoReporteJson = (List<Map<String, Object>>) reporteJson.get(0).get("archivoReporte");
+
+        String nomArchivoReporteZip = String.valueOf(archivoReporteJson.get(0).get("nomArchivoReporte"));
+        String codTipoAchivoReporte = String.valueOf(archivoReporteJson.get(0).get("codTipoAchivoReporte"));
+        String nomArchivoInZip = String.valueOf(archivoReporteJson.get(0).get("nomArchivoContenido"));
+
+        //3. descargar archivo
+        byte[] zipBytes = sireClient.getArchivo(periodo, nomArchivoReporteZip, codTipoAchivoReporte, libro, numTicket);
+        if (reporteMap == null) {
+            throw new Exception("Respuesta incorrecta del api SIRE para obtener el archivo");
+        }
+
+        
+        
+//        byte[] zipBytes = "123".getBytes();
+//        byte[] zipBytes = Util.createZipInMemory(fileString, nomArchivoInZip);
+        String tempPath = System.getProperty("java.io.tmpdir");
+        File tempFile = new File(tempPath, nomArchivoReporteZip);
+//        Path temp = Files.createTempFile(nomArchivoReporteZip);
+//        Files.write(tempFile.toPath(), zipBytes);
+        
+        FileUtils.writeByteArrayToFile(tempFile, zipBytes);
+                
+
+        String x = tempFile.toPath().toAbsolutePath().toString().replace(".zip", "");
+        
+        Util.decompressZip(new ByteArrayInputStream(zipBytes), x);//;ip(new ByteArrayInputStream(zipBytes), x);
+        
+//        File outputFile = new File("C:\\" + "123.zip");
+//        Path zipFile = Paths.get(tempFile.toPath().toAbsolutePath().toString());
+//        FileSystem fileSystem = FileSystems.newFileSystem(zipFile,null);
+//        Path source = fileSystem.getPath(tempFile.toPath().toAbsolutePath().toString());
+//        Files.copy(source, outputFile.toPath());
+//
+//        Util.unzip("C:\\" + "123.zip", x);//;ip(new ByteArrayInputStream(zipBytes), x);
+        
+        String fileContent = Util.readFile(new FileInputStream(x
+                + "/" + nomArchivoInZip)  , Charset.defaultCharset());
+
+        String[] linesArray = fileContent.replace("|", ";").split("\\R");
+        String[] linesArrayFrom2ndRow = Arrays.copyOfRange(linesArray, 1, linesArray.length);
+        List<String> linesList = Arrays.asList(linesArrayFrom2ndRow);
+
+        
+        
+        return Util.parseAndMap(linesList, ";", parts
+                -> {
+            FacturaElectronica f = new FacturaElectronica();
+            LocalDate date = LocalDate.parse(parts[4], formatter);
+            f.setFechaEmision(date);
+            f.setSerie(parts[7]);
+            f.setNumero(parts[9]);
+            f.setClienteDocumento(parts[11]);
+            f.setClienteNombre(parts[12]);
+            f.setSumatoriaIGV(new BigDecimal(parts[14]));
+            f.setTotalValorVenta(new BigDecimal(parts[24]));
+            f.setNumero(parts[9]);
+            return f;
+        });
+
+//        String absolutePath = temp.toString();
+//        FileOutputStream qrCode = new FileOutputStream(absolutePath);
+//        ImageIO.write(image, IMAGE_FORMAT, qrCode);
+    }
+
 }

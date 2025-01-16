@@ -35,6 +35,7 @@ public class ParamBean {
     private Empresa empresa;
     
     private Map<String,String> periodo;
+    private String libro;
     
     public ParamBean() {
     }
@@ -111,6 +112,14 @@ public class ParamBean {
 
     public void setPeriodo(Map<String, String> periodo) {
         this.periodo = periodo;
+    }
+
+    public String getLibro() {
+        return libro;
+    }
+
+    public void setLibro(String libro) {
+        this.libro = libro;
     }
 
     
