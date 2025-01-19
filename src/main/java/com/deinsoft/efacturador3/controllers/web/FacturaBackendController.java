@@ -9,6 +9,7 @@ import com.deinsoft.efacturador3.bean.ParamBean;
 import com.deinsoft.efacturador3.bean.Response;
 import com.deinsoft.efacturador3.config.AppConfig;
 import com.deinsoft.efacturador3.controllers.BaseController;
+import com.deinsoft.efacturador3.dto.FacturaElectronicaDto;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.model.ResumenDiario;
@@ -21,6 +22,7 @@ import com.deinsoft.efacturador3.service.ResumenDiarioService;
 import com.deinsoft.efacturador3.service.SecUserService;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
 import com.deinsoft.efacturador3.util.ExportUtil;
+import com.deinsoft.efacturador3.util.Util;
 import com.deinsoft.efacturador3.util.validacion.PeriodoDetail;
 import com.deinsoft.efacturador3.util.validacion.PeriodoResponse;
 import com.deinsoft.efacturador3.util.validacion.SireClient;
@@ -89,23 +91,22 @@ public class FacturaBackendController extends BaseController {
 
     @Autowired
     private ResumenDiarioService resumenDiarioService;
-    
+
     @Autowired
     AuthenticationHelper auth;
 
     SireClient sireClient;
-    
-    
+
     @Autowired
     AppConfig appConfig;
-    
+
     @Autowired
     EmpresaService empresaService;
-    
+
     @PostMapping(value = "/listar")
-    public List<FacturaElectronica> getReportActComprobante(@RequestBody ParamBean paramBean,HttpServletRequest request) {
-        Map<String,Object> map = auth.getJwtLoggedUserData(request);
-        String idUser = ((Map<String,Object>) map.get("user")).get("id").toString();
+    public List<FacturaElectronica> getReportActComprobante(@RequestBody ParamBean paramBean, HttpServletRequest request) {
+        Map<String, Object> map = auth.getJwtLoggedUserData(request);
+        String idUser = ((Map<String, Object>) map.get("user")).get("id").toString();
         paramBean.setIdUser(Long.parseLong(idUser));
         return facturaElectronicaService.getReportActComprobante(paramBean);
     }
@@ -115,14 +116,14 @@ public class FacturaBackendController extends BaseController {
         Map<String, Object> resultado = null;
         try {
             resultado = this.facturaElectronicaService.generarComprobantePagoSunat(id);
-            String status = resultado.get("status") == null? "":resultado.get("status").toString();
-            String code = resultado.get("code") == null? "":resultado.get("code").toString();
-            String message = resultado.get("message") == null?"":resultado.get("message").toString();
-            String description = resultado.get("description") == null?"":resultado.get("description").toString();
+            String status = resultado.get("status") == null ? "" : resultado.get("status").toString();
+            String code = resultado.get("code") == null ? "" : resultado.get("code").toString();
+            String message = resultado.get("message") == null ? "" : resultado.get("message").toString();
+            String description = resultado.get("description") == null ? "" : resultado.get("description").toString();
             if (code.equals("-2") || code.equals("9999")) {
                 return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(new Response(code, message, description));
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             resultado = new HashMap<>();
@@ -132,20 +133,21 @@ public class FacturaBackendController extends BaseController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(resultado);
     }
-    
+
     @PostMapping(value = "/sunat")
     public ResponseEntity<?> sendSunat(@RequestParam(name = "id") long id) {
         Map<String, Object> resultado = null;
         resultado = facturaElectronicaService.sendToSUNAT(id);
-        String status = resultado.get("status") == null? "":resultado.get("status").toString();
-        String code = resultado.get("code") == null? "":resultado.get("code").toString();
-        String message = resultado.get("message") == null?"":resultado.get("message").toString();
-        String description = resultado.get("description") == null?"":resultado.get("description").toString();
+        String status = resultado.get("status") == null ? "" : resultado.get("status").toString();
+        String code = resultado.get("code") == null ? "" : resultado.get("code").toString();
+        String message = resultado.get("message") == null ? "" : resultado.get("message").toString();
+        String description = resultado.get("description") == null ? "" : resultado.get("description").toString();
         if (code.equals("-2") || code.equals("9999")) {
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(new Response(code, message, description));
         }
         return ResponseEntity.status(HttpStatus.OK).body(resultado);
     }
+
     @PostMapping(value = "/get-pdf")
     public ResponseEntity<?> getPDF(@RequestParam(name = "id") String id,
             @RequestParam(name = "tipo") int tipo,
@@ -153,34 +155,35 @@ public class FacturaBackendController extends BaseController {
         HttpHeaders headers = new HttpHeaders();
         MediaType mediaType = MediaType.APPLICATION_PDF;
         byte[] data = null;
-        
+
         try {
-            data =  facturaElectronicaService.getPDFInBtyes(new Long(id),tipo);
-            if(data != null){
-            String type = "pdf";
-            ByteArrayInputStream stream = new ByteArrayInputStream(data);
-            if (type.equals("pdf")) {
-                headers.add("Content-Disposition", "inline; filename=pdf.pdf");
-                mediaType = MediaType.APPLICATION_PDF;
-            } else if (type.equals("excel")) {
-                headers.add("Content-Disposition", "attachment; filename=excel.xlsx");
-                mediaType = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            data = facturaElectronicaService.getPDFInBtyes(new Long(id), tipo);
+            if (data != null) {
+                String type = "pdf";
+                ByteArrayInputStream stream = new ByteArrayInputStream(data);
+                if (type.equals("pdf")) {
+                    headers.add("Content-Disposition", "inline; filename=pdf.pdf");
+                    mediaType = MediaType.APPLICATION_PDF;
+                } else if (type.equals("excel")) {
+                    headers.add("Content-Disposition", "attachment; filename=excel.xlsx");
+                    mediaType = MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                }
+                return ResponseEntity.status(HttpStatus.CREATED).headers(headers).contentType(mediaType).body(new InputStreamResource(stream));
             }
-            return ResponseEntity.status(HttpStatus.CREATED).headers(headers).contentType(mediaType).body(new InputStreamResource(stream));
-        }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            Map resultado  = new HashMap<>();
-            resultado.put("code","003");
-            resultado.put("message",e.getMessage());
+            Map resultado = new HashMap<>();
+            resultado.put("code", "003");
+            resultado.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultado);
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(data);
     }
+
     @RequestMapping(value = {"/resumendiario"}, method = RequestMethod.POST)
-    public ResponseEntity<?> sendResumenDiario( 
+    public ResponseEntity<?> sendResumenDiario(
             @RequestParam(value = "ids") String ids,
-            HttpServletRequest request){
+            HttpServletRequest request) {
         Map<String, Object> resultado = null;
 //        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 //        SecUser usuario = secUserService.getSecUserByName(auth.getName());
@@ -195,10 +198,10 @@ public class FacturaBackendController extends BaseController {
         }
         try {
             resultado = resumenDiarioService.generarComprobantePagoSunatFromFacturas(listIds);
-            String status = resultado.get("status") == null? "":resultado.get("status").toString();
-            String code = resultado.get("code") == null? "":resultado.get("code").toString();
-            String message = resultado.get("message") == null?"":resultado.get("message").toString();
-            String description = resultado.get("description") == null?"":resultado.get("description").toString();
+            String status = resultado.get("status") == null ? "" : resultado.get("status").toString();
+            String code = resultado.get("code") == null ? "" : resultado.get("code").toString();
+            String message = resultado.get("message") == null ? "" : resultado.get("message").toString();
+            String description = resultado.get("description") == null ? "" : resultado.get("description").toString();
             if (code.equals("-2") || code.equals("9999")) {
                 return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(new Response(code, message, description));
             }
@@ -212,7 +215,7 @@ public class FacturaBackendController extends BaseController {
 //            }else{
 //                model.addAttribute("warning", resultado.get("code") + "\n" + resultado.get("message"));
 //            }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             resultado = new HashMap<>();
@@ -221,10 +224,10 @@ public class FacturaBackendController extends BaseController {
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(resultado);
             //model.addAttribute("error", resultado.get("code") + "\n" + resultado.get("message"));
         }
-        
+
         return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
     }
-    
+
     @GetMapping(value = "/get-empresa-by-user")
     public ResponseEntity<?> getListEmpresaByUser(@RequestParam("id") Long id, HttpServletRequest request) {
         logger.info("getSecUser received: " + id);
@@ -233,60 +236,40 @@ public class FacturaBackendController extends BaseController {
                 .collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(listSecRoleUser);
     }
-    
+
     @GetMapping(value = "/get-periodos")
     public ResponseEntity<?> getPeriodos(@RequestParam("idEmpresa") int idEmpresa,
             @RequestParam("libro") String libro, HttpServletRequest request) throws Exception {
         Empresa empresa = empresaService.getEmpresaById(idEmpresa);
-        sireClient = new SireClient(appConfig.getClientId(), appConfig.getClientSecret(),
-            empresa.getNumdoc().concat(empresa.getUsuariosol()),empresa.getClavesol());
+        sireClient = new SireClient(empresa.getSireClientId(), empresa.getSireClientSecret(),
+                empresa.getNumdoc().concat(empresa.getUsuariosol()), empresa.getClavesol());
         List<PeriodoResponse> listSecRoleUser = sireClient.getPeriodos(libro);
         return ResponseEntity.status(HttpStatus.OK).body(listSecRoleUser);
     }
-    
+
     @GetMapping(value = "/get-periodos-detail")
-    public ResponseEntity<?> getPeriodosDetail(@RequestParam("idEmpresa") int idEmpresa,@RequestParam("anio") String anio,
-            @RequestParam("libro") String libro, 
+    public ResponseEntity<?> getPeriodosDetail(@RequestParam("idEmpresa") int idEmpresa, @RequestParam("anio") String anio,
+            @RequestParam("libro") String libro,
             HttpServletRequest request) throws Exception {
         Empresa empresa = empresaService.getEmpresaById(idEmpresa);
-        
-        sireClient = new SireClient(appConfig.getClientId(), appConfig.getClientSecret(),
-            empresa.getNumdoc().concat(empresa.getUsuariosol()),empresa.getClavesol());
-        
+        sireClient = new SireClient(empresa.getSireClientId(), empresa.getSireClientSecret(),
+                empresa.getNumdoc().concat(empresa.getUsuariosol()), empresa.getClavesol());
+
         List<PeriodoDetail> list = sireClient.getPeriodos(libro).stream()
                 .filter(predicate -> predicate.getNumEjercicio().equals(anio))
                 .findFirst().orElse(new PeriodoResponse()).getLisPeriodos();
-        
+
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
-    
-//    @GetMapping(value = "/get-sire-resumen")
-//    public ResponseEntity<?> getSireResumen(
-//            @RequestParam("idEmpresa") int idEmpresa,
-//            @RequestParam("periodo") String periodo, 
-//            @RequestParam("codTipoResumen") String codTipoResumen, 
-//            @RequestParam("CodTipoArchivo") String CodTipoArchivo, 
-//            @RequestParam("libro") String libro,
-//            HttpServletRequest request) throws Exception {
-//        Empresa empresa = empresaService.getEmpresaById(idEmpresa);
-//        
-//        sireClient = new SireClient(appConfig.getClientId(), appConfig.getClientSecret(),
-//            empresa.getNumdoc().concat(empresa.getUsuariosol()),empresa.getClavesol());
-//        
-//        List<String> list = sireClient.getResumen(periodo, codTipoResumen, CodTipoArchivo, libro);
-//        
-//        return ResponseEntity.status(HttpStatus.OK).body(list);
-//    }
-    
+
     @PostMapping(value = "/gen-xml-notacredito-by-numdoc")
     public ResponseEntity<?> genXmlNotaCredito(
-            @RequestParam(name = "serie") String serie, 
+            @RequestParam(name = "serie") String serie,
             @RequestParam(name = "numero") String numero,
             @RequestParam(name = "empresaId") Integer empresaId,
             HttpServletRequest request, HttpServletResponse response) throws TransferirArchivoException, ParseException, JsonProcessingException {
-        Map<String,Object> result = null;
-        
-        
+        Map<String, Object> result = null;
+
         try {
             FacturaElectronica facturaElectronicaParam = new FacturaElectronica();
             facturaElectronicaParam.setSerie(serie);
@@ -295,27 +278,34 @@ public class FacturaBackendController extends BaseController {
             result = this.facturaElectronicaService.generarNotaCredito(facturaElectronicaParam);
         } catch (Exception e) {
             e.printStackTrace();
-            result  = new HashMap<>();
-            result.put("code","003");
-            result.put("message",e.getMessage());
+            result = new HashMap<>();
+            result.put("code", "003");
+            result.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
         }
- 
+
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
-    
+
     @PostMapping(value = "/get-resumen-rlie")
-    public  ResponseEntity<?> getResumenRlie(@RequestBody ParamBean paramBean,HttpServletRequest request) throws Exception{
+    public ResponseEntity<?> getResumenRlie(@RequestBody ParamBean paramBean, HttpServletRequest request) throws Exception {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                facturaElectronicaService.getResumenRlieCombined(paramBean.getEmpresa().getId(), 
-                paramBean.getPeriodo().get("perTributario"),"1","0",paramBean.getLibro()));
+                facturaElectronicaService.getResumenRlieCombined(paramBean.getEmpresa().getId(),
+                        paramBean.getPeriodo().get("perTributario"), "1", "0", paramBean.getLibro()));
     }
-    
+
     @PostMapping(value = "/get-propuesta-rlie")
-    public  ResponseEntity<?> getPropuestaRlie(@RequestBody ParamBean paramBean,HttpServletRequest request) throws Exception{
+    public ResponseEntity<?> getPropuestaRlie(@RequestBody ParamBean paramBean, HttpServletRequest request) throws Exception {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                facturaElectronicaService.getPropuestaRlieCombined(paramBean.getEmpresa().getId(), 
-                paramBean.getPeriodo().get("perTributario"),"1","0",paramBean.getLibro()));
+                facturaElectronicaService.getPropuestaRlie(paramBean.getEmpresa().getId(),
+                        paramBean.getPeriodo().get("perTributario"), "1", "0", paramBean.getLibro()));
     }
-    
+
+    @PostMapping(value = "/get-list-comparacion-rlie")
+    public List<FacturaElectronicaDto> getComparacionRlie(@RequestBody ParamBean paramBean, HttpServletRequest request) throws Exception {
+        Map<String, Object> map = auth.getJwtLoggedUserData(request);
+        String idUser = ((Map<String, Object>) map.get("user")).get("id").toString();
+        paramBean.setIdUser(Long.parseLong(idUser));
+        return facturaElectronicaService.getReportActComprobanteCombined(paramBean);
+    }
 }

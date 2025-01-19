@@ -334,9 +334,9 @@ public class Util {
             conn.setDoInput(true);
             conn.setDoOutput(true);
             conn.setRequestMethod(httpMethod.name());
-            conn.setRequestProperty("Accept", accept);
+            conn.setRequestProperty("Accept", "*/*");
             conn.setRequestProperty("Authorization", "Bearer " + authorization);
-            conn.setRequestProperty("Content-Type", contentType);
+//            conn.setRequestProperty("Content-Type", contentType);
             conn.connect();
 
             OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
@@ -371,14 +371,14 @@ public class Util {
         }
     }
 
-    public static String simpleApiWithJsonBody2(String urlParam, HttpMethod httpMethod, String authorization,
+    public static String simpleApiWithJsonBody2(String urlParam, HttpMethod httpMethod, 
+            HttpHeaders headers,
             String body,
-            String accept,
-            MediaType contentType) throws Exception {
+            String accept) throws Exception {
         Map<String, Object> respuesta = null;
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(contentType);//MediaType.APPLICATION_FORM_URLENCODED);
-        headers.set("Authorization", "bearer " + authorization);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(contentType);//MediaType.APPLICATION_FORM_URLENCODED);
+//        headers.set("Authorization", "bearer " + authorization);
 //        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 
         String urlTemplate = UriComponentsBuilder.fromHttpUrl(urlParam)
@@ -414,7 +414,8 @@ public class Util {
         }
     }
 
-    public static Map<String, Object> simpleApiWithFormBody(String urlParam, HttpMethod httpMethod, String authorization, MultiValueMap<String, String> formBody) throws Exception {
+    public static Map<String, Object> simpleApiWithFormBody(String urlParam, HttpMethod httpMethod, String authorization, 
+            MultiValueMap<String, String> formBody) throws Exception {
         Map<String, Object> respuesta = null;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -645,40 +646,6 @@ public class Util {
         }
     }
 
-    public static void unzip(String zipFilePath, String destDir) throws IOException {
-        // Crear el directorio de destino si no existe
-        File dir = new File(destDir);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-
-        String FileName = "91.zip";
-        File zipFile = new File(System.getProperty("java.io.tmpdir"), FileName);
-
-        FileInputStream fin = new FileInputStream(zipFile);
-//        ZipInputStream zis = new ZipInputStream(fin);
-        
-        // Abrir el archivo ZIP
-        //try (ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFilePath))) {
-        try (ZipInputStream zis = new ZipInputStream(fin)) {
-            ZipEntry entry;
-
-            // Iterar sobre las entradas del archivo ZIP
-            while ((entry = zis.getNextEntry()) != null) {
-                String filePath = destDir + File.separator + entry.getName();
-
-                if (entry.isDirectory()) {
-                    // Si es un directorio, crear el directorio
-                    new File(filePath).mkdirs();
-                } else {
-                    // Si es un archivo, escribir su contenido
-                    extractFile(zis, filePath);
-                }
-
-                zis.closeEntry();
-            }
-        }
-    }
 
     private static void extractFile(ZipInputStream zis, String filePath) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(filePath)) {

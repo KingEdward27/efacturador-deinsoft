@@ -79,6 +79,13 @@ public class Empresa implements Serializable {
     @Column(name = "estado")
     private Character estado;
     
+    
+    @Column(name = "sire_client_id")
+    private String sireClientId;
+    
+    @Column(name = "sire_client_secret")
+    private String sireClientSecret;
+    
     @OneToMany(mappedBy = "empresa", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JsonIgnoreProperties(value = {"empresa"}, allowSetters = true)
     private List<Local> listLocales;
@@ -202,6 +209,22 @@ public class Empresa implements Serializable {
 
     public void setListLocales(List<Local> listLocales) {
         this.listLocales = listLocales;
+    }
+
+    public String getSireClientId() {
+        return sireClientId;
+    }
+
+    public void setSireClientId(String sireClientId) {
+        this.sireClientId = sireClientId;
+    }
+
+    public String getSireClientSecret() {
+        return sireClientSecret;
+    }
+
+    public void setSireClientSecret(String sireClientSecret) {
+        this.sireClientSecret = sireClientSecret;
     }
     
     @Override

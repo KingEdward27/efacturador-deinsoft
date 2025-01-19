@@ -5,6 +5,7 @@
 package com.deinsoft.efacturador3.util.validacion;
 
 import com.deinsoft.efacturador3.util.GenericHttpClient;
+import com.deinsoft.efacturador3.util.HttpClient;
 import com.deinsoft.efacturador3.util.Util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -15,6 +16,7 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
@@ -42,37 +44,8 @@ public class SireClient {
         getToken0();
     }
 
-    private String getToken0() {
-        GenericHttpClient client = new GenericHttpClient();
-        Map<String, String> body = new HashMap<>();
-        body.put("grant_type", "password");
-        body.put("scope", "https://api-sire.sunat.gob.pe");
-        body.put("client_id", clientId);
-        body.put("client_secret", clientSecret);
-        body.put("username", username);
-        body.put("password", password);
-
-        String url = "https://api-seguridad.sunat.gob.pe/v1/clientessol/330c5519-61fc-40a9-af27-986b23220b3e/oauth2/token/";
-
-        Map<String, String> headers = new HashMap<>();
-
-        try {
-            HttpResponse<String> response = client.sendRequestFormBody("POST", url, headers, body, HttpResponse.BodyHandlers.ofString());
-            System.out.println("Status Code: " + response.statusCode());
-            System.out.println("Response Body: " + response.body());
-
-            Map<String, Object> result
-                    = new ObjectMapper().readValue(response.body(), HashMap.class);
-
-            token = result.get("access_token").toString();
-            return token;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private String getToken() throws Exception {
+    private String getToken0() throws Exception {
+//        GenericHttpClient client = new GenericHttpClient();
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "password");
         body.add("scope", "https://api-sire.sunat.gob.pe");
@@ -81,29 +54,91 @@ public class SireClient {
         body.add("username", username);
         body.add("password", password);
 
-        Map<String, Object> credentialMapResponse = Util.simpleApiWithFormBody(
-                "https://api-seguridad.sunat.gob.pe/v1/clientessol/330c5519-61fc-40a9-af27-986b23220b3e/oauth2/token/",
-                HttpMethod.POST, "", body);
+        
+//        String requestBody = "grant_type=password&scope=https://api-sire.sunat.gob.pe"
+//                + "&client_id=" +clientId
+//                + "&client_secret="+clientSecret
+//                + "&username="+username
+//                + "&password="+password;
+//        
+        if (Util.isNullOrEmpty(clientId) || Util.isNullOrEmpty(clientSecret)) {
+                throw new Exception("No se encontraron credenciales para la conexión con SIRE SUNAT");
+            }
+        
+        String url = "https://api-seguridad.sunat.gob.pe/v1/clientessol/"+clientId+"/oauth2/token/";
 
-        if (credentialMapResponse == null) {
-            throw new Exception("Respuesta nula en servicio de autenticación");
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/x-www-form-urlencoded");
+        try {
+//            HttpResponse<String> response = client.sendRequestFormBody("POST", url, headers, body, HttpResponse.BodyHandlers.ofString());
+            
+//            String response = HttpClient.sendRequest(
+//                    url,
+//                    "POST",
+//                    headers,
+//                    requestBody
+//            );
+            Map<String, Object> response = Util.simpleApiWithFormBody(url, HttpMethod.POST, null, body);
+            
+//            Map<String, Object> result
+//                    = new ObjectMapper().readValue(response, HashMap.class);
+
+            token = response.get("access_token").toString();
+//            token = result.get("access_token").toString();
+            return token;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-        token = credentialMapResponse.get("access_token").toString();
-        return token;
     }
+
+//    private String getToken() throws Exception {
+//        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+//        body.add("grant_type", "password");
+//        body.add("scope", "https://api-sire.sunat.gob.pe");
+//        body.add("client_id", clientId);
+//        body.add("client_secret", clientSecret);
+//        body.add("username", username);
+//        body.add("password", password);
+//
+//        Map<String, Object> credentialMapResponse = Util.simpleApiWithFormBody(
+//                "https://api-seguridad.sunat.gob.pe/v1/clientessol/330c5519-61fc-40a9-af27-986b23220b3e/oauth2/token/",
+//                HttpMethod.POST, "", body);
+//
+//        if (credentialMapResponse == null) {
+//            throw new Exception("Respuesta nula en servicio de autenticación");
+//        }
+//        token = credentialMapResponse.get("access_token").toString();
+//        return token;
+//    }
 
     public List<PeriodoResponse> getPeriodos(String codLibro) throws JsonProcessingException, Exception {
         ObjectMapper mapper = new ObjectMapper();
-        GenericHttpClient client = new GenericHttpClient();
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "Bearer " + token);
-        HttpResponse<String> bodyPeriodos = client.sendRequestJsonBody(//140000
-                HttpMethod.GET.toString(), "https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/padron/web/omisos/{{codLibro}}/periodos"
-                .replace("{{codLibro}}", codLibro),
-                headers,
-                "", HttpResponse.BodyHandlers.ofString());
-        return mapper.readValue(bodyPeriodos.body(), new TypeReference<List<PeriodoResponse>>() {
+//        GenericHttpClient client = new GenericHttpClient();
+//        Map<String, String> headers = new HashMap<>();
+//        headers.put("Authorization", "Bearer " + token);
+        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);//MediaType.APPLICATION_FORM_URLENCODED);
+        headers.set("Authorization", "Bearer " + token);
+        
+//        HttpResponse<String> bodyPeriodos = client.sendRequestJsonBody(//140000
+//                HttpMethod.GET.toString(), "https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/padron/web/omisos/{{codLibro}}/periodos"
+//                .replace("{{codLibro}}", codLibro),
+//                headers,
+//                "", HttpResponse.BodyHandlers.ofString());
+        
+//        String responseBody = Util.simpleApiWithJsonBody2("https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/padron/web/omisos/{{codLibro}}/periodos"
+//                            .replace("{{codLibro}}", codLibro), HttpMethod.GET, headers, 
+//                            null, null);
+        
+        String responseBody = Util.simpleApiWithJsonBody("https://api-sire.sunat.gob.pe/v1/contribuyente/migeigv/libros/rvierce/padron/web/omisos/{{codLibro}}/periodos"
+                            .replace("{{codLibro}}", codLibro), "", HttpMethod.GET, token, null, null);
+        
+        return mapper.readValue(responseBody, new TypeReference<List<PeriodoResponse>>() {
         });
+        
+        
+        
         //return mapper.readValue(bodyPeriodos.body(), PeriodoRootResponse.class);
     }
 
