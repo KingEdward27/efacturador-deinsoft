@@ -87,7 +87,8 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
                     + "sum(sumatoriaIGV),sum(totalValorVenta)) "
                     + "from facturaElectronica p " 
                     + "where empresa_id = :empresaId "
-                    + "and (p.fechaEmision between :fechaDesde and :fechaHasta)" 
+                    + "and (p.fechaEmision between :fechaDesde and :fechaHasta)"
+                    + "and estado <> '0'" 
                     + "group by tipo")
     List<ResumentRleDto> getResumenRlie(@Param("empresaId") long empresaId,
                                         @Param("fechaDesde") LocalDate fechaDesde,

@@ -949,9 +949,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                         log.debug("El XML fue generado, pero el Comprobante tiene mas de " + nroDias + " dís. Emisión: " + documento.getFecha_emision() + ". Use el resumen diario para generar y enviar.");
                     }
 
-//                    if (documento.getTipo().equals("01")) {
-//                        result = "No se puede generar el XML, el Comprobante tiene mas de " + nroDias + " días. Emisión: " + documento.getFecha_emision();
-//                    }
+                    if (documento.getTipo().equals("01")) {
+                        result = "No se puede generar el XML, el Comprobante tiene mas de " + nroDias + " días. Emisión: " + documento.getFecha_emision();
+                    }
                 }
 
             }
@@ -1217,6 +1217,11 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 Integer.valueOf(periodo.substring(0, 4)),
                 Integer.valueOf(periodo.substring(4, 6)), 1);
 
+        Map<String, String> mapTipoDocSunat = new HashMap<>();
+        mapTipoDocSunat.put("01", "01-Factura");
+        mapTipoDocSunat.put("03", "03-Boleta de Venta");
+        mapTipoDocSunat.put("07", "07-Nota de Crédito");
+
         LocalDate fechaDesde = initial.withDayOfMonth(1);
         LocalDate fechaHasta = initial.withDayOfMonth(initial.getMonth().length(initial.isLeapYear()));
         List<ResumentRleDto> list = facturaElectronicaRepository.getResumenRlie(empresaId, fechaDesde, fechaHasta);
@@ -1225,19 +1230,29 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         BigDecimal totalSubtotal = BigDecimal.ZERO;
         BigDecimal totalTotal = BigDecimal.ZERO;
         for (ResumentRleDto resumentRleDto : list) {
+            if (resumentRleDto.getTipo().equals("07")) {
+                resumentRleDto.setTotalIgv(resumentRleDto.getTotalIgv().multiply(new BigDecimal(-1)));
+                resumentRleDto.setTotalSubtotal(resumentRleDto.getTotalSubtotal().multiply(new BigDecimal(-1)));
+                resumentRleDto.setTotalTotal(resumentRleDto.getTotalTotal().multiply(new BigDecimal(-1)));
+            }
+
             total = total + resumentRleDto.getTotal();
             totalIgv = totalIgv.add(resumentRleDto.getTotalIgv());
             totalSubtotal = totalSubtotal.add(resumentRleDto.getTotalSubtotal());
             totalTotal = totalTotal.add(resumentRleDto.getTotalTotal());
+
         }
         list.add(new ResumentRleDto("TOTAL ", total, totalSubtotal, totalIgv, totalTotal));
-        return list.stream().map(mapper -> {
+        list = list.stream().map(mapper -> {
             if (!mapper.getTipo().equals("TOTAL ")) {
-                mapper.setTipo(Constantes.mapTipoDocSunat.get(mapper.getTipo()));
+                mapper.setTipo(mapTipoDocSunat.get(mapper.getTipo()));
             }
 
             return mapper;
         }).collect(Collectors.toList());
+
+        list.sort((o1, o2) -> o1.getTipo().compareTo(o2.getTipo()));
+        return list;
     }
 
     @Override
@@ -1314,41 +1329,41 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             String CodTipoArchivo, String libro) throws Exception {
 
         //1. get propuesta
-        if (listFromRce == null) {
-            Empresa empresa = empresaService.getEmpresaById(Integer.valueOf(String.valueOf(empresaId)));
+//        if (listFromRce == null) {
+        Empresa empresa = empresaService.getEmpresaById(Integer.valueOf(String.valueOf(empresaId)));
 
-            SireClient sireClient = new SireClient(empresa.getSireClientId(), empresa.getSireClientSecret(),
-                    empresa.getNumdoc().concat(empresa.getUsuariosol()), empresa.getClavesol());
+        SireClient sireClient = new SireClient(empresa.getSireClientId(), empresa.getSireClientSecret(),
+                empresa.getNumdoc().concat(empresa.getUsuariosol()), empresa.getClavesol());
 
-            String numTicket = getPropuesta(sireClient, periodo, libro);
+        String numTicket = getPropuesta(sireClient, periodo, libro);
 
-            Thread.sleep(2000);
+        Thread.sleep(2000);
 
-            //2. get estado Ticket
-            Map<String, Object> archivoReporteJson = getEstadoTicket(sireClient, periodo, libro, numTicket);
-            String nomArchivoReporteZip = String.valueOf(archivoReporteJson.get("nomArchivoReporte"));
-            String codTipoAchivoReporte = String.valueOf(archivoReporteJson.get("codTipoAchivoReporte"));
-            String nomArchivoInZip = String.valueOf(archivoReporteJson.get("nomArchivoContenido"));
+        //2. get estado Ticket
+        Map<String, Object> archivoReporteJson = getEstadoTicket(sireClient, periodo, libro, numTicket);
+        String nomArchivoReporteZip = String.valueOf(archivoReporteJson.get("nomArchivoReporte"));
+        String codTipoAchivoReporte = String.valueOf(archivoReporteJson.get("codTipoAchivoReporte"));
+        String nomArchivoInZip = String.valueOf(archivoReporteJson.get("nomArchivoContenido"));
 
-            List<String> linesList = getContentResponse(sireClient, periodo, nomArchivoReporteZip, codTipoAchivoReporte, libro, numTicket, nomArchivoInZip);
+        List<String> linesList = getContentResponse(sireClient, periodo, nomArchivoReporteZip, codTipoAchivoReporte, libro, numTicket, nomArchivoInZip);
 
-            listFromRce = Util.parseAndMap(linesList, ";", parts
-                    -> {
-                FacturaElectronica f = new FacturaElectronica();
-                LocalDate date = LocalDate.parse(parts[4], formatter);
-                f.setFechaEmision(date);
-                f.setTipo(parts[6]);
-                f.setSerie(parts[7]);
-                f.setNumero(parts[9]);
-                f.setClienteDocumento(parts[12]);
-                f.setClienteNombre(parts[13]);
+        listFromRce = Util.parseAndMap(linesList, ";", parts
+                -> {
+            FacturaElectronica f = new FacturaElectronica();
+            LocalDate date = LocalDate.parse(parts[4], formatter);
+            f.setFechaEmision(date);
+            f.setTipo(parts[6]);
+            f.setSerie(parts[7]);
+            f.setNumero(parts[9]);
+            f.setClienteDocumento(parts[12]);
+            f.setClienteNombre(parts[13]);
 
-                f.setSumatoriaIGV(new BigDecimal(parts[15]));
-                f.setTotalValorVenta(new BigDecimal(parts[24]));
-                f.setTotalValorVentasGravadas(f.getTotalValorVenta().subtract(f.getSumatoriaIGV()));
-                return f;
-            });
-        }
+            f.setSumatoriaIGV(new BigDecimal(parts[15]));
+            f.setTotalValorVenta(new BigDecimal(parts[24]));
+            f.setTotalValorVentasGravadas(f.getTotalValorVenta().subtract(f.getSumatoriaIGV()));
+            return f;
+        });
+//        }
 
         return listFromRce;
     }
@@ -1358,41 +1373,41 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             String CodTipoArchivo, String libro) throws Exception {
 
         //1. get propuesta
-        if (listFromRvie == null) {
-            Empresa empresa = empresaService.getEmpresaById(Integer.valueOf(String.valueOf(empresaId)));
+//        if (listFromRvie == null) {
+        Empresa empresa = empresaService.getEmpresaById(Integer.valueOf(String.valueOf(empresaId)));
 
-            SireClient sireClient = new SireClient(empresa.getSireClientId(), empresa.getSireClientSecret(),
-                    empresa.getNumdoc().concat(empresa.getUsuariosol()), empresa.getClavesol());
+        SireClient sireClient = new SireClient(empresa.getSireClientId(), empresa.getSireClientSecret(),
+                empresa.getNumdoc().concat(empresa.getUsuariosol()), empresa.getClavesol());
 
-            String numTicket = getPropuesta(sireClient, periodo, libro);
+        String numTicket = getPropuesta(sireClient, periodo, libro);
 
-            Thread.sleep(2000);
+        Thread.sleep(2000);
 
-            //2. get estado Ticket
-            Map<String, Object> archivoReporteJson = getEstadoTicket(sireClient, periodo, libro, numTicket);
-            String nomArchivoReporteZip = String.valueOf(archivoReporteJson.get("nomArchivoReporte"));
-            String codTipoAchivoReporte = String.valueOf(archivoReporteJson.get("codTipoAchivoReporte"));
-            String nomArchivoInZip = String.valueOf(archivoReporteJson.get("nomArchivoContenido"));
+        //2. get estado Ticket
+        Map<String, Object> archivoReporteJson = getEstadoTicket(sireClient, periodo, libro, numTicket);
+        String nomArchivoReporteZip = String.valueOf(archivoReporteJson.get("nomArchivoReporte"));
+        String codTipoAchivoReporte = String.valueOf(archivoReporteJson.get("codTipoAchivoReporte"));
+        String nomArchivoInZip = String.valueOf(archivoReporteJson.get("nomArchivoContenido"));
 
-            List<String> linesList = getContentResponse(sireClient, periodo, nomArchivoReporteZip, codTipoAchivoReporte,
-                    libro, numTicket, nomArchivoInZip);
+        List<String> linesList = getContentResponse(sireClient, periodo, nomArchivoReporteZip, codTipoAchivoReporte,
+                libro, numTicket, nomArchivoInZip);
 
-            listFromRvie = Util.parseAndMap(linesList, ";", parts
-                    -> {
-                FacturaElectronica f = new FacturaElectronica();
-                LocalDate date = LocalDate.parse(parts[4], formatter);
-                f.setFechaEmision(date);
-                f.setTipo(parts[6]);
-                f.setSerie(parts[7]);
-                f.setNumero(parts[8]);
-                f.setClienteDocumento(parts[11]);
-                f.setClienteNombre(parts[12]);
-                f.setTotalValorVentasGravadas(new BigDecimal(parts[14]));
-                f.setSumatoriaIGV(new BigDecimal(parts[16]));
-                f.setTotalValorVenta(new BigDecimal(parts[25]));
-                return f;
-            });
-        }
+        listFromRvie = Util.parseAndMap(linesList, ";", parts
+                -> {
+            FacturaElectronica f = new FacturaElectronica();
+            LocalDate date = LocalDate.parse(parts[4], formatter);
+            f.setFechaEmision(date);
+            f.setTipo(parts[6]);
+            f.setSerie(parts[7]);
+            f.setNumero(parts[8]);
+            f.setClienteDocumento(parts[11]);
+            f.setClienteNombre(parts[12]);
+            f.setTotalValorVentasGravadas(new BigDecimal(parts[14]));
+            f.setSumatoriaIGV(new BigDecimal(parts[16]));
+            f.setTotalValorVenta(new BigDecimal(parts[25]));
+            return f;
+        });
+//        }
 
         return listFromRvie;
     }
@@ -1400,12 +1415,43 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     String getPropuesta(SireClient sireClient, String periodo, String libro) throws Exception {
         Map<String, Object> ticketPropuestaMap = null;
 
+        int contador = 0;
+        boolean error = false;
+        Exception ex = null;
         switch (libro) {
             case Constantes.COD_LIBRO_VENTAS:
-                ticketPropuestaMap = sireClient.getPropuestaRvie(periodo, "0");
+                while (contador < 3) {
+                    try {
+                        ticketPropuestaMap = sireClient.getPropuestaRvie(periodo, "0");
+                        contador = 3;
+                        error = false;
+                    } catch (Exception e) {
+                        contador++;
+                        error = true;
+                        ex = e;
+                    }
+
+                }
+                if (error) {
+                    throw ex;
+                }
                 break;
             case Constantes.COD_LIBRO_COMPRAS:
-                ticketPropuestaMap = sireClient.getPropuestaRce(periodo, "0", "2");
+                while (contador < 3) {
+                    try {
+                        ticketPropuestaMap = sireClient.getPropuestaRce(periodo, "0", "2");
+                        contador = 3;
+                        error = false;
+                    } catch (Exception e) {
+                        contador++;
+                        error = true;
+                        ex = e;
+                    }
+
+                }
+                if (error) {
+                    throw ex;
+                }
                 break;
             default:
                 throw new Exception("Código de libro no soportado");
@@ -1465,7 +1511,14 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         if (paramBean.getLibro().equals(Constantes.COD_LIBRO_COMPRAS)) {
             return null;
         }
-        return getReportActComprobante(paramBean).stream().map(mapper -> {
+
+        paramBean.setFechaDesde(fechaDesde);
+        paramBean.setFechaHasta(fechaHasta);
+        List<FacturaElectronica> list = getReportActComprobante(paramBean);
+        list.sort((o1, o2) -> o1.getId().compareTo(o2.getId()));
+        return list.stream()
+                .filter(predicate -> !predicate.getEstado().equals("0"))
+                .map(mapper -> {
 
             FacturaElectronicaDto f = new FacturaElectronicaDto();
             f.setFechaEmision(mapper.getFechaEmision());
@@ -1474,44 +1527,77 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             f.setNumero(mapper.getNumero());
             f.setClienteDocumento(mapper.getClienteDocumento());
             f.setClienteNombre(mapper.getClienteNombre());
+
             f.setSumatoriaIGV(mapper.getSumatoriaIGV());
             f.setTotalValorVenta(mapper.getTotalValorVenta());
             f.setTotalValorVentasGravadas(f.getTotalValorVenta().subtract(f.getSumatoriaIGV()));
-            f.setExists(false);
-            f.setSamePeriodo(false);
+            f.setExists(true);
+            f.setSamePeriodo(true);
             f.setDifIgv(BigDecimal.ZERO);
             f.setDifTotales(BigDecimal.ZERO);
-            if (listFromSire.stream().anyMatch(predicate -> predicate.getSerie().equals(mapper.getSerie())
-                    && predicate.getNumero().equals(mapper.getNumero()))) {
-                f.setExists(true);
 
-                if (mapper.getFechaEmision().compareTo(fechaDesde) >= 0 && mapper.getFechaEmision().compareTo(fechaHasta) <= 0) {
-                    f.setSamePeriodo(true);
-
-                    if (listFromSire.stream().anyMatch(predicate -> predicate.getSumatoriaIGV().compareTo(mapper.getSumatoriaIGV()) != 0)) {
-                        FacturaElectronica fDifIgv = listFromSire.stream()
-                                .filter(predicate -> predicate.getSumatoriaIGV().compareTo(mapper.getSumatoriaIGV()) != 0)
-                                .findFirst().orElse(null);
-                        f.setDifIgv(mapper.getSumatoriaIGV().subtract(fDifIgv.getSumatoriaIGV()));
-                    }
-
-                    if (listFromSire.stream().anyMatch(predicate -> (predicate.getTotalValorVentasGravadas()
-                            .compareTo(mapper.getTotalValorVentasGravadas()) != 0)
-                            || (predicate.getTotalValorVenta()
-                                    .compareTo(mapper.getTotalValorVenta()) != 0))) {
-
-                        FacturaElectronica fDifIgv = listFromSire.stream()
-                                .filter(predicate -> (predicate.getTotalValorVentasGravadas()
-                                .compareTo(mapper.getTotalValorVentasGravadas()) != 0)
-                                || (predicate.getTotalValorVenta()
-                                        .compareTo(mapper.getTotalValorVenta()) != 0))
-                                .findFirst().orElse(null);
-
-                        f.setDifTotales(mapper.getTotalValorVenta().subtract(fDifIgv.getTotalValorVenta()));
-                    }
-                }
+            if (f.getTipo().equals("07")) {
+                f.setSumatoriaIGV(f.getSumatoriaIGV().multiply(BigDecimal.valueOf(-1)));
+                f.setTotalValorVenta(f.getTotalValorVenta().multiply(BigDecimal.valueOf(-1)));
+                f.setTotalValorVentasGravadas(f.getTotalValorVentasGravadas().multiply(BigDecimal.valueOf(-1)));
             }
+            if (!listFromSire.stream().anyMatch(predicate -> predicate.getSerie().equals(f.getSerie())
+                    && Integer.parseInt(predicate.getNumero()) == Integer.parseInt(f.getNumero()))) {
+                f.setExists(false);
+                f.setSamePeriodo(false);
+                return f;
+            }
+
+            FacturaElectronica founded = listFromSire.stream().filter(predicate -> predicate.getSerie().equals(f.getSerie())
+                    && Integer.parseInt(predicate.getNumero()) == Integer.parseInt(f.getNumero()))
+                    .findFirst().orElse(null);
+
+            if (founded == null) {
+                f.setSamePeriodo(false);
+                return f;
+            }
+
+            if (founded.getSumatoriaIGV().compareTo(f.getSumatoriaIGV()) != 0) {
+                f.setDifIgv(f.getSumatoriaIGV().subtract(founded.getSumatoriaIGV()));
+            }
+
+            if (founded.getTotalValorVenta().compareTo(f.getTotalValorVenta()) != 0) {
+                f.setDifTotales(f.getTotalValorVenta().subtract(founded.getTotalValorVenta()));
+            }
+
             return f;
+//            if (listFromSire.stream().anyMatch(predicate -> predicate.getSerie().equals(mapper.getSerie())
+//                    && Integer.parseInt(predicate.getNumero()) == Integer.parseInt(mapper.getNumero()))) {
+//                f.setExists(true);
+//
+//                if (mapper.getFechaEmision().compareTo(fechaDesde) >= 0 && mapper.getFechaEmision().compareTo(fechaHasta) <= 0) {
+//                    f.setSamePeriodo(true);
+//
+//                    if (listFromSire.stream().anyMatch(predicate -> predicate -> predicate -> predicate.getSerie().equals(mapper.getSerie())
+//                            && Integer.parseInt(predicate.getNumero()) == Integer.parseInt(mapper.getNumero()) && predicate.getSumatoriaIGV().compareTo(mapper.getSumatoriaIGV()) != 0)) {
+//                        FacturaElectronica fDifIgv = listFromSire.stream()
+//                                .filter(predicate -> predicate -> predicate.getSerie().equals(mapper.getSerie())
+//                                && Integer.parseInt(predicate.getNumero()) == Integer.parseInt(mapper.getNumero()) 
+//                                        && predicate.getSumatoriaIGV().compareTo(mapper.getSumatoriaIGV()) != 0)
+//                                .findFirst().orElse(null);
+//                        f.setDifIgv(mapper.getSumatoriaIGV().subtract(fDifIgv.getSumatoriaIGV()));
+//                    }
+//
+//                    if (listFromSire.stream().anyMatch(predicate -> predicate -> predicate.getSerie().equals(mapper.getSerie())
+//                            && Integer.parseInt(predicate.getNumero()) == Integer.parseInt(mapper.getNumero()) && (predicate.getTotalValorVenta()
+//                            .compareTo(mapper.getTotalValorVenta()) != 0))) {
+//
+//                        FacturaElectronica fDifIgv = listFromSire.stream()
+//                                .filter(predicate -> predicate -> predicate.getSerie().equals(mapper.getSerie())
+//                                && Integer.parseInt(predicate.getNumero()) == Integer.parseInt(mapper.getNumero()) 
+//                                        && (predicate.getTotalValorVenta()
+//                                .compareTo(mapper.getTotalValorVenta()) != 0))
+//                                .findFirst().orElse(null);
+//
+//                        f.setDifTotales(mapper.getTotalValorVenta().subtract(fDifIgv.getTotalValorVenta()));
+//                    }
+//                }
+//            }
         }).collect(Collectors.toList());
     }
 }

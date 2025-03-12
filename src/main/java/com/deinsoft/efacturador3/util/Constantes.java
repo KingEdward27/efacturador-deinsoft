@@ -131,10 +131,10 @@ public final class Constantes {
     
     public static final String COD_LIBRO_VENTAS = "140000";
     public static final String COD_LIBRO_COMPRAS = "080000";
-    public static final Map<String, String> mapTipoDocSunat = Map.of(
-            "01", "01-Factura",
-            "03", "03-Boleta",
-            "07", "07-Nota de Crédito"
-    );
+    public static final Map<String, String> mapTipoDocSunat = new HashMap<String, String>(){{
+        mapTipoDocSunat.put("01", "01-Factura");
+        mapTipoDocSunat.put("03", "03-Boleta");
+        mapTipoDocSunat.put("07", "07-Nota de Crédito");
+    }};
 
 }
