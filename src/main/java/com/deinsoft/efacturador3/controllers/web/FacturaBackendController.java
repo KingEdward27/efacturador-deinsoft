@@ -21,6 +21,7 @@ import com.deinsoft.efacturador3.service.FacturaElectronicaService;
 import com.deinsoft.efacturador3.service.ResumenDiarioService;
 import com.deinsoft.efacturador3.service.SecUserService;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
+import com.deinsoft.efacturador3.util.Constantes;
 import com.deinsoft.efacturador3.util.ExportUtil;
 import com.deinsoft.efacturador3.util.Util;
 import com.deinsoft.efacturador3.util.validacion.PeriodoDetail;
@@ -108,6 +109,7 @@ public class FacturaBackendController extends BaseController {
         Map<String, Object> map = auth.getJwtLoggedUserData(request);
         String idUser = ((Map<String, Object>) map.get("user")).get("id").toString();
         paramBean.setIdUser(Long.parseLong(idUser));
+        paramBean.setFlagIsVenta(Constantes.FLAG_IS_VENTA);
         return facturaElectronicaService.getReportActComprobante(paramBean);
     }
 

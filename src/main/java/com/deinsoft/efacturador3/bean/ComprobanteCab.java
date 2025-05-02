@@ -112,6 +112,8 @@ public class ComprobanteCab {
     private String monto_ref;
     private String fecha_ref;
     private String igv_ref;
+
+    private String is_venta;
     
     public String getTipo() {
         return tipo;
@@ -500,8 +502,14 @@ public class ComprobanteCab {
         this.igv_ref = igv_ref;
     }
 
-    
-    
+    public String getIs_venta() {
+        return is_venta;
+    }
+
+    public void setIs_venta(String is_venta) {
+        this.is_venta = is_venta;
+    }
+
     public ComprobanteCab() {
     }
     

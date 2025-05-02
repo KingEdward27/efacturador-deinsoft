@@ -222,6 +222,10 @@ public class FacturaElectronica implements Serializable {
     @JsonIgnoreProperties(value = {"facturaElectronica"}, allowSetters = true)
     private List<FacturaElectronicaLeyenda> listFacturaElectronicaLeyendas;
     
+    @ColumnDefault("1")
+    @Column(name = "flag_is_venta", length = 1, nullable = false)
+    private String flagIsVenta;
+    
     public void addFacturaElectronicaDet(FacturaElectronicaDet item) {
         item.setFacturaElectronica(this);
     }
@@ -873,6 +877,14 @@ public class FacturaElectronica implements Serializable {
 
     public void setNroIntentoEnvio(int nroIntentoEnvio) {
         this.nroIntentoEnvio = nroIntentoEnvio;
+    }
+
+    public String getFlagIsVenta() {
+        return flagIsVenta;
+    }
+
+    public void setFlagIsVenta(String flagIsVenta) {
+        this.flagIsVenta = flagIsVenta;
     }
 
     @Override

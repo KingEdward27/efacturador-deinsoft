@@ -137,4 +137,9 @@ public final class Constantes {
         mapTipoDocSunat.put("07", "07-Nota de Crédito");
     }};
 
+    public static final String FLAG_IS_VENTA = "1";
+    public static final String FLAG_IS_COMPRA = "2";
+    public static final String ESTADO_ACTIVO = "1";
+    public static final String ESTADO_ANULADO = "0";
+
 }

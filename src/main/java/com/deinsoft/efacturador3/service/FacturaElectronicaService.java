@@ -61,7 +61,7 @@ public interface FacturaElectronicaService {
     public Map<String, Object> generarNotaCredito(FacturaElectronica facturaElectronicaParam) throws TransferirArchivoException;
     
     public void verifyPending();
-    
+
     public List<FacturaElectronica> getReportActComprobante(ParamBean paramBean);
     
     public NumeroDocumentoDto getNextNumberForNc(long empresaId, String serie);

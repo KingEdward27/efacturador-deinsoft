@@ -110,7 +110,7 @@ public class EmpresaServiceImpl implements EmpresaService {
     @Override
     public void prepareAndUpload(Empresa empresa,MultipartFile file) {
         createDirsIfNotExists(empresa);
-        fileStorageService.storeFile(empresa.getNumdoc() + "/CERT", file);
+        fileStorageService.storeFile(empresa.getNumdoc() + "/CERT", file,empresa.getCertName());
     }
     
     @Override

@@ -108,7 +108,7 @@ public class FacturaController extends BaseController {
             
             FacturaElectronica comprobante = facturaElectronicaService.toFacturaModel(documento,empresa);
             comprobante.setEmpresa(empresa);
-
+            if (comprobante.getFlagIsVenta() == null) comprobante.setFlagIsVenta("1");
             List<FacturaElectronica> listFact = facturaElectronicaService.getBySerieAndNumeroAndEmpresaId(comprobante);
             if (listFact == null || (listFact != null && listFact.size() > 0)) {
                 result  = new HashMap<>();

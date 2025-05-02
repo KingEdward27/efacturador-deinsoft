@@ -30,8 +30,7 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
     @Query(value="select p from facturaElectronica p "
             + "where p.serie = :serie "
             + "and CAST(p.numero AS int) = CAST(:numero AS int) "
-            + "and p.empresa.id = :empresaId "
-            + "and p.flagIsVenta = '1' ")
+            + "and p.empresa.id = :empresaId ")
     List<FacturaElectronica> findBySerieAndNumeroAndEmpresaId(String serie,String numero,int empresaId);
 
     @Query(value="select p from facturaElectronica p "
@@ -39,7 +38,6 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
             + "and p.docrefSerie = :serie "
             + "and CAST(p.docrefNumero AS int) = CAST(:numero AS int) "
             + "and p.empresa.id = :empresaId "
-            + "and p.flagIsVenta = '1' "
     )
     List<FacturaElectronica> findBySerieRefAndNumeroRefAndEmpresaId(String serie,String numero,int empresaId);
     
@@ -49,7 +47,7 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
             + "and p.empresa.id = :empresaId "
             + "and p.tipo in (:listTipo) "
             + "and p.indSituacion in (:listSituacion) "
-            + "and p.estado = :estado "
+            + "and p.estado = :estado " 
             + "and p.flagIsVenta = '1' "
             + "order by p.fechaEmision asc,p.tipo asc,p.numero asc")
     List<FacturaElectronica> findToSendSunat
@@ -70,8 +68,7 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
     
     @Query(value="select p from facturaElectronica p where p.serie = :#{#facturaElectronica.docrefSerie} "
             + "and p.numero = :#{#facturaElectronica.docrefNumero} "
-            + "and p.empresa.id = :#{#facturaElectronica.empresa.id} "
-            + "and p.flagIsVenta = '1' ")
+            + "and p.empresa.id = :#{#facturaElectronica.empresa.id} ")
     List<FacturaElectronica> findByDocrefSerieAndDocrefNumero(@Param("facturaElectronica") FacturaElectronica facturaElectronica);
     
     List<FacturaElectronica> findByIdIn(List<Long> ids); 
@@ -88,8 +85,7 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
     
     @Query(value = "select max(serie) as serie, max(numero) as numero from factura_electronica\n" +
                     "where empresa_id = :empresaId\n" +
-                    "and tipo = '07' and nota_referencia_serie = :serie"
-                    + "and p.flagIsVenta = '1' ",nativeQuery = true)
+                    "and tipo = '07' and nota_referencia_serie = :serie",nativeQuery = true)
     NumeroDocumentoDto getNextNumberForNc(@Param("empresaId") long empresaId,@Param("serie") String serie);
     
     @Query(value = "select new com.deinsoft.efacturador3.dto.ResumentRleDto(tipo,count(1),sum(totalValorVenta - sumatoriaIGV),"
@@ -97,8 +93,7 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
                     + "from facturaElectronica p " 
                     + "where empresa_id = :empresaId "
                     + "and (p.fechaEmision between :fechaDesde and :fechaHasta)"
-                    + "and estado <> '0'"
-                    + "and p.flagIsVenta = '1' "
+                    + "and estado <> '0'" 
                     + "group by tipo")
     List<ResumentRleDto> getResumenRlie(@Param("empresaId") long empresaId,
                                         @Param("fechaDesde") LocalDate fechaDesde,

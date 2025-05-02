@@ -11,5 +11,5 @@ import org.springframework.web.multipart.MultipartFile;
  * @author user
  */
 public interface FileStorageService {
-   String storeFile(String path, MultipartFile file);
+   String storeFile(String path, MultipartFile file,String newFileName);
 }

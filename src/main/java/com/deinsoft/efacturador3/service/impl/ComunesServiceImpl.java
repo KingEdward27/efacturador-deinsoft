@@ -147,9 +147,9 @@ public class ComunesServiceImpl implements ComunesService {
             if(result.getCdr() == null){
                 return result;
             }
-            log.debug("result getStatus"+result.getStatus());
-            log.debug("result getCode"+result.getCode());
-            log.debug("result getDescription"+result.getDescription());
+            log.debug("result getStatus "+result.getStatus());
+            log.debug("result getCode "+result.getCode());
+            log.debug("result getDescription "+result.getDescription());
             FileUtils.writeByteArrayToFile(
                     new File(rootPath + empresa.getNumdoc() + "/RPTA/" + "R-" + filename + ".zip"),
                     result.getCdr());

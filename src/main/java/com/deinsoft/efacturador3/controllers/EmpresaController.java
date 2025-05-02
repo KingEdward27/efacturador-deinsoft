@@ -64,7 +64,7 @@ public class EmpresaController {
     @PostMapping(value = "save", consumes = { "multipart/form-data" })
     public ResponseEntity<?> save(
             @Valid @RequestPart("empresa") Empresa empresa , 
-            @Valid @NotNull @NotBlank @RequestPart("file") MultipartFile file , BindingResult result,
+            @RequestPart("file") MultipartFile file , BindingResult result,
             HttpServletRequest request, HttpServletResponse response) throws Exception {
         
         HashMap<String, Object> resultado = new HashMap<>();
@@ -128,6 +128,7 @@ public class EmpresaController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultado);
             }
         }
+        long expiresIn = SecurityConstants.TOKEN_EXPIRATION_TIME * 1000 * 1000 * 1000;
         String token = Jwts.builder()
                 .setIssuedAt(new Date())
                 .setIssuer(SecurityConstants.ISSUER_INFO)
@@ -137,7 +138,7 @@ public class EmpresaController {
                 .claim("razonSocial", empresa.getRazonSocial())
                 .claim("usuarioSol", empresa.getUsuariosol())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + SecurityConstants.TOKEN_EXPIRATION_TIME * 1000 * 1000 * 1000))
+                .setExpiration(new Date(new Date().getTime() + expiresIn))
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.SUPER_SECRET_KEY).compact();
 
         empresa.setToken(token);
@@ -148,7 +149,11 @@ public class EmpresaController {
         
         resultado.put("code", "000");
         resultado.put("message", "Empresa creada/actualizada!, se agregó correctamente la clave privada");
-        resultado.put("empresa", empresaResult);
+        resultado.put("id", empresaResult.getId());
+        resultado.put("access_token", empresaResult.getToken());
+        resultado.put("token_type", "JWT");
+        resultado.put("expires_in", expiresIn/ 1000);
+        resultado.put("expires_date", new Date(new Date().getTime() + expiresIn));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
     }

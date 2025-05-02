@@ -36,6 +36,7 @@ public class ParamBean {
     
     private Map<String,String> periodo;
     private String libro;
+    private String flagIsVenta;
     
     public ParamBean() {
     }
@@ -122,6 +123,11 @@ public class ParamBean {
         this.libro = libro;
     }
 
-    
-    
+    public String getFlagIsVenta() {
+        return flagIsVenta;
+    }
+
+    public void setFlagIsVenta(String flagIsVenta) {
+        this.flagIsVenta = flagIsVenta;
+    }
 }

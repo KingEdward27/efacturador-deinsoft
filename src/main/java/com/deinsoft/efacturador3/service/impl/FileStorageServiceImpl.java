@@ -38,9 +38,9 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
     
     @Override
-    public String storeFile(String path, MultipartFile file) {
+    public String storeFile(String path, MultipartFile file,String newFileName) {
         // Normalize file name
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String fileName = StringUtils.cleanPath(newFileName);
         try {
             // Check if the file's name contains valid  characters or not
             if (fileName.contains("..")) {
