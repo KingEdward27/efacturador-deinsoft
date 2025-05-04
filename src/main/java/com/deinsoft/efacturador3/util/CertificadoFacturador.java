@@ -32,10 +32,10 @@ public class CertificadoFacturador {
 //        }
 
         try {
-//            KeyStore ks = KeyStore.getInstance("PKCS12");
+            KeyStore ks = KeyStore.getInstance("PKCS12");
 
-            Security.addProvider(new BouncyCastleProvider());
-            KeyStore ks = KeyStore.getInstance("PKCS12", "BC");
+//            Security.addProvider(new BouncyCastleProvider());
+//            KeyStore ks = KeyStore.getInstance("PKCS12", "BC");
             try (InputStream fis = new FileInputStream(input)) {
                 ks.load(fis, passPrivateKey.toCharArray());
             }
@@ -127,25 +127,25 @@ public class CertificadoFacturador {
 
         if (error.intValue() == 0) {
 
-            importPfxToJks(rutaCertificado, passPrivateKey, certGenericPath + "FacturadorKey.jks", "SuN@TF4CT", Constantes.PRIVATE_KEY_ALIAS + numDoc);
-//            String salida = FacturadorUtil.executeCommand("keytool -delete -alias " + Constantes.PRIVATE_KEY_ALIAS + numDoc + " -storepass SuN@TF4CT -keystore " + certGenericPath + "FacturadorKey.jks");
-//
-//            log.debug("Metodo importarCertificado: Salida de keytool -delete " + salida);
-//            String command;
-//            if (aliasPfx.contains(" ")) {
-//                command = "keytool -importkeystore -srcalias \"" + aliasPfx + "\" -srckeystore " + rutaCertificado + " -srcstoretype pkcs12 -srcstorepass " + passPrivateKey + " -destkeystore " + certGenericPath + "FacturadorKey.jks -deststoretype JKS -destalias " + Constantes.PRIVATE_KEY_ALIAS + numDoc + " -deststorepass SuN@TF4CT";
-//            } else {
-//                command = "keytool -importkeystore -srcalias " + aliasPfx + " -srckeystore " + rutaCertificado + " -srcstoretype pkcs12 -srcstorepass " + passPrivateKey + " -destkeystore " + certGenericPath + "FacturadorKey.jks -deststoretype JKS -destalias " + Constantes.PRIVATE_KEY_ALIAS + numDoc + " -deststorepass SuN@TF4CT";
-//            }
-//
-//            log.debug("command: " + command);
-//            salida = FacturadorUtil.executeCommand(command);
-//
-//            log.debug("Metodo importarCertificado: Salida de keytool -importkeystore " + salida);
-//            if (!"".equals(salida)) {
-//                resultado.put("validacion", "Hubo un error, el certificado no fue creado");
-//                error = Integer.valueOf(1);
-//            }
+//            importPfxToJks(rutaCertificado, passPrivateKey, certGenericPath + "FacturadorKey.jks", "SuN@TF4CT", Constantes.PRIVATE_KEY_ALIAS + numDoc);
+            String salida = FacturadorUtil.executeCommand("keytool -delete -alias " + Constantes.PRIVATE_KEY_ALIAS + numDoc + " -storepass SuN@TF4CT -keystore " + certGenericPath + "FacturadorKey.jks");
+
+            log.debug("Metodo importarCertificado: Salida de keytool -delete " + salida);
+            String command;
+            if (aliasPfx.contains(" ")) {
+                command = "keytool -importkeystore -srcalias \"" + aliasPfx + "\" -srckeystore " + rutaCertificado + " -srcstoretype pkcs12 -srcstorepass " + passPrivateKey + " -destkeystore " + certGenericPath + "FacturadorKey.jks -deststoretype JKS -destalias " + Constantes.PRIVATE_KEY_ALIAS + numDoc + " -deststorepass SuN@TF4CT";
+            } else {
+                command = "keytool -importkeystore -srcalias " + aliasPfx + " -srckeystore " + rutaCertificado + " -srcstoretype pkcs12 -srcstorepass " + passPrivateKey + " -destkeystore " + certGenericPath + "FacturadorKey.jks -deststoretype JKS -destalias " + Constantes.PRIVATE_KEY_ALIAS + numDoc + " -deststorepass SuN@TF4CT";
+            }
+
+            log.debug("command: " + command);
+            salida = FacturadorUtil.executeCommand(command);
+
+            log.debug("Metodo importarCertificado: Salida de keytool -importkeystore " + salida);
+            if (!"".equals(salida)) {
+                resultado.put("validacion", "Hubo un error, el certificado no fue creado");
+                error = Integer.valueOf(1);
+            }
 
 
 

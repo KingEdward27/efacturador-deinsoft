@@ -6,6 +6,8 @@
 package com.deinsoft.efacturador3.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.ColumnDefault;
+
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -89,6 +91,12 @@ public class Empresa implements Serializable {
     @OneToMany(mappedBy = "empresa", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JsonIgnoreProperties(value = {"empresa"}, allowSetters = true)
     private List<Local> listLocales;
+
+    @ColumnDefault("1")
+    @Column(name = "flag_send")
+    @Size(max = 1)
+    private String flagSend;
+
 
     public Empresa() {
     }
@@ -251,6 +259,12 @@ public class Empresa implements Serializable {
     public String toString() {
         return "Empresa{" + "id=" + id + ", razonSocial=" + razonSocial + ", tipodoc=" + tipodoc + ", numdoc=" + numdoc + ", serie=" + serie + ", usuariosol=" + usuariosol + ", clavesol=" + clavesol + ", certName=" + certName + ", certPass=" + certPass + ", token=" + token + ", estado=" + estado + '}';
     }
-    
-    
+
+    public String getFlagSend() {
+        return flagSend;
+    }
+
+    public void setFlagSend(String flagSend) {
+        this.flagSend = flagSend;
+    }
 }
