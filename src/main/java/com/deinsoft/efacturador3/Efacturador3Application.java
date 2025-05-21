@@ -57,7 +57,7 @@ public class Efacturador3Application extends WebMvcConfigurerAdapter implements 
 //        }
     }
 
-    @Scheduled(cron = "0 0 04 * * *")
+    @Scheduled(cron = "0 0 23 * * *")
     void sendSunat() {
         if (!this.environment.getActiveProfiles()[0].equalsIgnoreCase("local")) {
             System.out.println("init sendSunat()");
@@ -71,7 +71,7 @@ public class Efacturador3Application extends WebMvcConfigurerAdapter implements 
 //        }
     }
 
-    @Scheduled(cron = "0 0 03 * * *")
+    @Scheduled(cron = "0 0 22 * * *")
     void verifyPending() {
         if (!this.environment.getActiveProfiles()[0].equalsIgnoreCase("local")) {
             System.out.println("init verifyPending()");

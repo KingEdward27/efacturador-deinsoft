@@ -5,7 +5,6 @@
  */
 package com.deinsoft.efacturador3.service.impl;
 
-import com.deinsoft.efacturador3.bean.MailBean;
 import com.deinsoft.efacturador3.bean.ResumenDiarioBean;
 import com.deinsoft.efacturador3.bean.ResumenDiarioBeanDet;
 import com.deinsoft.efacturador3.bean.ResumenDiarioBeanTax;
@@ -23,13 +22,10 @@ import com.deinsoft.efacturador3.service.ComunesService;
 import com.deinsoft.efacturador3.service.EmpresaService;
 import com.deinsoft.efacturador3.service.FacturaElectronicaService;
 import com.deinsoft.efacturador3.service.GenerarDocumentosService;
-import com.deinsoft.efacturador3.util.CertificadoFacturador;
 import com.deinsoft.efacturador3.service.ResumenDiarioService;
 import com.deinsoft.efacturador3.soap.gencdp.ExceptionDetail;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
-import com.deinsoft.efacturador3.util.Catalogos;
 import com.deinsoft.efacturador3.util.Constantes;
-import com.deinsoft.efacturador3.util.FacturadorUtil;
 import com.deinsoft.efacturador3.util.Impresion;
 import com.deinsoft.efacturador3.util.SendMail;
 import com.deinsoft.efacturador3.validator.XsdCpeValidator;

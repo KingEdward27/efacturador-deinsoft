@@ -722,53 +722,7 @@ public class Util {
     }
 
 
-    public static String simpleApi(String urlParam, String jsonBody, HttpMethod httpMethod, String authorization,
-                                   String accept,
-                                   String contentType) {
-        boolean result = false;
-        System.out.println("jsonBody: " + jsonBody);
-        try {
-            URL url = new URL(urlParam);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-            conn.setRequestMethod(httpMethod.name());
-            conn.setRequestProperty("Accept", accept);
-            conn.setRequestProperty("Authorization", authorization);
-            conn.setRequestProperty("Content-Type", contentType);
-            conn.connect();
 
-            OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
-            writer.write(jsonBody);
-            writer.close();
-
-            BufferedReader br = null;
-            if (conn.getResponseCode() == 200 || conn.getResponseCode() == 201) {
-                br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-                result = true;
-            } else {
-                br = new BufferedReader(new InputStreamReader((conn.getErrorStream())));
-                result = false;
-            }
-            String output, jsonString = "";
-            System.out.println("output is-----------------");
-
-            while ((output = br.readLine()) != null) {
-                System.out.println(output);
-                jsonString = jsonString + output;
-            }
-            return jsonString;
-        } catch (ConnectException e) {
-            e.printStackTrace();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 //    public static void decompressSplitZip(String splitZipFilePath, String outputDir) throws Exception {
 //        File file = new File(splitZipFilePath);
 //        if (!file.exists()) {

@@ -90,7 +90,8 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
 
             StringBuilder rutaSalida = new StringBuilder();
             rutaSalida.setLength(0);
-            rutaSalida.append(rootPath).append("/").append(facturaElectronica.getEmpresa().getNumdoc()).append("/TEMP/").append(nombreArchivo).append(".xml");
+            rutaSalida.append(rootPath).append("/").append(facturaElectronica.getEmpresa().getNumdoc()).append("/TEMP/")
+                    .append(nombreArchivo).append(".xml");
             String templatesPath = rootPath + "/VALI/";
 
             byte[] myByteArray = xmlParser.parse(templatesPath);

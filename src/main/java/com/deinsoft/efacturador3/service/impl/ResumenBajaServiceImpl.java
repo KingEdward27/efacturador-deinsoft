@@ -5,18 +5,15 @@
  */
 package com.deinsoft.efacturador3.service.impl;
 
-import com.deinsoft.efacturador3.bean.MailBean;
 import com.deinsoft.efacturador3.bean.ResumenBajaBean;
 import com.deinsoft.efacturador3.bean.ResumenBajaBeanDet;
 import com.deinsoft.efacturador3.config.AppConfig;
 import com.deinsoft.efacturador3.config.XsltCpePath;
 import com.deinsoft.efacturador3.model.Empresa;
-import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.model.ResumenBaja;
 import com.deinsoft.efacturador3.model.ResumenBajaDet;
 import com.deinsoft.efacturador3.repository.ResumenBajaRepository;
 import com.deinsoft.efacturador3.service.GenerarDocumentosService;
-import com.deinsoft.efacturador3.util.CertificadoFacturador;
 import com.deinsoft.efacturador3.service.ResumenBajaService;
 import com.deinsoft.efacturador3.soap.gencdp.ExceptionDetail;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;

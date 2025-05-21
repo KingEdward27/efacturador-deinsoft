@@ -9,7 +9,6 @@ import com.deinsoft.efacturador3.bean.ComprobanteCab;
 import com.deinsoft.efacturador3.bean.ComprobanteCuotas;
 import com.deinsoft.efacturador3.bean.ComprobanteDet;
 import com.deinsoft.efacturador3.bean.ComprobanteTax;
-import com.deinsoft.efacturador3.bean.MailBean;
 import com.deinsoft.efacturador3.bean.ParamBean;
 import com.deinsoft.efacturador3.config.AppConfig;
 import com.deinsoft.efacturador3.config.XsltCpePath;
@@ -26,8 +25,6 @@ import com.deinsoft.efacturador3.model.FacturaElectronicaDet;
 import com.deinsoft.efacturador3.model.FacturaElectronicaLeyenda;
 import com.deinsoft.efacturador3.model.FacturaElectronicaTax;
 import com.deinsoft.efacturador3.model.Local;
-import com.deinsoft.efacturador3.model.ResumenDiarioDet;
-import com.deinsoft.efacturador3.repository.ErrorRepository;
 import com.deinsoft.efacturador3.repository.FacturaElectronicaRepository;
 import com.deinsoft.efacturador3.service.ComunesService;
 import com.deinsoft.efacturador3.service.EmpresaService;
@@ -42,6 +39,10 @@ import com.deinsoft.efacturador3.util.FacturadorUtil;
 import com.deinsoft.efacturador3.util.Impresion;
 import com.deinsoft.efacturador3.util.SendMail;
 import com.deinsoft.efacturador3.util.Util;
+import com.deinsoft.efacturador3.util.mail.CredentialRequest;
+import com.deinsoft.efacturador3.util.mail.EmailRequest;
+import com.deinsoft.efacturador3.util.mail.EmailResponse;
+import com.deinsoft.efacturador3.util.mail.SendMailClient;
 import com.deinsoft.efacturador3.util.validacion.SireClient;
 import com.deinsoft.efacturador3.validationapirest.ValidacionRespuestaApi;
 import com.deinsoft.efacturador3.validationapirest.ValidacionSUNAT;
@@ -50,12 +51,8 @@ import com.deinsoft.efacturador3.validator.XsdCpeValidator;
 import com.deinsoft.efacturador3.validator.XsltCpeValidator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -75,14 +72,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import javax.swing.JOptionPane;
@@ -90,14 +80,13 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import java.util.Comparator;
-import java.util.Locale;
-import java.util.Optional;
+
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -141,6 +130,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     @Autowired
     private LocalService localService;
 
+    @Autowired
+    private Environment environment;
+
     List<FacturaElectronica> listFromRce;
     List<FacturaElectronica> listFromRvie;
 
@@ -179,8 +171,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     public List<FacturaElectronica> getBySerieAndNumeroAndEmpresaId(FacturaElectronica facturaElectronica) {
         return facturaElectronicaRepository.findBySerieAndNumeroAndEmpresaId(facturaElectronica.getSerie(), facturaElectronica.getNumero(),
                 facturaElectronica.getEmpresa().getId())
-                .stream().filter(predicate -> predicate.getEstado().equals("1"))
-                .filter(predicate -> predicate.getFlagIsVenta().equals(facturaElectronica.getFlagIsVenta()))
+                .stream()
+                .filter(predicate -> predicate.getEstado().equals("1"))
+                .filter(predicate -> predicate.getFlagIsVenta().equals(Constantes.FLAG_IS_VENTA))
                 .collect(Collectors.toList());
     }
 
@@ -335,6 +328,12 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 }
 
                 facturaElectronicaResult = getBySerieAndNumeroAndEmpresaId(f).stream().findFirst().orElse(null);
+                log.info("FacturaController.generarNotaCredito...inicio/params: " + facturaElectronicaParam.toString());
+
+                if (facturaElectronicaResult == null || (facturaElectronicaResult != null && facturaElectronicaResult.getId() == null))  {
+                    throw new Exception("No se encontró comprobante: "+facturaElectronicaParam.getEmpresa().getId()
+                            + facturaElectronicaParam.getSerie() + "-" + facturaElectronicaParam.getNumero());
+                }
             } else {
                 facturaElectronicaResult = findById(facturaElectronicaParam.getId());
             }
@@ -580,6 +579,8 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO);
                 facturaElectronica.setObservacionEnvio("CODE: " + res.getCode() + "-"+ res.getDescription());
                 facturaElectronica.setEstado(Constantes.ESTADO_ANULADO);
+
+
             } else {
                 facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
                 facturaElectronica.setObservacionEnvio("CODE: " + res.getCode() + "-"+ res.getDescription());
@@ -807,6 +808,10 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             if (documento.getCliente_tipo().equals("6") && documento.getCliente_documento().length() != 11) {
                 return "El número de documento del cliente no cumple con el tamaño requerido para el tipo de comprobante";
             }
+
+            if (documento.getCliente_nombre().startsWith(" ")) {
+                return "El nombre del cliente no cumple con el estándar";
+            }
             if (CollectionUtils.isEmpty(documento.getLista_productos())) {
                 return "Debe indicar el detalle de productos del comprobante, campo: lista_productos";
             }
@@ -887,7 +892,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 if (!(item.getUnidad_medida().equals("NIU") || item.getUnidad_medida().equals("ZZ"))) {
                     return "Código de unidad de medida no soportado";
                 }
-                if (Integer.valueOf(item.getTipo_igv()) >= 10 && Integer.valueOf(item.getTipo_igv()) <= 20
+                if (Integer.valueOf(item.getTipo_igv()) >= 10 && Integer.valueOf(item.getTipo_igv()) < 20
                         && item.getAfectacion_igv() == BigDecimal.ZERO) {
                     return "El monto de afectación de IGV por linea debe ser diferente a 0.00.";
                 }
@@ -902,6 +907,15 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 if (item.getPrecio_unitario().compareTo(BigDecimal.ZERO) == 0
                         && item.getMonto_referencial_unitario() != BigDecimal.ZERO) {
                     return "El monto de valor referencial unitario debe ser 0.00 o null si el precio unitario es mayor a 0.00";
+                }
+                BigDecimal calculoIgv = item.getCantidad().multiply(item.getPrecio_unitario()).subtract(
+                                    item.getCantidad().multiply(item.getPrecio_unitario()).divide(
+                                    new BigDecimal(1 + (Float.parseFloat(Constantes.PORCENTAJE_IGV)/100)), 2, RoundingMode.HALF_UP)
+                                );
+                if (Integer.valueOf(item.getTipo_igv()) >= 10 && Integer.valueOf(item.getTipo_igv()) < 20
+                        && calculoIgv.compareTo(item.getAfectacion_igv()) != 0 ) {
+                    return "El producto del factor y monto base de la afectación del IGV/IVAP no corresponde " +
+                            "al monto de afectacion de linea: " + String.valueOf(item.getAfectacion_igv());
                 }
             }
             //1. cambiar por clase catalogos
@@ -1040,13 +1054,17 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 + "-" + String.format("%08d", Integer.parseInt(documento.getNumero()));
         this.generarDocumentosService.formatoPlantillaXml(rootpath, documento, nomFile);
 
-        retorno = this.generarDocumentosService.firmarXml(rootpath, documento.getEmpresa(), nomFile);
+        if (!this.environment.getActiveProfiles()[0].equalsIgnoreCase("local")) {
+            retorno = this.generarDocumentosService.firmarXml(rootpath, documento.getEmpresa(), nomFile);
+            documento.setXmlHash(retorno.get("xmlHash").toString());
+        } else {
+            documento.setXmlHash("SIN FIRMAR");
+        }
 
         xsdCpeValidator.validarSchemaXML(rootpath, documento.getTipo(), rootpath + "/" + documento.getEmpresa().getNumdoc() + "/PARSE/" + nomFile + ".xml");
 
         xsltCpeValidator.validarXMLYComprimir(rootpath, documento.getEmpresa(), documento.getTipo(), rootpath + "/" + documento.getEmpresa().getNumdoc() + "/PARSE/", nomFile);
 
-        documento.setXmlHash(retorno.get("xmlHash").toString());
         String tempDescripcionPluralMoneda = "SOLES";
         byte[] bytes = print(rootpath + "TEMP/", documento, 1, tempDescripcionPluralMoneda);
 
@@ -1219,11 +1237,12 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                                                 facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO);
                                                 facturaElectronica.setObservacionEnvio("VALIDADO Y ACEPTADO");
                                                 save(facturaElectronica);
-                                            } else {
-                                                facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
-                                                facturaElectronica.setObservacionEnvio("Comprobante no existe en SUNAT");
-                                                save(facturaElectronica);
                                             }
+//                                            else {
+//                                                facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
+//                                                facturaElectronica.setObservacionEnvio("Comprobante no existe en SUNAT");
+//                                                save(facturaElectronica);
+//                                            }
                                             cont = 3;
                                             continue;
                                         }
@@ -1655,4 +1674,59 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 //            }
         }).collect(Collectors.toList());
     }
+
+
+//    @Override
+//    public EmailResponse sendMail(String mail, long comprobanteId) throws Exception {
+//        if (mail.equals("")){ throw new Exception("Formato de correo inválido");}
+//
+//        //before use -> clean and build
+//        InputStream is = SegUsuarioServiceImpl.class
+//                .getResourceAsStream("/mail/comprobante.email");
+//
+//        var actComprobante = getActComprobante(comprobanteId);
+//
+//        if (!SendMail.validaCorreo(mail)) {
+//            throw new Exception("Formato de correo inválido");
+//        }
+//        String cuerpo = Util.readFile(is, StandardCharsets.UTF_8);
+//
+//        String nroDocumento = actComprobante.getSerie() + "-" + String.format("%08d", Integer.parseInt(actComprobante.getNumero()));
+//
+//        cuerpo = cuerpo.replace("{{titulo}}", "Sistema Punto de venta DEINSOFT-CLOUD");
+//        cuerpo = cuerpo.replace("{{nroDocumento}}", nroDocumento);
+//        cuerpo = cuerpo.replace("{{tipoComprobante}}", actComprobante.getCnfTipoComprobante().getNombre().toUpperCase());
+//        cuerpo = cuerpo.replace("{{numeroComprobante}}", nroDocumento);
+//        cuerpo = cuerpo.replace("{{totalComprobante}}", Constantes.FORMAT_NUMBER.format(actComprobante.getTotal()));
+//        cuerpo = cuerpo.replace("{{fechaEmision}}", Constantes.DDMMYYYY_FORMATER.format(actComprobante.getFecha()));
+//        cuerpo = cuerpo.replace("{{razonSocial}}", actComprobante.getCnfLocal().getCnfEmpresa().getDescripcion());
+//
+//        byte[] encodedBytes = org.apache.commons.codec.binary.Base64.encodeBase64(
+//                cuerpo.getBytes(StandardCharsets.UTF_8));
+//
+//        Map<String, String> sender = new HashMap<>();
+//        sender.put("name", "INIFACT");
+//        sender.put("email", "admin@deinsoft-la.com");
+//
+//        Map<String, String> recipient = new HashMap<>();
+//        recipient.put("name", "CLIENTE");
+//        recipient.put("email", mail);
+//
+//        List<Map<String, String>> recipients = Collections.singletonList(recipient);
+//
+//        SendMailClient s = new SendMailClient(
+//                appConfig.getMailClientApiUrl(),
+//                new CredentialRequest(
+//                        "client_credentials", appConfig.getMailClientId(), appConfig.getMailClientSecret())
+//        );
+//
+//        return s.send(new EmailRequest(new String(encodedBytes),
+//                "",
+//                "Comprobante electrónico",
+//                sender,
+//                recipients, null
+//        ));
+//
+//
+//    }
 }

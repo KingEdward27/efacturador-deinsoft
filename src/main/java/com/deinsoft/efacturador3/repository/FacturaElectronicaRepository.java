@@ -41,7 +41,9 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
             + "and p.empresa.id = :empresaId "
             + "and p.flagIsVenta = '1' "
     )
-    List<FacturaElectronica> findBySerieRefAndNumeroRefAndEmpresaId(String serie,String numero,int empresaId);
+    List<FacturaElectronica> findBySerieRefAndNumeroRefAndEmpresaId(@Param("serie")String serie,
+                                                                    @Param("numero")String numero,
+                                                                    @Param("empresaId")int empresaId);
     
     @Query(value="select p from facturaElectronica p "
             + "where p.fechaEmision >= :fecha "
@@ -61,9 +63,11 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
     
     List<FacturaElectronica> findByFechaEmisionBetweenAndEmpresaIdInAndEstadoIn(LocalDate fecIni, LocalDate fecFin, List<Integer> empresaIds, List<String> estados);
     
-    @Query(value="select p from facturaElectronica p where p.tipo = :#{#facturaElectronica.notaReferenciaTipo} "
+    @Query(value="select p from facturaElectronica p " +
+            "where p.tipo = :#{#facturaElectronica.notaReferenciaTipo} "
             + "and p.serie = :#{#facturaElectronica.notaReferenciaSerie} "
-            + "and p.numero = :#{#facturaElectronica.notaReferenciaNumero} "
+//            + "and p.numero = :#{#facturaElectronica.notaReferenciaNumero} "
+            + "and CAST(p.numero AS int) = CAST(:#{#facturaElectronica.notaReferenciaNumero} AS int)"
             + "and p.empresa.id = :#{#facturaElectronica.empresa.id} "
             + "and p.flagIsVenta = '1' ")
     List<FacturaElectronica> findByNotaReferenciaTipoAndNotaReferenciaSerieAndNotaReferenciaNumero(@Param("facturaElectronica") FacturaElectronica facturaElectronica);
@@ -88,8 +92,8 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
     
     @Query(value = "select max(serie) as serie, max(numero) as numero from factura_electronica\n" +
                     "where empresa_id = :empresaId\n" +
-                    "and tipo = '07' and nota_referencia_serie = :serie"
-                    + "and p.flagIsVenta = '1' ",nativeQuery = true)
+                    "and tipo = '07' and nota_referencia_serie = :serie "
+                    + "and flag_is_venta = '1' ",nativeQuery = true)
     NumeroDocumentoDto getNextNumberForNc(@Param("empresaId") long empresaId,@Param("serie") String serie);
     
     @Query(value = "select new com.deinsoft.efacturador3.dto.ResumentRleDto(tipo,count(1),sum(totalValorVenta - sumatoriaIGV),"
