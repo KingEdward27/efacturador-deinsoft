@@ -26,7 +26,9 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -352,7 +354,6 @@ public class Util {
                 result = false;
             }
             String output, jsonString = "";
-            System.out.println("output is-----------------");
 
             while ((output = br.readLine()) != null) {
                 System.out.println(output);
@@ -751,7 +752,6 @@ public class Util {
                 result = false;
             }
             String output, jsonString = "";
-            System.out.println("output is-----------------");
 
             while ((output = br.readLine()) != null) {
                 System.out.println(output);
@@ -769,6 +769,68 @@ public class Util {
             return null;
         }
     }
+
+    public static void copySingleFile(String sourceFileStr, String targetFileStr) throws IOException {
+        Path sourceFile = Paths.get(sourceFileStr);
+        Path targetFile = Paths.get(targetFileStr);
+
+        if (!java.nio.file.Files.exists(sourceFile) || !java.nio.file.Files.isRegularFile(sourceFile)) {
+            throw new IllegalArgumentException("El archivo de origen no existe: " + sourceFileStr);
+        }
+
+        // Crear el directorio destino si no existe
+        Path targetDir = targetFile.getParent();
+        if (targetDir != null && !java.nio.file.Files.exists(targetDir)) {
+            java.nio.file.Files.createDirectories(targetDir);
+        }
+
+        // Copiar el archivo (sobrescribe si ya existe)
+        java.nio.file.Files.copy(sourceFile, targetFile, StandardCopyOption.REPLACE_EXISTING);
+        System.out.println("Archivo copiado de: " + sourceFile + " a " + targetFile);
+    }
+
+    public static void copyFilesFromFolder(String sourceDirStr, String targetDirStr) throws IOException {
+        Path sourceDir = Paths.get(sourceDirStr);
+        Path targetDir = Paths.get(targetDirStr);
+
+        if (!java.nio.file.Files.exists(sourceDir) || !java.nio.file.Files.isDirectory(sourceDir)) {
+            throw new IllegalArgumentException("El directorio de origen no existe o no es válido: " + sourceDirStr);
+        }
+
+        if (!java.nio.file.Files.exists(targetDir)) {
+            java.nio.file.Files.createDirectories(targetDir); // Crea la carpeta destino si no existe
+        }
+
+        try (Stream<Path> files = java.nio.file.Files.list(sourceDir)) {
+            files
+                    .filter(java.nio.file.Files::isRegularFile)
+                    .forEach(sourcePath -> {
+                        try {
+                            Path targetPath = targetDir.resolve(sourcePath.getFileName());
+                            java.nio.file.Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                            System.out.println("Copiado: " + sourcePath.getFileName());
+                        } catch (IOException e) {
+                            System.err.println("Error copiando archivo: " + sourcePath + " -> " + e.getMessage());
+                        }
+                    });
+        }
+    }
+
+    public static boolean esFormatoInvalidoParaFactura(String tipoDocumento, String numeroDocumento) {
+        if (!"01".equals(tipoDocumento)) {
+            return false; // Solo validamos si es una factura
+        }
+
+        // Definimos los patrones prohibidos:
+        Pattern patron1 = Pattern.compile("^F[A-Z0-9]{3}-[0-9]{1,8}$");         // FXXX-00000000
+        Pattern patron2 = Pattern.compile("^E001-[0-9]{1,8}$");                 // E001-00000000
+        Pattern patron3 = Pattern.compile("^[0-9]{1,4}-[0-9]{1,8}$");           // 1234-00000000
+
+        return patron1.matcher(numeroDocumento).matches() ||
+                patron2.matcher(numeroDocumento).matches() ||
+                patron3.matcher(numeroDocumento).matches();
+    }
+
 //    public static void decompressSplitZip(String splitZipFilePath, String outputDir) throws Exception {
 //        File file = new File(splitZipFilePath);
 //        if (!file.exists()) {

@@ -50,6 +50,7 @@ import org.springframework.util.ResourceUtils;
  */
 public class Impresion {
     public static DecimalFormat df = new DecimalFormat("0.00", DecimalFormatSymbols.getInstance(Locale.US));
+    public static DecimalFormat DF_0000 = new DecimalFormat("0.0000", DecimalFormatSymbols.getInstance(Locale.US));
     public static ByteArrayInputStream Imprimir(String rootPath, int tipo, FacturaElectronica comprobante,String descripcionMoneda) throws Exception {
         try {
             JasperReport reporte = null;

@@ -225,7 +225,13 @@ public class FacturaElectronica implements Serializable {
     @ColumnDefault("1")
     @Column(name = "flag_is_venta", length = 1, nullable = false)
     private String flagIsVenta;
-    
+
+    @Transient
+    private String dscEstado;
+
+    @Transient
+    private String dscEstadoEnvio;
+
     public void addFacturaElectronicaDet(FacturaElectronicaDet item) {
         item.setFacturaElectronica(this);
     }
@@ -885,6 +891,22 @@ public class FacturaElectronica implements Serializable {
 
     public void setFlagIsVenta(String flagIsVenta) {
         this.flagIsVenta = flagIsVenta;
+    }
+
+    public String getDscEstado() {
+        return dscEstado;
+    }
+
+    public void setDscEstado(String dscEstado) {
+        this.dscEstado = dscEstado;
+    }
+
+    public String getDscEstadoEnvio() {
+        return dscEstadoEnvio;
+    }
+
+    public void setDscEstadoEnvio(String dscEstadoEnvio) {
+        this.dscEstadoEnvio = dscEstadoEnvio;
     }
 
     @Override

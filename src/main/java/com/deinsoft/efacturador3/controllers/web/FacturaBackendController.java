@@ -150,6 +150,13 @@ public class FacturaBackendController extends BaseController {
         return ResponseEntity.status(HttpStatus.OK).body(resultado);
     }
 
+    @PostMapping(value = "/validate")
+    public ResponseEntity<?> validate(@RequestParam(name = "id") long id) throws Exception {
+        facturaElectronicaService.validateApi(id);
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
     @PostMapping(value = "/get-pdf")
     public ResponseEntity<?> getPDF(@RequestParam(name = "id") String id,
             @RequestParam(name = "tipo") int tipo,

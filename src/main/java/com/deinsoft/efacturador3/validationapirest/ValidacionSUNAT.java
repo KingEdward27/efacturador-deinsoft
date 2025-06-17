@@ -136,7 +136,6 @@ public class ValidacionSUNAT {
                 result = false;
             }
             String output, jsonString = "";
-            System.out.println("output is-----------------");
 
             while ((output = br.readLine()) != null) {
                 System.out.println(output);

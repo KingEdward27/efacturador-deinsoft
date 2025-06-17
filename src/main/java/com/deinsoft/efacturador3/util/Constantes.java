@@ -141,5 +141,6 @@ public final class Constantes {
     public static final String FLAG_IS_COMPRA = "2";
     public static final String ESTADO_ACTIVO = "1";
     public static final String ESTADO_ANULADO = "0";
+    public static final String COD_TIPO_NC_OTROS_CONCEPTS = "10";
 
 }

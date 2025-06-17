@@ -80,8 +80,12 @@ public class Empresa implements Serializable {
     
     @Column(name = "estado")
     private Character estado;
-    
-    
+
+    @Column(name = " validation_client_id")
+    private String validationClientId;
+
+    @Column(name = " validation_client_secret")
+    private String validationClientSecret;
     @Column(name = "sire_client_id")
     private String sireClientId;
     
@@ -234,7 +238,23 @@ public class Empresa implements Serializable {
     public void setSireClientSecret(String sireClientSecret) {
         this.sireClientSecret = sireClientSecret;
     }
-    
+
+    public String getValidationClientId() {
+        return validationClientId;
+    }
+
+    public void setValidationClientId(String validationClientId) {
+        this.validationClientId = validationClientId;
+    }
+
+    public String getValidationClientSecret() {
+        return validationClientSecret;
+    }
+
+    public void setValidationClientSecret(String validationClientSecret) {
+        this.validationClientSecret = validationClientSecret;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;

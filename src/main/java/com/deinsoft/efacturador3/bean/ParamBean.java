@@ -25,7 +25,8 @@ public class ParamBean {
     
     private String direccion;
     
-    private int flagEstado;
+    private String flagEstado;
+    private String codEstadoEnvio;
     
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate fechaVencimiento;
@@ -83,12 +84,20 @@ public class ParamBean {
         this.fechaVencimiento = fechaVencimiento;
     }
 
-    public int getFlagEstado() {
+    public String getFlagEstado() {
         return flagEstado;
     }
 
-    public void setFlagEstado(int flagEstado) {
+    public void setFlagEstado(String flagEstado) {
         this.flagEstado = flagEstado;
+    }
+
+    public String getCodEstadoEnvio() {
+        return codEstadoEnvio;
+    }
+
+    public void setCodEstadoEnvio(String codEstadoEnvio) {
+        this.codEstadoEnvio = codEstadoEnvio;
     }
 
     public Long getIdUser() {

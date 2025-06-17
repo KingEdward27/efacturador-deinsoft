@@ -87,6 +87,8 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
             //+ "and exists (select 1 from secRoleUser ru where ru.empresa.id = p.empresa.id and ru.secUser.id = :#{#paramBean.idUser}) "
             + "and p.empresa.id = :#{#paramBean.empresa.id} "
             + "and p.flagIsVenta = :#{#paramBean.flagIsVenta} "
+            + "and (:#{#paramBean.flagEstado} = '-1' or p.estado = :#{#paramBean.flagEstado}) "
+            + "and (:#{#paramBean.codEstadoEnvio} = '-1' or p.indSituacion = :#{#paramBean.codEstadoEnvio}) "
             + "order by p.tipo desc, p.serie desc, p.numero desc,p.fechaEmision desc ")
     List<FacturaElectronica> getReportActComprobante(@Param("paramBean") ParamBean paramBean);
     

@@ -134,51 +134,53 @@ public abstract class PipeCpeAbstractParser
 //        comprobante.put("listaTributos", listaTributos);
 //      } 
 
-      
-      List<Map<String, Object>> listaAdicionalDetalle = new ArrayList<>();
-      Map<String, Object> adicionalDetalle = null;
-      if (activarAdiDetalle.intValue() == 1) {
-        FileReader fArchivoAdiDetalle = new FileReader(archivoAdiDetalle);
-        BufferedReader bArchivoAdiDetalle = new BufferedReader(fArchivoAdiDetalle);
-        
-        while ((cadena = bArchivoAdiDetalle.readLine()) != null) {
-          String[] registro = cadena.split("\\|");
-          
-          if (registro.length != 16) {
-            bArchivoAdiDetalle.close();
-            throw new RuntimeException("El archivo de Adicional de Detalle no continene la cantidad de datos esperada (16 columnas).");
-          } 
-          
-          adicionalDetalle = new HashMap<>();
-          adicionalDetalle.put("idLinea", registro[0]);
-          adicionalDetalle.put("nomPropiedad", registro[1]);
-          adicionalDetalle.put("codPropiedad", registro[2]);
-          adicionalDetalle.put("valPropiedad", registro[3]);
-          adicionalDetalle.put("codBienPropiedad", registro[4]);
-          adicionalDetalle.put("fecInicioPropiedad", registro[5]);
-          adicionalDetalle.put("horInicioPropiedad", registro[6]);
-          adicionalDetalle.put("fecFinPropiedad", registro[7]);
-          adicionalDetalle.put("numDiasPropiedad", registro[8]);
-          
-          adicionalDetalle.put("tipVariable", registro[9]);
-          adicionalDetalle.put("codTipoVariable", registro[10]);
-          adicionalDetalle.put("porVariable", registro[11]);
-          adicionalDetalle.put("monMontoVariable", registro[12]);
-          adicionalDetalle.put("mtoVariable", registro[13]);
-          adicionalDetalle.put("monBaseImponibleVariable", registro[14]);
-          adicionalDetalle.put("mtoBaseImpVariable", registro[15]);
-          
-          listaAdicionalDetalle.add(adicionalDetalle);
-        } 
+      if (comprobante.get("listaAdicionalDetalle") == null) {
+        List<Map<String, Object>> listaAdicionalDetalle = new ArrayList<>();
+        Map<String, Object> adicionalDetalle = null;
+        if (activarAdiDetalle.intValue() == 1) {
+          FileReader fArchivoAdiDetalle = new FileReader(archivoAdiDetalle);
+          BufferedReader bArchivoAdiDetalle = new BufferedReader(fArchivoAdiDetalle);
 
-        
-        bArchivoAdiDetalle.close();
-        comprobante.put("listaAdicionalDetalle", listaAdicionalDetalle);
+          while ((cadena = bArchivoAdiDetalle.readLine()) != null) {
+            String[] registro = cadena.split("\\|");
+
+            if (registro.length != 16) {
+              bArchivoAdiDetalle.close();
+              throw new RuntimeException("El archivo de Adicional de Detalle no continene la cantidad de datos esperada (16 columnas).");
+            }
+
+            adicionalDetalle = new HashMap<>();
+            adicionalDetalle.put("idLinea", registro[0]);
+            adicionalDetalle.put("nomPropiedad", registro[1]);
+            adicionalDetalle.put("codPropiedad", registro[2]);
+            adicionalDetalle.put("valPropiedad", registro[3]);
+            adicionalDetalle.put("codBienPropiedad", registro[4]);
+            adicionalDetalle.put("fecInicioPropiedad", registro[5]);
+            adicionalDetalle.put("horInicioPropiedad", registro[6]);
+            adicionalDetalle.put("fecFinPropiedad", registro[7]);
+            adicionalDetalle.put("numDiasPropiedad", registro[8]);
+
+            adicionalDetalle.put("tipVariable", registro[9]);
+            adicionalDetalle.put("codTipoVariable", registro[10]);
+            adicionalDetalle.put("porVariable", registro[11]);
+            adicionalDetalle.put("monMontoVariable", registro[12]);
+            adicionalDetalle.put("mtoVariable", registro[13]);
+            adicionalDetalle.put("monBaseImponibleVariable", registro[14]);
+            adicionalDetalle.put("mtoBaseImpVariable", registro[15]);
+
+            listaAdicionalDetalle.add(adicionalDetalle);
+          }
+
+
+          bArchivoAdiDetalle.close();
+          comprobante.put("listaAdicionalDetalle", listaAdicionalDetalle);
+        }
+        else {
+
+          comprobante.put("listaAdicionalDetalle", listaAdicionalDetalle);
+        }
       }
-      else {
-        
-        comprobante.put("listaAdicionalDetalle", listaAdicionalDetalle);
-      } 
+
 
       
 //      List<Map<String, Object>> listaRelacionado = new ArrayList<>();

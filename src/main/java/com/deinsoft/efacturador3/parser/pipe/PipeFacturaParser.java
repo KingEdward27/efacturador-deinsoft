@@ -12,6 +12,7 @@ import com.deinsoft.efacturador3.parser.Parser;
 import com.deinsoft.efacturador3.parser.ParserException;
 import com.deinsoft.efacturador3.util.Impresion;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -115,9 +116,9 @@ public class PipeFacturaParser
         factura.put("moneda", cabecera.getMoneda());
 
         factura.put("sumTotTributos", Impresion.df.format(cabecera.getSumatoriaIGV().add(cabecera.getSumatoriaISC())));
-        factura.put("sumTotValVenta", Impresion.df.format(cabecera.getTotalValorVentasGravadas().subtract(cabecera.getSumatoriaIGV())));
-        factura.put("sumPrecioVenta", Impresion.df.format(cabecera.getTotalValorVentasGravadas()));
-        factura.put("sumDescTotal", cabecera.getDescuentosGlobales() == null ? "0.00" : Impresion.df.format(cabecera.getDescuentosGlobales()));
+        factura.put("sumTotValVenta", Impresion.df.format(cabecera.getTotalValorVentasGravadas().subtract(cabecera.getDescuentosGlobales()).subtract(cabecera.getSumatoriaIGV())));
+        factura.put("sumPrecioVenta", Impresion.df.format(cabecera.getTotalValorVentasGravadas().subtract(cabecera.getDescuentosGlobales())));
+        factura.put("sumDescTotal", "0.00");// cabecera.getDescuentosGlobales() == null ? "0.00" : Impresion.df.format(cabecera.getDescuentosGlobales()));
         factura.put("sumOtrosCargos", cabecera.getSumatoriaOtrosCargos() == null ? "0.00" : Impresion.df.format(cabecera.getSumatoriaOtrosCargos()));
         factura.put("sumTotalAnticipos", sumTotalAnticipos);
         factura.put("sumImpVenta", Impresion.df.format(cabecera.getTotalValorVenta()));
@@ -180,8 +181,10 @@ public class PipeFacturaParser
 //        if (!Files.exists(fileDetalle, new java.nio.file.LinkOption[0])) {
 //            throw new ParserException("El archivo no existe: " + this.archivoDetalle);
 //        }
-        List<Map<String, Object>> listaDetalle = new ArrayList<>();
         Map<String, Object> detalle = null;
+        List<Map<String, Object>> listaDetalle = new ArrayList<>();
+        Map<String, Object> adicionalDetalle = null;
+        List<Map<String, Object>> listaAdicionalDetalle = new ArrayList<>();
 
 //        try (InputStream in = Files.newInputStream(fileDetalle, new java.nio.file.OpenOption[0]);
 //                BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
@@ -196,10 +199,10 @@ public class PipeFacturaParser
 //                }
         int contadorItem = 0;
         for (FacturaElectronicaDet item : cabecera.getListFacturaElectronicaDet()) {
-//            linea = Integer.valueOf(linea.intValue() + 1);
-//            if (item.getPrecioVentaUnitario().compareTo(BigDecimal.ZERO) == 0) {
-//                continue;
-//            }
+
+            BigDecimal descuentoReal = item.getDescuento()
+                    .multiply(BigDecimal.ONE.add(cabecera.getPorcentajeIGV()
+                            .divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP)));
             detalle = new HashMap<>();
             contadorItem++;
             detalle.put("codProducto", item.getCodigo());
@@ -211,7 +214,7 @@ public class PipeFacturaParser
             detalle.put("codTriIGV", item.getCodTipTributoIgv());
             detalle.put("mtoIgvItem", String.valueOf(item.getAfectacionIgv()));
             detalle.put("mtoBaseIgvItem", item.getValorRefUnitario().compareTo(BigDecimal.ZERO) == 0
-                    ? Impresion.df.format(item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv()))
+                    ? Impresion.df.format(item.getValorVentaItem())
                     : Impresion.df.format(item.getValorRefUnitario().multiply(item.getCantidad())));
             detalle.put("nomTributoIgvItem", item.getAfectacionIGVCode().equals("31") ? "GRA" : "IGV");
             detalle.put("codTipTributoIgvItem", item.getAfectacionIGVCode().equals("31") ? "FRE" : "VAT");
@@ -240,20 +243,47 @@ public class PipeFacturaParser
             detalle.put("codTipTributoIcbperItem", "-");
             detalle.put("mtoTriIcbperUnidad", "-");
 
-            detalle.put("mtoPrecioVentaUnitario", item.getPrecioVentaUnitario());
-            detalle.put("mtoValorVentaItem",
-                    Impresion.df.format(item.getPrecioVentaUnitario().multiply(item.getCantidad())
-                            .subtract(item.getAfectacionIgv())));
+            detalle.put("mtoPrecioVentaUnitario", Impresion.df.format(
+                    item.getPrecioVentaUnitario()
+                    .subtract(descuentoReal.divide(item.getCantidad(), 4, RoundingMode.HALF_UP))
+            ));
+            detalle.put("mtoValorVentaItem", Impresion.df.format(item.getValorVentaItem()));
             detalle.put("mtoValorReferencialUnitario", Impresion.df.format(item.getValorRefUnitario()));
             detalle.put("ctdUnidadItem", Impresion.df.format(item.getCantidad()));
             detalle.put("lineaSwf", String.valueOf(contadorItem));
             detalle.put("tipoCodiMoneGratiSwf", "02");
 
             listaDetalle.add(detalle);
+
+            if (item.getDescuento().compareTo(BigDecimal.ZERO) > 0) {
+                adicionalDetalle = new HashMap<>();
+                adicionalDetalle.put("idLinea", String.valueOf(contadorItem));
+                adicionalDetalle.put("nomPropiedad", "");
+//                adicionalDetalle.put("codPropiedad", registro[2]);
+//                adicionalDetalle.put("valPropiedad", registro[3]);
+//                adicionalDetalle.put("codBienPropiedad", registro[4]);
+//                adicionalDetalle.put("fecInicioPropiedad", registro[5]);
+//                adicionalDetalle.put("horInicioPropiedad", registro[6]);
+//                adicionalDetalle.put("fecFinPropiedad", registro[7]);
+//                adicionalDetalle.put("numDiasPropiedad", registro[8]);
+
+                adicionalDetalle.put("tipVariable", "false");
+                adicionalDetalle.put("codTipoVariable", "00");
+                adicionalDetalle.put("porVariable", Impresion.DF_0000.format(item.getDescuento()
+                        .divide(item.getValorVentaItem().add(item.getDescuento()), 4, RoundingMode.HALF_UP)));
+                adicionalDetalle.put("monMontoVariable", "PEN");
+                adicionalDetalle.put("mtoVariable", Impresion.df.format(item.getDescuento()));
+                adicionalDetalle.put("monBaseImponibleVariable","PEN");
+                adicionalDetalle.put("mtoBaseImpVariable",
+                        Impresion.df.format(item.getValorVentaItem().add(item.getDescuento())));
+
+                listaAdicionalDetalle.add(adicionalDetalle);
+            }
         }
 
 //            }
         factura.put("listaDetalle", listaDetalle);
+        factura.put("listaAdicionalDetalle", listaAdicionalDetalle);
 
         List<Map<String, Object>> listaTributos = new ArrayList<>();
         Map<String, Object> tributo = null;

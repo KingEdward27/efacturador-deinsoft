@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="content-type">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!--[if !mso]> -->
+		<meta content="IE=edge" http-equiv="X-UA-Compatible">
+	<!--<![endif]-->
+	<style type="text/css">
+		/* force styles of client inserted tel anchors */
+		a[href^=tel]
+		{
+			color: #295AA6;
+			font-weight: bold;
+		}
+		img
+		{
+			/* Allow smoother rendering of resized image in Internet Explorer */
+			-ms-interpolation-mode: bicubic;
+		}
+		/**
+		 * Styling options for auto-generated links
+		 * 
+		 * .autolinks-hide and .autolinks-show have less specificity
+		 * than their singular counterparts and thus, are overwritten.
+		 * 
+		 * Also, -hide versions always take precedence over -show versions.
+		 * 
+		 * Usage:
+		 * 	Set .autolinks-[hide|show] on topmost parent for auto handling of auto links
+		 * 	Set .autolink-[hide|show] on direct parent for manual handling of auto links
+		 * 
+		 * NOTE: Linking functionality is preserved!
+		 * NOTE: Ripped and modified from http://removebluelinks.com/
+		 */
+		/* iOS */
+		.autolinks-hide a[ x-apple-data-detectors ],
+		.autolinks-show a[ x-apple-data-detectors ],
+		/* Outlook.com */
+		/*
+		.autolinks-hide span.contextualExtensionHighlight,
+		.autolinks-show span.contextualExtensionHighlight,
+		*/
+		/* Android ??? */
+		/* must have higher specificity than plural counterparts! */
+		*:root:root .autolink-hide a,
+		*:root:root .autolink-show a/*,*/
+		/*
+		*:root .autolink-hide span.contextualExtensionHighlight,
+		*:root .autolink-show span.contextualExtensionHighlight
+		*/
+		{
+			border-bottom: 1px dashed;
+			color: inherit !important;
+			font-family: inherit !important;
+			font-size: inherit !important;
+			font-weight: inherit !important;
+			line-height: inherit !important;
+			text-decoration: inherit !important;
+		}
+		.autolinks-hide a[ x-apple-data-detectors ],
+		/*
+		.autolinks-hide span.contextualExtensionHighlight,
+		*/
+		*:root:root .autolink-hide a/*,*/
+		/*
+		*:root .autolink-hide span.contextualExtensionHighlight
+		*/
+		{
+			border-bottom: inherit;
+		}
+		/* tame superscripts */
+		sup
+		{
+			font-size: 75%;
+			line-height: 0;
+		}
+		@media screen
+		{
+			@font-face
+			{
+				font-family: 'CabinCondensed-reg';
+				font-style: normal;
+				font-weight: 400;
+				src: local( 'Cabin Condensed' ),
+					 local( 'CabinCondensed'  ),
+					 url( 'https://fonts.gstatic.com/s/cabincondensed/v7/B0txb0blf2N29WdYPJjMShZ1gqmQBTb4Nwa_fF0DajA.woff' ) format( 'woff'     ),
+					 url( 'https://fonts.gstatic.com/s/cabincondensed/v7/B0txb0blf2N29WdYPJjMSlpNuLN9P2dR6eOCPYblbcM.ttf'  ) format( 'truetype' );
+			}
+			@font-face
+			{
+			    font-family: 'CabinCondensed-bold';
+				font-style: normal;
+				font-weight: 700;
+				src: local( 'Cabin Condensed Bold' ),
+					 local( 'CabinCondensed-Bold'  ),
+					 url( 'https://fonts.gstatic.com/s/cabincondensed/v7/Ez4zJbsGr2BgXcNUWBVgEFxo_3fQgeDvKMambfIp_uA.woff' ) format( 'woff'     ),
+					 url( 'https://fonts.gstatic.com/s/cabincondensed/v7/Ez4zJbsGr2BgXcNUWBVgEMYsb_UBatsJhtlz83pruSg.ttf'  ) format( 'truetype' );
+			}
+			@font-face
+			{
+				font-family: 'OpenSansCondensed-bold';
+				font-style: normal;
+				font-weight: 700;
+				src: local( 'Open Sans Condensed Bold' ),
+					 local( 'OpenSans-CondensedBold'   ),
+					 url( 'https://fonts.gstatic.com/s/opensanscondensed/v10/gk5FxslNkTTHtojXrkp-xONSK5BxN3NFS4EJkViHIqo.woff' ) format( 'woff'     ),
+					 url( 'https://fonts.gstatic.com/s/opensanscondensed/v10/gk5FxslNkTTHtojXrkp-xJhsE6jcpsD2oq89kgohWx0.ttf'  ) format( 'truetype' );
+			}
+		}
+		@media all and ( max-width: 600px )
+		{
+			*[id]#wrapper + table,
+			*[class].container,
+			*[class].menu
+			{
+				min-width: 0 !important;
+				-moz-text-size-adjust: none;
+				-ms-text-size-adjust: none;
+				-webkit-text-size-adjust: none;
+				width: 100% !important;
+			}
+			*[id]#logo
+			{
+				height: 50px;
+				width: 182px;
+			}
+			*[id]#mobile-label
+			{
+				background-color: #F3F3F3;
+				cursor: pointer;
+				display: block !important;
+				float: right;
+				padding: 25px;
+				-webkit-tap-highlight-color: transparent;
+				width: 26px;
+			}
+			*[id]#mobile-label > b
+			{
+				background-color: #575452;
+				-moz-border-radius: 2px;
+				-webkit-border-radius: 2px;
+				border-radius: 2px;
+				display: block;
+				height: 4px;
+			}
+			*[id]#mobile-label > b + b
+			{
+				margin-top: 4px;
+			}
+			*[class].menu td
+			{
+				padding: 0 !important;
+			}
+			*[id]#menu-wrapper
+			{
+				/* background-color: #004677; */
+				background-color: #B40404;
+				max-height: 0;
+				overflow: hidden;
+				-moz-transition: max-height .25s linear;
+				-o-transition: max-height .25s linear;
+				-webkit-transition: max-height .25s linear;
+				transition: max-height .25s linear;
+			}
+			*[id]#mobile-checkbox:checked + table #menu-wrapper
+			{
+				max-height: 130px;
+			}
+			*[class].menu + .menu
+			{
+				/* border-top: 1px solid #7C90AF; */
+				border-top: 1px solid #B40404;
+			}
+			*[class].menu-item
+			{
+				color: #FFFFFF !important;
+				display: block;
+				padding: 12px;
+				text-align: center;
+			}
+			*[id]#hero
+			{
+				font-size: 14px !important;
+				height: auto !important;
+				min-height: 50px !important;
+				width: 100% !important;
+			}
+			td[class].content
+			{
+				padding-left: 10px !important;
+				padding-right: 10px !important;
+			}
+			td[class].social-media img
+			{
+				height: 40px;
+				width: 40px;
+			}
+			*[class].mobile-hide
+			{
+				display: none;
+			}
+		}
+	</style>
+	<!--[if mso]>
+		<style type="text/css">
+			/* mso adjustment for tamed superscripts */
+			sup
+			{
+				font-size: 100% !important;
+			}
+		</style>
+	<![endif]-->
+	<title>CEW - {{titulo}}</title>
+</head>
+	<body bgcolor="#FFFFFF" class="autolinks-show" style="margin:0; padding:0" link="#295AA6" alink="#295AA6" vlink="#295AA6" yahoo="fix">
+		<!-- PRE-HEADER -->
+		<div style="display:none; font-size:0; height:0; opacity:0; visibility:hidden; width:0;">
+			<font color="#FFFFFF" size="1" style="color:transparent; display:none!important; font-size:0; line-height:0;">
+				{{titulo}}
+			</font>
+		</div>
+		<!-- END PRE-HEADER -->
+		<div id="wrapper" style="background-color:#FFFFFF;">
+
+
+			{{content}}
+
+			<p>Saluda atentamente, {{razonSocial}}</p>
+		</div>
+	</body>
+</html>

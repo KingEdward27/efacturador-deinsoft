@@ -44,7 +44,24 @@ public class AppConfig
   @NotEmpty
   @Value("${app.timeZone.diferenceHours}")
   private long diferenceHours;
-  
+
+  @NotEmpty
+  @Value("${app.sunat.validation.auth.url}")
+  private String urlAuthValidation;
+
+  @NotEmpty
+  @Value("${app.sunat.validation.url}")
+  private String urlValidation;
+
+  @Value("${app.config.mail.client.clientId}")
+  private String mailClientId;
+
+  @Value("${app.config.mail.client.clientSecret}")
+  private String mailClientSecret;
+
+  @Value("${app.config.support.mail")
+  private String mailSupport;
+
   @JsonProperty
   public String getRootPath() {
     return this.rootPath;
@@ -110,7 +127,44 @@ public class AppConfig
     public void setDiferenceHours(long diferenceHours) {
         this.diferenceHours = diferenceHours;
     }
-    
 
-  
+  public String getUrlAuthValidation() {
+    return urlAuthValidation;
+  }
+
+  public void setUrlAuthValidation(String urlAuthValidation) {
+    this.urlAuthValidation = urlAuthValidation;
+  }
+
+  public String getUrlValidation() {
+    return urlValidation;
+  }
+
+  public void setUrlValidation(String urlValidation) {
+    this.urlValidation = urlValidation;
+  }
+
+  public String getMailClientId() {
+    return mailClientId;
+  }
+
+  public void setMailClientId(String mailClientId) {
+    this.mailClientId = mailClientId;
+  }
+
+  public String getMailClientSecret() {
+    return mailClientSecret;
+  }
+
+  public void setMailClientSecret(String mailClientSecret) {
+    this.mailClientSecret = mailClientSecret;
+  }
+
+  public String getMailSupport() {
+    return mailSupport;
+  }
+
+  public void setMailSupport(String mailSupport) {
+    this.mailSupport = mailSupport;
+  }
 }

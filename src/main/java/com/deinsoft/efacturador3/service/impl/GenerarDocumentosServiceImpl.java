@@ -103,7 +103,7 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
             log.debug("SoftwareFacturadorController.formatoPlantillaXml...Final Procesamiento");
             return myByteArray;
         } catch (Exception e) {
-
+            e.printStackTrace();
             log.info("formatoPlantillaXml: " + e.getMessage());
             ExceptionDetail exceptionDetail = new ExceptionDetail();
             exceptionDetail.setMessage(e.getMessage());

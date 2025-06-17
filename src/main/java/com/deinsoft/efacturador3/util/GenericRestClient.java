@@ -30,7 +30,8 @@ public class GenericRestClient {
 
     private final RestTemplate restTemplate;
 
-    public GenericRestClient() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public GenericRestClient() throws NoSuchAlgorithmException, KeyStoreException,
+            KeyManagementException {
         this.restTemplate = getRestTemplate();
     }
 
@@ -141,9 +142,9 @@ public class GenericRestClient {
 
         CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(csf).build();
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-        requestFactory.setConnectionRequestTimeout(5000);
-        requestFactory.setConnectTimeout(5000);
-        requestFactory.setReadTimeout(10000);
+        requestFactory.setConnectionRequestTimeout(15000);
+        requestFactory.setConnectTimeout(15000);
+        requestFactory.setReadTimeout(30000);
         requestFactory.setHttpClient(httpClient);
 
         return new RestTemplate(requestFactory);

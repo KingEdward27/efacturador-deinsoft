@@ -77,4 +77,6 @@ public interface FacturaElectronicaService {
             String CodTipoArchivo, String libro) throws Exception;
     
     public List<FacturaElectronicaDto> getReportActComprobanteCombined(ParamBean paramBean) throws Exception;
+
+    void validateApi(long id) throws Exception;
 }
