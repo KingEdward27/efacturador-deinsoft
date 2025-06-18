@@ -167,11 +167,8 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     public List<FacturaElectronica> getReportActComprobante(ParamBean paramBean) {
         return facturaElectronicaRepository.getReportActComprobante(paramBean).stream().map(data -> {
             data.setDscEstado(EstadoComprobante.getDescripcionByCodigo(data.getEstado()));
-            if (data.getEstado().equalsIgnoreCase(Constantes.ESTADO_ANULADO)){
-                data.setDscEstadoEnvio(EstadoEnvioComprobante.getDescripcionByCodigo("00"));
-            } else {
-                data.setDscEstadoEnvio(EstadoEnvioComprobante.getDescripcionByCodigo(data.getIndSituacion()));
-            }
+            data.setDscEstadoEnvio(EstadoEnvioComprobante.getDescripcionByCodigo(data.getIndSituacion()));
+
             return data;
         }).collect(Collectors.toList());
     }
@@ -477,16 +474,10 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 log.debug("FacturaController.enviarXML...urlWebService: " + urlWebService);
                 log.debug("FacturaController.enviarXML...filename: " + filename);
                 log.debug("FacturaController.enviarXML...tipoComprobante: " + tipoComprobante);
-                BillServiceModel res = this.comunesService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica.getEmpresa());
 
-                facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
-                facturaElectronica.setIndSituacion(res.getCode().toString().equals("0") ? Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO : Constantes.CONSTANTE_SITUACION_CON_ERRORES);
-                facturaElectronica.setObservacionEnvio(res.getDescription());
-                facturaElectronica.setTicketSunat(res.getTicket());
-                save(facturaElectronica);
-                Map<String, Object> map = new ObjectMapper().convertValue(res, Map.class);
-                return map;
-//                retorno.put("resultadoWebService", resultadoWebService);
+                sendCp(facturaElectronica, urlWebService);
+
+                return null;
             } else {
                 mensajeValidacion = "El documento se encuentra en una situación incorrecta o ya fue enviado";
                 resultadoProceso = "-2";
