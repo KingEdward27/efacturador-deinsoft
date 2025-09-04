@@ -1,0 +1,30 @@
+{
+  "webpagos": {
+    "cnfDistrict": {
+      "home": {
+        "title": "Cnf Districts",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Cnf District",
+        "createOrEditLabel": "Crear o editar Cnf District",
+        "notFound": "Ningún Cnf Districts encontrado"
+      },
+      "created": "Un nuevo Cnf District ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cnf District ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cnf District ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cnf District {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf District"
+      },
+      "id": "ID",
+      "cnfDistrictId": "Cnf District Id",
+      "name": "Name",
+      "value": "Value",
+      "cnfProvince": "Cnf Province",
+      "cnfBpartner": "Cnf Bpartner",
+      "cnfCompany": "Cnf Company",
+      "cnfOrg": "Cnf Org"
+    }
+  }
+}

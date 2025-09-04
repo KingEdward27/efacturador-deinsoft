@@ -1,0 +1,29 @@
+{
+  "webpagos": {
+    "secRoleUser": {
+      "home": {
+        "title": "Sec Role Users",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Sec Role User",
+        "createOrEditLabel": "Create or edit a Sec Role User",
+        "notFound": "No Sec Role Users found"
+      },
+      "created": "A new Sec Role User is created with identifier {{ param }}",
+      "updated": "A Sec Role User is updated with identifier {{ param }}",
+      "deleted": "A Sec Role User is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Sec Role User {{ id }}?"
+      },
+      "detail": {
+        "title": "Sec Role User"
+      },
+      "id": "ID",
+      "secRoleUserId": "Sec Role User Id",
+      "secRole": "Sec Role",
+      "secUser": "Sec User",
+      "cnfTenant": "Cnf Tenant",
+      "cnfCompany": "Cnf Company",
+      "cnfOrg": "Cnf Org"
+    }
+  }
+}

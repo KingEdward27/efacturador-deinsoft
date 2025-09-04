@@ -1,0 +1,26 @@
+{
+  "webpagos": {
+    "invLocation": {
+      "home": {
+        "title": "Inv Locations",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Inv Location",
+        "createOrEditLabel": "Create or edit a Inv Location",
+        "notFound": "No Inv Locations found"
+      },
+      "created": "A new Inv Location is created with identifier {{ param }}",
+      "updated": "A Inv Location is updated with identifier {{ param }}",
+      "deleted": "A Inv Location is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Inv Location {{ id }}?"
+      },
+      "detail": {
+        "title": "Inv Location"
+      },
+      "id": "ID",
+      "invLocationId": "Inv Location Id",
+      "name": "Name",
+      "invWarehouse": "Inv Warehouse"
+    }
+  }
+}

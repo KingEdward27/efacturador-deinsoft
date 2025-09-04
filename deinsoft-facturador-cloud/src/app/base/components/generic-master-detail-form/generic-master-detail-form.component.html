@@ -1,0 +1,350 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>{{properties.title}}</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="javascript:;" translate="webpagos.adminModule"></a></li>
+                    <li class="breadcrumb-item active">{{properties.title}}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <!-- Default box -->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Formulario de {{properties.title}}</h3>
+
+                <div class="card-tools">
+                    <button
+                        type="button"
+                        class="btn btn-tool"
+                        data-widget="collapse"
+                        data-toggle="tooltip"
+                        title="Collapse"
+                    >
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-tool"
+                        data-widget="remove"
+                        data-toggle="tooltip"
+                        title="Remove"
+                    >
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <form class="col-sm-12" style="padding-top: 6px;">
+                        <div class="row">
+                            <div class="col-lg-9 col-sm-12 col-xs-12">
+                                <div class="row">
+                                    
+                                    <div *ngIf="errorGen != ''">
+                                        <div class="alert alert-danger col-sm-12 col-lg-12">{{errorGen}}
+                                        </div>
+                                    </div>
+                                    <ng-container *ngFor="let item of properties.columnsForm; index as i ">
+                                        <div *ngIf="item.type == 'input' || item.type == 'date' || item.type == 'select'"
+                                            class="col-lg-12 col-sm-12 col-xs-12">
+                                            <ng-container *ngIf="item.type == 'input' || item.type == 'date'">
+                                                <div class="alert alert-danger col-sm-12 col-lg-12"
+                                                            *ngIf='error?[item.columnName]:false'>{{ error[item.columnName] }}
+                                                        </div>
+                                            </ng-container>
+                                            <ng-container *ngIf="item.type == 'select'">
+                                                <div class="alert alert-danger col-sm-12 col-lg-12"
+                                                            *ngIf='error?[item.load?item.load.id:item.relatedBy]:false'>{{
+                                                            error[item.load?item.load.loadBy:item.relatedBy] }}</div>
+                                            </ng-container>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                                <div class="row">
+                                    <ng-container *ngFor="let item of properties.columnsForm; index as i ">
+                                        
+                                        <div *ngIf="item.type == 'input' || item.type == 'date' || item.type == 'select' || item.type == 'typehead'"
+                                            class="col-lg-3 col-sm-12 col-xs-12">
+                                            <div class="form-group-sm">
+                                                <label class="col-sm-12 col-form-label-form-md"
+                                                    translate="webpagos.{{item.tableName}}.{{item.columnName}}">...cargando<span
+                                                        style="color: red;font-size: 16px !important;font-weight: bold;">
+                                                        *</span></label>
+        
+                                                <div class="col-sm-12 col-lg-12">
+                                                    <ng-container *ngIf="item.type == 'input'">
+                                                        <input type="text" maxlength="255"
+                                                            name="{{item.tableName}}.{{item.columnName}}"
+                                                            id="{{item.tableName}}.{{item.columnName}}"
+                                                            class="form-control-sm col-sm-12 col-lg-12"
+                                                            value="{{item.value}}" 
+                                                            [attr.disabled] = "item.disabled?'':null" />
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.type == 'select'">
+                                                        <select
+                                                            name="{{item.tableName}}.{{item.load?item.load.id:item.relatedBy}}"
+                                                            id="{{item.tableName}}.{{item.load?item.load.id:item.relatedBy}}"
+                                                            (change)="load(item,i,$event)" class="form-control-sm col-sm-12 col-lg-12">
+                                                            <ng-container *ngFor="let columnas of item.listData; index as u;">
+                                                                <option
+                                                                    [selected]="(item.value?(item.value == columnas[0]): (columnas[0]==0))"
+                                                                    value="{{columnas[0]}}">{{columnas[1]}} </option>
+                                                            </ng-container>
+        
+                                                            <!-- <option *ngIf="item.tableName == item2[2]" >{{item[1]}} </option> -->
+                                                            <!-- <option *ngFor="let item of listLists[i]; index as o;" >{{item[1]}} </option> -->
+        
+        
+                                                        </select>
+        
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.type == 'date'">
+                                                        <div class="input-group input-group-sm">
+                                                            <input placeholder="dd/mm/yyyy"
+                                                                class="form-control-sm-dp col-xs-10 col-sm-10 col-lg-9"
+                                                                name="{{item.tableName}}.{{item.columnName}}"
+                                                                id="{{item.tableName}}.{{item.columnName}}"
+                                                                value="{{item.value}}" maxlength="200" ngbDatepicker
+                                                                #d="ngbDatepicker">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-outline-secondary calendar button-dp"
+                                                                    (click)="d.toggle()" type="button">
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </button>
+                                                            </div>
+        
+                                                        </div>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.type == 'typehead'">
+                                                        <input class="form-control-sm col-sm-12 col-lg-6"  type="text" 
+                                                            name="{{item.tableName}}.{{item.load?item.load.loadBy:item.relatedBy}}"
+                                                            id="{{item.tableName}}.{{item.relatedBy}}" #input 
+                                                            class="form-control-sm col-sm-12 col-lg-12"
+                                                            (selectItem)="onchangeInForm(item,$event)"
+                                                            [ngbTypeahead]="item.functionSearch" [resultTemplate]="rt" [inputFormatter]="formatter">
+                                                            <ng-template #rt let-r="result" let-t="term">
+                                                                {{ r[0]}} {{ r[1]}}
+                                                            </ng-template>
+                                                    </ng-container>
+                                                    
+                                                </div>
+        
+                                            </div>
+                                        </div>
+                                        <div *ngIf="item.type == 'input-large'" class="col-lg-12 col-sm-12 col-xs-12">
+                                            <label class="col-sm-12 col-form-label-form-md"
+                                                translate="webpagos.{{item.tableName}}.{{item.columnName}}">...cargando<span
+                                                    style="color: red;font-size: 16px !important;font-weight: bold;">
+                                                    *</span></label>
+        
+                                            <div class="col-sm-12 col-lg-12">
+                                                <input type="text" maxlength="255" name="{{item.tableName}}.{{item.columnName}}"
+                                                    id="{{item.tableName}}.{{item.columnName}}"
+                                                    class="form-control-sm col-sm-12 col-lg-12" value="{{item.value}}" />
+                                            </div>
+                                        </div>
+        
+        
+                                    </ng-container>
+                                </div>
+        
+                            </div>
+                            <div class="col-lg-3 col-sm-12 col-xs-12 align-middle">
+                                <ng-container *ngFor="let item of properties.columnsForm; index as i ">
+                                    <div class="row">
+                                        <div class="col-lg-6" *ngIf="item.type == 'label'">
+                                            <label translate="webpagos.{{item.tableName}}.{{item.columnName}}">...cargando
+                                                <span>:</span></label>
+        
+                                        </div>
+                                        <div class="col-lg-6 text-right" *ngIf="item.type == 'label'">
+                                            <label>{{item.value | number : '1.2-2'}}</label>
+                                        </div>
+                                    </div>
+        
+                                </ng-container>
+                                <div class="form-group row">
+        
+                                    <div class="col-sm-12" style="padding-top: 20px;">
+                                        <div class="row justify-content-center">
+                                            <div class="col-lg-6  col-sm-4 col-xs-5" style="margin-left: 50x;">
+                                                <a class="btn btn-default col-12" (click)="back()" data-toggle="modal">
+                                                    <i class="fa fa-arrow-circle-left"></i> {{'webpagos.btnBack' | translate }}
+                                                </a>
+                                            </div>
+                                            <div class="col-lg-6 col-sm-4 col-xs-5" style="margin-left: 20x;">
+                                                <a class="btn btn-primary col-12" (click)="save()" data-toggle="modal">
+                                                    <i [ngClass]="id ? 'fa fa-pen' : 'fa fa-plus'"></i> {{ id ?
+                                                    ('webpagos.btnEdit' | translate):('webpagos.btnSave' | translate) }}
+                                                    </a>
+                                            </div>
+        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 style="border-bottom: solid 1px;padding-bottom: 6px;">{{'webpagos.register' | translate}} -
+                                    {{properties.title}}</h4>
+                            </div>
+        
+                        </div>
+                        <div class="row">
+        
+                            <ng-container *ngFor="let item of properties.details; index as i ">
+                                <div class="form-group-sm row col-12 mb-2">
+                                    <label class="col-sm-12 col-lg-2 col-form-label"
+                                        translate="webpagos.{{item.search.tableName}}.{{item.search.columnName}}">...cargando</label>
+                                        <input autofocus class="form-control-sm col-sm-12 col-lg-6"  type="text" 
+                                        name="{{item.search.tableName}}.{{item.search.load?item.search.load.loadBy:item.search.relatedBy}}"
+                                        id="{{item.search.tableName}}.{{item.search.relatedBy}}" #input 
+                                        [ngbTypeahead]="item.functionSearch" [resultTemplate]="rt" [inputFormatter]="formatter"
+                                        (selectItem)="onchange(item.search.postFunction,item,$event,input)" >
+                                        <ng-template #rt let-r="result" let-t="term">
+                                            {{ r[0]}} {{ r[1]}}
+                                          </ng-template>
+        
+                                        <!-- <select
+                                        name="{{item.search.tableName}}.{{item.search.load?item.search.load.loadBy:item.search.relatedBy}}"
+                                        id="{{item.search.tableName}}.{{item.search.relatedBy}}"
+                                        (change)="onchange(item.search.postFunction,item,$event)" class="form-control-sm col-sm-12 col-lg-4">
+                                            <ng-container *ngFor="let columnas of item.search.listData; index as u;">
+                                                <option
+                                                    [selected]="(this.properties.id?(item.search.value == columnas[0]): (columnas[0]==0))"
+                                                    value="{{columnas[0]}}">{{columnas[1]}} </option>
+                                            </ng-container>
+                                        </select> -->
+        
+                                </div>
+                                <div class="row">
+                                    
+                                    <ng-container *ngFor="let item2 of item.columnsList; index as i ">
+                                        
+                                        
+                                        <div *ngIf="item2.type == 'input' || item2.type == 'date' || item2.type == 'select'"
+                                            class="col-lg-12 col-sm-12 col-xs-12">
+                                            <ng-container *ngIf="item2.type == 'input' || item2.type == 'date'">
+                                                <div class="alert alert-danger col-sm-12 col-lg-12"
+                                                            *ngIf='error?[item2.columnName]:false'>{{ error[item2.columnName] }}
+                                                        </div>
+                                            </ng-container>
+                                            <ng-container *ngIf="item2.type == 'select'">
+                                                <div class="alert alert-danger col-sm-12 col-lg-12"
+                                                            *ngIf='error?[item2.load?item2.load.loadBy:item2.relatedBy]:false'>{{
+                                                            error[item2.load?item2.load.loadBy:item2.relatedBy] }}</div>
+                                            </ng-container>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                                    <table
+                                    class="col-xl-12 col-lg-12 col-sm-12 table table-sm table-striped table-bordered table-td-valign-middle">
+                                    <thead>
+                                        <tr>
+                                            <th width="1%">Nro.</th>
+                                            <ng-container *ngFor="let item2 of item.columnsList">
+                                                <th *ngIf="item2.type != 'hidden'"
+                                                translate="webpagos.{{item2.tableName}}.{{item2.columnName}}">...Cargando</th>
+                                            </ng-container>
+                                            
+                                            
+                                            <th class="text-nowrap">{{'webpagos.actionsText' | translate}}</th>
+                                            <!-- <th class="text-nowrap">{{item}}</th>
+                                                            <th class="text-nowrap">{{headers[1]}}</th>
+                                                            <th class="text-nowrap">{{headers[2]}}</th>
+                                                            <th class="text-nowrap">{{headers[3]}}</th>
+                                                            <th class="text-nowrap">{{headers[4]}}</th> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- [disabled]="item.actInvoiceLine == null?false:true" -->
+                                        <tr *ngFor="let item2 of item.listData; index as idxLine">
+                                            <td width="1%" class="f-w-600 text-inverse">{{i+1}}</td>
+                                            <ng-container *ngFor="let itemDetail of item2; index as i2">
+                                                <ng-container *ngIf="item.columnsList[i2]" >
+                                                    <ng-container *ngIf="item.columnsList[i2].type == 'select'">
+                                                        <td >
+                                                            <select
+                                                                name="{{item.columnsList[i2].tableName}}.{{item.columnsList[i2].relatedBy}}_{{idxLine}}"
+                                                                id="{{item.columnsList[i2].tableName}}.{{item.columnsList[i2].relatedBy}}_{{idxLine}}"
+                                                                (change)="load(item.columnsList[i2],i,$event)" class="form-control-sm col-sm-12 col-lg-12">
+                                                                <ng-container *ngFor="let columnas of item.columnsList[i2].listData; index as u;">
+                                                                    <option
+                                                                        [selected]="(this.properties.id?(item.columnsList[i2].value == columnas[0]): (columnas[0]==0))"
+                                                                        value="{{columnas[0]}}">{{columnas[1]}} </option>
+                                                                </ng-container>
+            
+                                                                <!-- <option *ngIf="item.columnsList[i2].tableName == item.columnsList[i2]2[2]" >{{item.columnsList[i2][1]}} </option> -->
+                                                                <!-- <option *ngFor="let item.columnsList[i2] of listLists[i]; index as o;" >{{item.columnsList[i2][1]}} </option> -->
+            
+            
+                                                            </select>
+                                                        </td>
+            
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.columnsList[i2].type == 'none'">
+                                                        <td >{{itemDetail}}</td>
+            
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.columnsList[i2].type == 'input'">
+                                                        <td ><input type="{{item.columnsList[i2].subtype?item.columnsList[i2].subtype:'text'}}" maxlength="255"
+                                                            name="{{item.columnsList[i2].tableName}}.{{item.columnsList[i2].columnName}}_{{idxLine}}"
+                                                            id="{{item.columnsList[i2].tableName}}.{{item.columnsList[i2].columnName}}_{{idxLine}}"
+                                                            class="form-control-sm col-sm-12 col-lg-12"
+                                                            value="{{item.columnsList[i2].value?item.columnsList[i2].value:itemDetail}}"
+                                                            [attr.disabled] = "item.columnsList[i2].disabled?'':null"
+                                                            (focusout)="onChangeinDetail(item.columnsList[i2].onChange,idxLine,$event)"/></td>
+                                                    </ng-container>
+                                                </ng-container>
+                                                
+                                            </ng-container>
+                                            <td>
+                                                <div class="row row2">
+                                                    <!-- <div class="col-sm-6 col-xs-6"><a class="fas fa-trash"
+                                                            (click)="removeLine(item.listData,idxLine)" style="cursor: pointer;"
+                                                            title="Eliminar"></a></div> -->
+                                                    <ng-container *ngFor="let action of item.actions; index as i3">
+                                                                <div style="text-align: center;">
+                                                                    <a class="{{action.icon}}" (click)="action2(action,idxLine)" style="cursor: pointer;"
+                                                                            title="Eliminar"></a></div>
+                                                    </ng-container>
+                                                </div>
+                                            </td>
+                                            <!-- <td>{{item[0]}}</td>
+                                                                <td>{{item.totalqty}}</td>
+                                                                <td>{{item.unitvalue}}</td>
+                                                                <td>{{item.linesubtotal}}</td>
+                                                                <td>{{item.actInvoiceLine?.actInvoice?.documentserial}} - {{item.actInvoiceLine?.actInvoice?.documentno}}</td> -->
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                            </ng-container>
+                        </div>
+                    </form>
+        
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">Footer</div>
+            <!-- /.card-footer-->
+        </div>
+    </div>
+    <!-- /.card -->
+</section>
+<!-- /.content -->

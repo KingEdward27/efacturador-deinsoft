@@ -1,0 +1,33 @@
+{
+  "webpagos": {
+    "cnfBpartner": {
+      "home": {
+        "title": "Cnf Bpartners",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Cnf Bpartner",
+        "createOrEditLabel": "Crear o editar Cnf Bpartner",
+        "notFound": "Ningún Cnf Bpartners encontrado"
+      },
+      "created": "Un nuevo Cnf Bpartner ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cnf Bpartner ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cnf Bpartner ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cnf Bpartner {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Bpartner"
+      },
+      "id": "ID",
+      "cnfBpartnerId": "Cnf Bpartner Id",
+      "name": "Name",
+      "taxid": "Taxid",
+      "address": "Address",
+      "creditdays": "Creditdays",
+      "isactive": "Isactive",
+      "cnfDocidtype": "Cnf Docidtype",
+      "cnfBpgroup": "Cnf Bpgroup",
+      "cnfDistrict": "Cnf District",
+      "fltVehicle": "Flt Vehicle"
+    }
+  }
+}

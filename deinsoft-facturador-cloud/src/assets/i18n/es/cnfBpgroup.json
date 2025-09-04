@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "cnfBpgroup": {
+      "home": {
+        "title": "Cnf Bpgroups",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Cnf Bpgroup",
+        "createOrEditLabel": "Crear o editar Cnf Bpgroup",
+        "notFound": "Ningún Cnf Bpgroups encontrado"
+      },
+      "created": "Un nuevo Cnf Bpgroup ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cnf Bpgroup ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cnf Bpgroup ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cnf Bpgroup {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Bpgroup"
+      },
+      "id": "ID",
+      "cnfBpgroupId": "Cnf Bpgroup Id",
+      "name": "Name",
+      "cnfTenant": "Cnf Tenant",
+      "cnfBpartner": "Cnf Bpartner"
+    }
+  }
+}

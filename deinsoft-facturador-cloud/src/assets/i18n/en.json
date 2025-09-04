@@ -1,0 +1,46 @@
+{
+    "webpagos": {
+      "securityModule": "Security",
+      "register": "Registration",
+      "btnBack":"Get back",
+      "btnEdit":"Edit",
+      "btnSave":"Save",
+      "btnSaveAndClose":"Save and Close",
+      "btnCancel":"Cancel",
+      "btnDelete":"Delte",
+      "btnState":"Change status",
+      "btnNew":"New",
+      "btnPrint":"Imprimir",
+      "actionsText": "Actions",
+      "txtNoCoincidences":"No coincidences",
+      "incorrectFormatEmail":"Email incorrect format",
+      "searchFor":"Search por",
+      "cnfCountry": {
+        "home": {
+          "title": "Countries",
+          "subTitle": " Country maintenance",
+          "subTitleForm": " Country maintenance",
+          "subTitleList": " Country list",
+          "refreshListLabel": "Refresh list",
+          "createLabel": "Create a new Cnf Country",
+          "createOrEditLabel": "Create or edit a Cnf Country",
+          "notFound": "No Cnf Countries found"
+        },
+        "created": "A new Cnf Country is created with identifier {{ param }}",
+        "updated": "A Cnf Country is updated with identifier {{ param }}",
+        "deleted": "A Cnf Country is deleted with identifier {{ param }}",
+        "delete": {
+          "question": "Are you sure you want to delete Cnf Country {{ id }}?"
+        },
+        "detail": {
+          "title": "Cnf Country"
+        },
+        "id": "ID",
+        "cnfCountryId": "Cnf Country Id",
+        "name": "Name",
+        "isocode": "Iso code",
+        "cnfRegion": "Cnf Region"
+      }
+    }
+  }
+  

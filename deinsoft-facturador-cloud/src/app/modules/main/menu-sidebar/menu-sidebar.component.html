@@ -1,0 +1,54 @@
+<!-- Brand Logo -->
+<a [routerLink]="['/']" class="brand-link" style="background-color: rgb(15, 41, 66)">
+    <img
+        src="assets/img/logo_deinsoft.png"
+        alt="DEINSOFT Logo"
+        class="brand-image img-circle elevation-3"
+        style="opacity: 0.8"
+    />
+    <span class="brand-text font-weight-light">Deinsoft - Visor de Comprobantes</span>
+</a>
+
+<!-- Sidebar -->
+<div class="sidebar"  style="background-color: #0f2943">
+    <!-- Sidebar user (optional) -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+            <img
+                [src]="user.picture || 'assets/img/default-profile.png'"
+                class="img-circle elevation-2"
+                alt="User Image"
+            />
+        </div>
+        <div class="info">
+            <a class="d-block">
+                {{ user.name }}
+            </a>
+        </div>
+    </div>
+    <div class="user-panel mt-1 pb-1 mb-1 d-flex" style="white-space: inherit !important;">
+        <div class="info" style="white-space: inherit !important;">
+            <a class="d-block">
+                Perfil: {{ perfil }}
+            </a>
+            <a class="d-block">
+                Empresa: {{ empresa }}
+            </a>
+        </div>
+    </div>
+    <!-- Sidebar Menu -->
+    <nav class="mt-2" style="overflow-y: hidden">
+        <ul
+            class="nav nav-pills nav-sidebar flex-column"
+            data-widget="treeview"
+            role="menu"
+            data-accordion="false"
+        >
+            <app-menu-item
+                *ngFor="let item of menu"
+                [menuItem]="item"
+                
+            ></app-menu-item>
+        </ul>
+    </nav>
+</div>

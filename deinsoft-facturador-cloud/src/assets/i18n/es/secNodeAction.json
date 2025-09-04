@@ -1,0 +1,28 @@
+{
+  "webpagos": {
+    "secNodeAction": {
+      "home": {
+        "title": "Sec Node Actions",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Sec Node Action",
+        "createOrEditLabel": "Crear o editar Sec Node Action",
+        "notFound": "Ningún Sec Node Actions encontrado"
+      },
+      "created": "Un nuevo Sec Node Action ha sido creado con el identificador {{ param }}",
+      "updated": "Un Sec Node Action ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Sec Node Action ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Sec Node Action {{ id }}?"
+      },
+      "detail": {
+        "title": "Sec Node Action"
+      },
+      "id": "ID",
+      "secNodeActionId": "Sec Node Action Id",
+      "secNode": "Sec Node",
+      "secAction": "Sec Action",
+      "secMenu": "Sec Menu",
+      "secPermission": "Sec Permission"
+    }
+  }
+}

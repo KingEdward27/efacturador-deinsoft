@@ -1,0 +1,26 @@
+{
+  "webpagos": {
+    "cnfCountry": {
+      "home": {
+        "title": "Cnf Countries",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Cnf Country",
+        "createOrEditLabel": "Crear o editar Cnf Country",
+        "notFound": "Ningún Cnf Countries encontrado"
+      },
+      "created": "Un nuevo Cnf Country ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cnf Country ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cnf Country ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cnf Country {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Country"
+      },
+      "id": "ID",
+      "cnfCountryId": "Cnf Country Id",
+      "name": "Name",
+      "cnfRegion": "Cnf Region"
+    }
+  }
+}

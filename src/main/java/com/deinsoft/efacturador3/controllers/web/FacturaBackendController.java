@@ -189,6 +189,23 @@ public class FacturaBackendController extends BaseController {
         return ResponseEntity.status(HttpStatus.CREATED).body(data);
     }
 
+    @PostMapping(value = "/get-xml")
+    public ResponseEntity<?> getXml(@RequestParam(name = "id") String id) throws Exception {
+        try {
+            Map<String, Object> map = facturaElectronicaService.getXmlAsBytes(Long.parseLong(id), null, null, null);
+
+            if (map != null) {
+                return ResponseEntity.ok()
+                        .body(map);
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
     @RequestMapping(value = {"/resumendiario"}, method = RequestMethod.POST)
     public ResponseEntity<?> sendResumenDiario(
             @RequestParam(value = "ids") String ids,

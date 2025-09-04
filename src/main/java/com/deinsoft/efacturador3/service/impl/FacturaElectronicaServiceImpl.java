@@ -6,12 +6,11 @@
 package com.deinsoft.efacturador3.service.impl;
 
 import com.deinsoft.efacturador3.bean.*;
+import com.deinsoft.efacturador3.bean.enums.EstadoComprobante;
+import com.deinsoft.efacturador3.bean.enums.EstadoEnvioComprobante;
 import com.deinsoft.efacturador3.config.AppConfig;
 import com.deinsoft.efacturador3.config.XsltCpePath;
-import com.deinsoft.efacturador3.dto.FacturaElectronicaDto;
-import com.deinsoft.efacturador3.dto.NumeroDocumentoDto;
-import com.deinsoft.efacturador3.dto.ResumentRle2Dto;
-import com.deinsoft.efacturador3.dto.ResumentRleDto;
+import com.deinsoft.efacturador3.dto.*;
 import com.deinsoft.efacturador3.exception.XsdException;
 import com.deinsoft.efacturador3.exception.XsltException;
 import com.deinsoft.efacturador3.model.Empresa;
@@ -46,7 +45,6 @@ import com.deinsoft.efacturador3.validationapirest.ValidationBody;
 import com.deinsoft.efacturador3.validator.XsdCpeValidator;
 import com.deinsoft.efacturador3.validator.XsltCpeValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
 
 import java.io.*;
@@ -55,6 +53,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -475,9 +476,18 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 log.debug("FacturaController.enviarXML...filename: " + filename);
                 log.debug("FacturaController.enviarXML...tipoComprobante: " + tipoComprobante);
 
-                sendCp(facturaElectronica, urlWebService);
+                FacturaElectronica facturaElectronicaSended = sendCp(facturaElectronica, urlWebService);
+                if (facturaElectronicaSended != null) {
+                    if (facturaElectronicaSended.getIndSituacion().equals(Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO)) {
+                        resultado.put("message", "Enviado correctamente");
+                        resultado.put("code", "0");
+                    } else {
+                        resultado.put("message", "Enviado correctamente pero comprobante con errores o rechazado. " + facturaElectronicaSended.getObservacionEnvio());
+                        resultado.put("code", facturaElectronicaSended.getIndSituacion());
+                    }
+                }
 
-                return null;
+                return resultado;
             } else {
                 mensajeValidacion = "El documento se encuentra en una situación incorrecta o ya fue enviado";
                 resultadoProceso = "-2";
@@ -531,22 +541,27 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 List<FacturaElectronica> list = facturaElectronicaRepository.
                         findToSendSunat(
                                 empresa.getId(),
-                                Arrays.asList(Constantes.CONSTANTE_TIPO_DOCUMENTO_FACTURA, Constantes.CONSTANTE_TIPO_DOCUMENTO_BOLETA),
+                                Arrays.asList(Constantes.CONSTANTE_TIPO_DOCUMENTO_FACTURA,
+                                        Constantes.CONSTANTE_TIPO_DOCUMENTO_BOLETA,
+                                        Constantes.CONSTANTE_TIPO_DOCUMENTO_NCREDITO),
                                 listSituacion,
                                 Constantes.ESTADO_ACTIVO,
                                 LocalDate.now().plusDays(-3));
                 log.info("A enviar: " + String.valueOf(list.size()));
 
                 List<FacturaElectronica> listRechazados = new ArrayList<>();
-                list.forEach((facturaElectronica) -> {
+                for (FacturaElectronica facturaElectronica:list) {
                     FacturaElectronica item = sendCp(facturaElectronica, urlWebService);
-                    if (item != null) {
+                    if (item != null
+                            && (item.getIndSituacion().equalsIgnoreCase(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO)
+                            || (item.getIndSituacion().equalsIgnoreCase(Constantes.CONSTANTE_SITUACION_XML_GENERADO)
+                                && item.getNroIntentoEnvio() >= 2)
+                    )) {
                         listRechazados.add(item);
                     }
-
-                });
+                }
                 if (listRechazados.size() > 0) {
-//                    log.info("Rechazados: " + String.valueOf(listRechazados.size()));
+                    log.info("Rechazados: " + String.valueOf(listRechazados.size()));
                     try {
                         sendMail(appConfig.getMailSupport(), listRechazados);
                     }catch (Exception e) {
@@ -561,6 +576,22 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...enviarComprobantePagoSunat Final");
     }
 
+    @Override
+    public FacturaElectronicaResponse getStatus (String numTicket) {
+        List<FacturaElectronica> facturas = getByTicketOperacion(Long.parseLong(numTicket));
+        if (facturas.size() > 0) {
+            FacturaElectronica facturaElectronica = facturas.get(0);
+            return new FacturaElectronicaResponse(
+                    facturaElectronica.getTipo(),
+                    facturaElectronica.getSerie(),
+                    facturaElectronica.getNumero(),
+                    facturaElectronica.getFechaEmision(),
+                    facturaElectronica.getIndSituacion(),
+                    facturaElectronica.getObservacionEnvio());
+        }
+        return null;
+    }
+
     private FacturaElectronica sendCp(FacturaElectronica facturaElectronica, String urlWebService) {
         try {
             FacturaElectronica result = null;
@@ -571,9 +602,6 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 //            log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...filename: " + filename);
             //resultadoWebService = this.generarDocumentosService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica);
             BillServiceModel res = comunesService.enviarArchivoSunat(urlWebService, appConfig.getRootPath(), filename, facturaElectronica.getEmpresa());
-//            log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getCode());
-//            log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getDescription());
-//            log.debug("FacturaElectronicaServiceImpl.sendToSUNAT...res.getDescription(): " + res.getTicket());
             facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
             facturaElectronica.setObservacionEnvio(res.getDescription());
             if (res.getCode().toString().equals("0")) {
@@ -583,28 +611,26 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 facturaElectronica.setObservacionEnvio("CODE: " + res.getCode() + "-"+ res.getDescription());
                 facturaElectronica.setEstado(Constantes.ESTADO_ANULADO);
 
-                result = facturaElectronica;
             } else {
                 facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
                 facturaElectronica.setObservacionEnvio("CODE: " + res.getCode() + "-"+ res.getDescription());
                 facturaElectronica.setNroIntentoEnvio(facturaElectronica.getNroIntentoEnvio() + 1);
-                result = facturaElectronica;
             }
             facturaElectronica.setTicketSunat(res.getTicket());
             save(facturaElectronica);
             log.info(res.getDescription());
             Thread.sleep(1000);
-            return result;
+            return facturaElectronica;
         } catch (Exception e) {
             String mensaje = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
             e.printStackTrace();
             log.error(mensaje);
             facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
-            facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+            facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
             facturaElectronica.setObservacionEnvio(mensaje);
             facturaElectronica.setNroIntentoEnvio(facturaElectronica.getNroIntentoEnvio() + 1);
             save(facturaElectronica);
-            return null;
+            return facturaElectronica;
         }
     }
 
@@ -1144,6 +1170,48 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
 //            }
         return retorno;
+    }
+
+
+    @Override
+    public Map<String, Object> getXmlAsBytes(Long id, String serie, String numero, Empresa empresa) throws IOException {
+        try {
+            FacturaElectronica facturaElectronica;
+            if (id != null) {
+                facturaElectronica = getById(id);
+            } else {
+                facturaElectronica = new FacturaElectronica();
+                facturaElectronica.setSerie(serie);
+                facturaElectronica.setNumero(numero);
+                facturaElectronica.setEmpresa(empresa);
+                facturaElectronica = getBySerieAndNumeroAndEmpresaId(facturaElectronica)
+                        .stream().findFirst().orElse(null);
+            }
+
+
+            if (facturaElectronica == null) {
+                throw new Exception("No se encontró comprobante: " +
+                        facturaElectronica.getSerie() + "-" + facturaElectronica.getNumero());
+            }
+            String fileName = facturaElectronica.getEmpresa().getNumdoc() + "-"
+                    + String.format("%02d", Integer.parseInt(facturaElectronica.getTipo()))
+                    + "-" + facturaElectronica.getSerie() + "-"
+                    + String.format("%08d", Integer.parseInt(facturaElectronica.getNumero())) + ".xml";
+            Path filePath = Paths.get(appConfig.getRootPath() + "/" + facturaElectronica.getEmpresa().getNumdoc() + "/PARSE/",
+                    fileName);
+
+            if (!Files.exists(filePath) || !Files.isRegularFile(filePath)) {
+                throw new IOException("El archivo no existe: " + fileName);
+            }
+            Map<String, Object> response = new HashMap<>();
+            response.put("xmlBase64", Base64.getEncoder().encodeToString( Files.readAllBytes(filePath)));
+            response.put("fileName", fileName);
+            return response;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
+
     }
 
     @Override
@@ -1692,44 +1760,13 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             }
 
             return f;
-//            if (listFromSire.stream().anyMatch(predicate -> predicate.getSerie().equals(mapper.getSerie())
-//                    && Integer.parseInt(predicate.getNumero()) == Integer.parseInt(mapper.getNumero()))) {
-//                f.setExists(true);
-//
-//                if (mapper.getFechaEmision().compareTo(fechaDesde) >= 0 && mapper.getFechaEmision().compareTo(fechaHasta) <= 0) {
-//                    f.setSamePeriodo(true);
-//
-//                    if (listFromSire.stream().anyMatch(predicate -> predicate -> predicate -> predicate.getSerie().equals(mapper.getSerie())
-//                            && Integer.parseInt(predicate.getNumero()) == Integer.parseInt(mapper.getNumero()) && predicate.getSumatoriaIGV().compareTo(mapper.getSumatoriaIGV()) != 0)) {
-//                        FacturaElectronica fDifIgv = listFromSire.stream()
-//                                .filter(predicate -> predicate -> predicate.getSerie().equals(mapper.getSerie())
-//                                && Integer.parseInt(predicate.getNumero()) == Integer.parseInt(mapper.getNumero()) 
-//                                        && predicate.getSumatoriaIGV().compareTo(mapper.getSumatoriaIGV()) != 0)
-//                                .findFirst().orElse(null);
-//                        f.setDifIgv(mapper.getSumatoriaIGV().subtract(fDifIgv.getSumatoriaIGV()));
-//                    }
-//
-//                    if (listFromSire.stream().anyMatch(predicate -> predicate -> predicate.getSerie().equals(mapper.getSerie())
-//                            && Integer.parseInt(predicate.getNumero()) == Integer.parseInt(mapper.getNumero()) && (predicate.getTotalValorVenta()
-//                            .compareTo(mapper.getTotalValorVenta()) != 0))) {
-//
-//                        FacturaElectronica fDifIgv = listFromSire.stream()
-//                                .filter(predicate -> predicate -> predicate.getSerie().equals(mapper.getSerie())
-//                                && Integer.parseInt(predicate.getNumero()) == Integer.parseInt(mapper.getNumero()) 
-//                                        && (predicate.getTotalValorVenta()
-//                                .compareTo(mapper.getTotalValorVenta()) != 0))
-//                                .findFirst().orElse(null);
-//
-//                        f.setDifTotales(mapper.getTotalValorVenta().subtract(fDifIgv.getTotalValorVenta()));
-//                    }
-//                }
-//            }
         }).collect(Collectors.toList());
     }
 
 
 
     public EmailResponse sendMail(String mail, List<FacturaElectronica> actComprobante) {
+        log.info("FacturaElectronicaServiceImpl.sendMail...mail: " + mail + ", actComprobante: " + actComprobante.size());
         if (mail.equals("")){ return null; }
 
         //before use -> clean and build

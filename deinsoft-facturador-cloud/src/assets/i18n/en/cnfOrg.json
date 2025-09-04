@@ -1,0 +1,30 @@
+{
+  "webpagos": {
+    "cnfOrg": {
+      "home": {
+        "title": "Cnf Orgs",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Cnf Org",
+        "createOrEditLabel": "Create or edit a Cnf Org",
+        "notFound": "No Cnf Orgs found"
+      },
+      "created": "A new Cnf Org is created with identifier {{ param }}",
+      "updated": "A Cnf Org is updated with identifier {{ param }}",
+      "deleted": "A Cnf Org is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Cnf Org {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Org"
+      },
+      "id": "ID",
+      "cnfOrgId": "Cnf Org Id",
+      "name": "Name",
+      "address": "Address",
+      "cnfCompany": "Cnf Company",
+      "cnfDistrict": "Cnf District",
+      "invWarehouse": "Inv Warehouse",
+      "secRoleUser": "Sec Role User"
+    }
+  }
+}

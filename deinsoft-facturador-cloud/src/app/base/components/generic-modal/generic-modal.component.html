@@ -1,0 +1,93 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{'webpagos.invDocument.invDocumentLine' | translate}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div *ngIf="load" class="modal-body">
+
+    <div class="panel-body">
+        <div class="table-responsive">
+            <form class="col-sm-12" style="padding-top: 6px;">
+                <div class="form-group row">
+                    <label >{{message}}</label>
+                </div>
+                <div class="form-group row">
+
+                    <div class="col-sm-12" style="padding-top: 20px;">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-6  col-sm-6 col-xs-5" style="margin-left: 50x;">
+                                <button class="btn btn-default col-12">
+                                    <i class="fa fa-arrow-circle-left"></i> {{'webpagos.btnTicket' | translate }}
+                                </button>
+                            </div>
+                            <div class="col-lg-6 col-sm-6 col-xs-5" style="margin-left: 20x;">
+                                <button class="btn btn-orange col-12">
+                                    <i class="fa fa-arrow-circle-left"></i> {{ 'webpagos.btnA4' | translate }}
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+
+                    <div class="col-sm-12" style="padding-top: 20px;">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8 col-sm-6 col-xs-5">
+                                <input type="text">
+                            </div>
+                            <div class="col-lg-4 col-sm-6 col-xs-5" style="margin-left: 20x;">
+                                <button class="btn btn-orange col-12">
+                                    <i class="fa fa-arrow-circle-left"></i> {{ 'webpagos.sendMail' | translate }}
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group-sm row">
+                    <div class="col-sm-12 col-lg-12">
+                        <div *ngIf="listDetail && listDetail.length > 0?true:false">
+                            <table id="dtData"
+                                class="col-xl-12 col-lg-12 col-sm-12 table table-sm table-striped table-bordered table-td-valign-middle">
+                                <thead>
+                                    <tr>
+                                        <th width="1%"></th>
+                                        <th width="1%">Nro.</th>
+                                        <th *ngFor="let item of headers">{{item}}</th>
+                                        <!-- <th class="text-nowrap">{{item}}</th>
+                                        <th class="text-nowrap">{{headers[1]}}</th>
+                                        <th class="text-nowrap">{{headers[2]}}</th>
+                                        <th class="text-nowrap">{{headers[3]}}</th>
+                                        <th class="text-nowrap">{{headers[4]}}</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- [disabled]="item.actInvoiceLine == null?false:true" -->
+                                    <tr *ngFor="let item of listDetail2; index as i">
+                                        <td width="1%" class="f-w-600 text-inverse">{{i+1}}</td>
+                                        <td *ngFor="let itemDetail of item[i]; index as i2">{{itemDetail}}</td>
+                                        <!-- <td>{{item[0]}}</td>
+                                            <td>{{item.totalqty}}</td>
+                                            <td>{{item.unitvalue}}</td>
+                                            <td>{{item.linesubtotal}}</td>
+                                            <td>{{item.actInvoiceLine?.actInvoice?.documentserial}} - {{item.actInvoiceLine?.actInvoice?.documentno}}</td> -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group-sm row">
+                    &nbsp;
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" ngbAutofocus class="btn btn-orange" (click)="save()">{{'webpagos.btnAccept' |
+            translate}}</button>
+    </div>

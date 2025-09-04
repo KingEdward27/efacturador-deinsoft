@@ -1,0 +1,28 @@
+{
+  "webpagos": {
+    "secNodeAction": {
+      "home": {
+        "title": "Sec Node Actions",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Sec Node Action",
+        "createOrEditLabel": "Create or edit a Sec Node Action",
+        "notFound": "No Sec Node Actions found"
+      },
+      "created": "A new Sec Node Action is created with identifier {{ param }}",
+      "updated": "A Sec Node Action is updated with identifier {{ param }}",
+      "deleted": "A Sec Node Action is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Sec Node Action {{ id }}?"
+      },
+      "detail": {
+        "title": "Sec Node Action"
+      },
+      "id": "ID",
+      "secNodeActionId": "Sec Node Action Id",
+      "secNode": "Sec Node",
+      "secAction": "Sec Action",
+      "secMenu": "Sec Menu",
+      "secPermission": "Sec Permission"
+    }
+  }
+}

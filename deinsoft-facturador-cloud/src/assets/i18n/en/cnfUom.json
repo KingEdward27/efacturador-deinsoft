@@ -1,0 +1,28 @@
+{
+  "webpagos": {
+    "cnfUom": {
+      "home": {
+        "title": "Cnf Uoms",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Cnf Uom",
+        "createOrEditLabel": "Create or edit a Cnf Uom",
+        "notFound": "No Cnf Uoms found"
+      },
+      "created": "A new Cnf Uom is created with identifier {{ param }}",
+      "updated": "A Cnf Uom is updated with identifier {{ param }}",
+      "deleted": "A Cnf Uom is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Cnf Uom {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Uom"
+      },
+      "id": "ID",
+      "cnfUomId": "Cnf Uom Id",
+      "name": "Name",
+      "nameplural": "Nameplural",
+      "isocode": "Isocode",
+      "cnfProduct": "Cnf Product"
+    }
+  }
+}

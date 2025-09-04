@@ -1,0 +1,621 @@
+{
+  "webpagos": {
+    "securityModule": "Seguridad",
+    "adminModule": "Administrador del sistema",
+    "reportModule": "Reportes",
+    "salesModule": "Ventas",
+    "register": "Registro",
+    "btnSearch":"Consultar",
+    "btnExportPDF":"Exportar a PDF",
+    "btnExportExcel":"Exportar a Excel",
+    "btnBack":"Regresar",
+    "btnEdit":"Modificar",
+    "btnSave":"Guardar",
+    "btnSaveAndClose":"Guardar y cerrar",
+    "btnProcess":"Procesar",
+    "btnCancel":"Cancelar",
+    "btnDelete":"Eliminar",
+    "btnState":"Cambiar Estado",
+    "btnInvalidate":"Anular",
+    "btnNew":"Nuevo",
+    "btnPrint":"Imprimir",
+    "btnAdd":"Añadir",
+    "btnComplete":"Completar",
+    "btnGenerate":"Generar",
+    "btnGenerateInvoice":"Generar Factura",
+    "btnGenerateDocument":"Generar Guía",
+    "btnAccept":"Aceptar",
+    "actionsText": "Acciones",
+    "txtNoCoincidences":"No hay coincidenciaaas",
+    "incorrectFormatEmail":"Formato de correo electrónico inválido",
+    "searchFor":"Buscar por",
+    "noRows":"No se encontraron registros",
+    "btnTicket":"Ticket",
+    "btnA4":"A4",
+    "messages":{
+      "errorSearchActInvoice":"Debe ingresar el Nro. de serie y el Nro. de documento para buscar"
+    },
+    "cnf_empresa": {
+      "home": {
+        "title": "Empresa",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Empresa",
+      "descripcion": "Nobre comercial",
+      "direccion": "Direccion",
+      "nro_documento": "Nro. documento",
+      "telefono": "Teléfono",
+      "ruta_pse":"Ruta PSE facturación",
+      "token":"Token seguridad",
+      "perfil_empresa":"Perfil empresa",
+      "flag_compra_rapida": "Compra rápida?",
+      "flag_venta_rapida": "Venta rápida?",
+      "cnf_moneda":"Moneda principal"
+    },
+    "cnf_moneda": {
+      "home": {
+        "title": "Moneda",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Moneda",
+      "codigo": "Codigo ISO",
+      "descripcion": "Descripción",
+      "validini": "Valido desde",
+      "validfin": "Válido hasta",
+      "simbolo": "Símbolo",
+      "descripcion_plural": "Descripción plural"
+    },
+    "cnf_distrito": {
+      "home": {
+        "title": "Empresa",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Distrito"
+    },
+    "cnf_provincia": {
+      "home": {
+        "title": "Empresa",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Provincia"
+    },
+    "cnf_region": {
+      "home": {
+        "title": "Empresa",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Departamento"
+    },
+    "cnf_tipo_documento": {
+      "home": {
+        "title": "Tipo documento",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Tipo documento",
+      "abreviatura": "Abreviatura",
+      "codigo_sunat": "Código SUNAT"
+    },
+    "cnf_local": {
+      "home": {
+        "title": "Tipo documento",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Nombre local",
+      "direccion": "Dirección"
+    },
+    "cnf_tipo_comprobante": {
+      "home": {
+        "title": "Tipo de Comprobante",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Tipo Doc.",
+      "codigo": "Código",
+      "codigo_sunat": "Código SUNAT",
+      "flag_electronico":"Facturación electrónica (1=Si,0=No)"
+    },
+    "cnf_maestro": {
+      "home": {
+        "title": "Clientes y Proveedores",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombres": "Nombres",
+      "nombre_completo": "Cliente",
+      "apellido_paterno": "Ap. Paterno",
+      "apellido_materno": "Ap. Materno",
+      "concat(nombres,' ',apellido_paterno,' ',apellido_materno)":"Cliente",
+      "nro_doc": "Nro. Documento",
+      "razon_social": "Nombres/Razón Social",
+      "direccion": "Dirección",
+      "correo": "Correo",
+      "telefono": "Teléfono",
+      "cnf_tipo_documento":"Tipo doc identidad",
+      "cnf_distrito":"Distrito",
+      "cnf_region":"Departamento",
+      "cnf_provincia":"Provincia"
+    },
+    "cnf_forma_pago": {
+      "home": {
+        "title": "Tipo de Comprobante",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Forma de pago",
+      "cnf_forma_pago_detalle":"Programación de formas de pago",
+      "tipo": "Tipo"
+    },
+    "act_comprobante": {
+      "home": {
+        "title": "Venta de Productos y Servicios",
+        "titleCompra": "Compra de Productos",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "fecha": "Fecha",
+      "fecha_registro": "Fecha Registro",
+      "numero": "Número",
+      "total": "Total",
+      "observacion": "Observación",
+      "igv":"IGV",
+      "subtotal":"Subtotal",
+      "serie":"Serie",
+      "envio_pse_mensaje":"Envío F.E.",
+      "cnf_maestro":"Cliente",
+      "cnf_tipo_comprobante":"Tipo",
+      "cnf_forma_pago":"Forma de pago",
+      "cnf_local":"Local",
+      "inv_almacen":"Almacén",
+      "flag_estado":"Estado",
+      "cnf_moneda":"Moneda",
+      "descuento":"Descuento",
+      "act_comprobante_detalle":"Detalle de Comprobante",
+      "proveedor":"Proveedor",
+      "fechaDesde":"Fecha inicio",
+      "fechaHasta":"Fecha fin",
+      "envio_pse_flag":"Envío SUNAT",
+      "fecha_vencimiento":"Fecha vencimiento",
+      "anio":"Año",
+      "periodo":"Periodo"
+    },
+    "act_comprobante_detalle": {
+      "home": {
+        "title": "Tipo de Comprobante",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "descripcion": "Descripción",
+      "cantidad": "Cantidad",
+      "precio": "Precio",
+      "importe":"Importe",
+      "afectacion_igv":"Afectación IGV",
+      "cnf_producto":"Producto",
+      "cnf_impuesto_condicion":"Impuesto"
+    },
+    "cnf_impuesto_condicion": {
+      "home": {
+        "title": "Tipo de Comprobante",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Condición de Impuesto"
+    },
+    "cnf_num_comprobante": {
+      "home": {
+        "title": "Tipo de Comprobante",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "serie": "Serie",
+      "ultimo_nro": "último Número"
+    },
+    "cnf_marca": {
+      "home": {
+        "title": "Tipo de Comprobante",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Marca"
+    },
+    "cnf_unidad_medida": {
+      "home": {
+        "title": "Tipo de Comprobante",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Unidad de Medida",
+      "codigo_sunat": "Código SUNAT"
+    },
+    "cnf_categoria": {
+      "home": {
+        "title": "Tipo de Comprobante",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Categoría"
+    },
+    "cnf_sub_categoria": {
+      "home": {
+        "title": "Tipo de Comprobante",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Sub Categoría"
+    },
+    "cnf_producto": {
+      "home": {
+        "title": "Productos",
+        "subTitleForm": " Mantenimiento de Productos",
+        "subTitleList": " Listado de Productos"
+      },
+      "id": "ID",
+      "nombre": "Producto",
+      "precio": "precio",
+      "codigo": "Código",
+      "descripcion": "Descripción",
+      "cnf_producto.cnf_producto_id, cnf_producto.nombre":"Producto",
+      "barcode":"Código de barras",
+      "costo":"Costo",
+      "flag_servicio":"Es servicio",
+      "ruta_imagen":"Imagen",
+      "cnf_unidad_medida": "Unidad de medida",
+      "cnf_marca":"Marca",
+      "cnf_empresa":"Empresa",
+      "cnf_categoria":"Categoria",
+      "cnf_sub_categoria":"Sub categoria",
+      "flag_estado":"Estado"
+    },
+    "inv_almacen": {
+      "home": {
+        "title": "Tipo de Comprobante",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Almacén"
+    }
+    ,
+    "seg_rol": {
+      "home": {
+        "title": "Perfiles",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Perfil",
+      "descripcion": "Descripción"
+    },
+    "seg_usuario": {
+      "home": {
+        "title": "Usuarios",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre": "Usuario",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "password2": "repita contraseña",
+      "seg_rol":"Roles"
+    },
+    "inv_almacen_producto": {
+      "home": {
+        "title": "Tipo de Comprobante",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "inv_almacen": "Almacén",
+      "cnf_producto":"Producto",
+      "cantidad": "Cantidad"
+    },
+    "cnf_forma_pago_detalle": {
+      "home": {
+        "title": "Tipo de Comprobante",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "modo_dias_intervalo": "Días",
+      "modo_porcentaje":"Porcentaje",
+      "modo_monto": "Monto",
+      "modo_dia_vencimiento": "Día del mes a vencer"
+    },
+    "act_pago_programacion": {
+      "home": {
+        "title": "Cuentas por cobrar",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "cnf_maestro":"Cliente/Proveedor",
+      "fecha_vencimiento":"Fecha vencimiento",
+      "monto": "Monto",
+      "monto_pendiente": "Monto pendiente",
+      "monto_pagar": "Monto a pagar",
+      "estado":"Estado",
+      "mes": "Mes",
+      "ultimo_pago": "Ultimo pago"
+    },
+    "act_pago_programacion_compra": {
+      "home": {
+        "title": "Cuentas por pagar",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "cnf_maestro":"Cliente/Proveedor",
+      "fecha_vencimiento":"Fecha vencimiento",
+      "monto": "Monto",
+      "monto_pendiente": "Monto pendiente",
+      "monto_pagar": "Monto a pagar"
+    },
+    "act_caja": {
+      "home": {
+        "title": "Caja",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "nombre":"Caja"
+    },
+    "act_caja_turno": {
+      "home": {
+        "title": "Turnos de caja",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "act_caja":"Caja",
+      "seg_usuario":"Usuario",
+      "fecha_apertura":"Fecha apertura",
+      "monto_apertura":"Monto apertura",
+      "fecha_cierre":"Fecha cierre",
+      "monto_cierre":"Monto cierre",
+      "estado":"Estado"
+    },
+    "seg_accion": {
+      "home": {
+        "title": "Acciones",
+        "subTitleForm": " Mantenimiento de Acciones",
+        "subTitleList": " Listado de Acciones"
+      },
+      "id": "ID",
+      "nombre":"Nombre",
+      "descripcion":"Descripción"
+    },
+    "seg_menu": {
+      "home": {
+        "title": "Opciones de Menú",
+        "subTitleForm": " Mantenimiento de Opciones de Menú",
+        "subTitleList": " Listado de Opciones de Menú"
+      },
+      "id": "ID",
+      "nombre":"Nombre",
+      "seqorder":"Orden",
+      "icon":"Icono",
+      "path":"Ruta",
+      "seg_menu":"Opción padre"
+    },
+    "seg_permiso": {
+      "home": {
+        "title": "Permisos por Rol",
+        "subTitleForm": " Mantenimiento de Permisos",
+        "subTitleList": " Listado de Permisos"
+      },
+      "id": "ID",
+      "seg_rol":"Perfil",
+      "seg_menu":"Opción",
+      "seg_accion":"Acción"
+    },
+    "act_caja_operacion": {
+      "home": {
+        "title": "Operaciones de caja",
+        "subTitleForm": " Mantenimiento de Operaciones de caja",
+        "subTitleList": " Listado de Operaciones de caja"
+      },
+      "id": "ID",
+      "act_caja":"Caja",
+      "seg_usuario":"Usuario",
+      "fecha":"Fecha",
+      "act_caja_turno":"Caja turno",
+      "act_comprobante":"Comprobante",
+      "act_pago":"Pago de comprobante",
+      "flag_ingreso":"Es ingreso",
+      "monto":"Monto",
+      "estado":"Estado",
+      "monto_salida":"Salida",
+      "monto_ingreso":"Ingreso",
+      "detail":"Detalle"
+    },
+    "inv_tipo_mov_almacen": {
+      "home": {
+        "title": "Tipos de Movimiento de Almacén",
+        "subTitleForm": " Mantenimiento de Tipos de Movimiento de Almacén",
+        "subTitleList": " Listado de Tipos de Movimiento de Almacén"
+      },
+      "id": "ID",
+      "nombre":"Nombre",
+      "codigo_sunat":"Código SUNAT",
+      "naturaleza":"Naturaleza"
+    },
+    "inv_mov_almacen": {
+      "home": {
+        "title": "Movimiento de Almacén",
+        "titleCompra": "Compra de Productos",
+        "subTitleForm": " ovimiento de Alamacén",
+        "subTitleList": " Listado de Movimiento de Alamacén"
+      },
+      "id": "ID",
+      "fecha": "Fecha",
+      "fechareg": "Fecha Registro",
+      "numero": "Número",
+      "numero_ref": "Número referencial",
+      "total": "Total",
+      "observacion": "Observación",
+      "igv":"IGV",
+      "subtotal":"Subtotal",
+      "serie":"Serie",
+      "envio_pse_mensaje":"Envío F.E.",
+      "cnf_maestro":"Cliente",
+      "cnf_tipo_comprobante":"Tipo",
+      "cnf_forma_pago":"Forma de pago",
+      "cnf_local":"Local",
+      "inv_almacen":"Almacén",
+      "flag_estado":"Estado",
+      "cnf_moneda":"Moneda",
+      "descuento":"Descuento",
+      "act_comprobante_detalle":"Detalle de Comprobante",
+      "proveedor":"Proveedor",
+      "fechaDesde":"Fecha inicio",
+      "fechaHasta":"Fecha fin",
+      "fecha_vencimiento":"Fecha vencimiento",
+      "inv_tipo_mov_almacen":"Tipo de movimiento",
+      "inv_mov_almacen_det":"Productos"
+    },
+    "inv_mov_almacen_det": {
+      "home": {
+        "title": "Tipo de Comprobante",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "cantidad": "Cantidad",
+      "precio": "Precio",
+      "importe":"Importe",
+      "cnf_producto":"Producto"
+    },
+    "act_contrato": {
+      "home": {
+        "title": "Contrato de pagos mensuales",
+        "subTitleForm": " Mantenimiento Contrato de pagos mensuales",
+        "subTitleList": " Listado de Contrato de pagos mensuales"
+      },
+      "id": "ID",
+      "fecha": "Fecha Instalación",
+      "fecha_registro": "Fecha Registro",
+      "numero": "Número contrato",
+      "total": "Total",
+      "observacion": "Observación",
+      "igv":"IGV",
+      "subtotal":"Subtotal",
+      "serie":"Serie",
+      "envio_pse_mensaje":"Envío F.E.",
+      "cnf_maestro":"Cliente",
+      "cnf_tipo_comprobante":"Tipo",
+      "cnf_forma_pago":"Forma de pago",
+      "cnf_local":"Local",
+      "inv_almacen":"Almacén",
+      "flag_estado":"Estado",
+      "cnf_moneda":"Moneda",
+      "descuento":"Descuento",
+      "act_comprobante_detalle":"Detalle de Comprobante",
+      "proveedor":"Proveedor",
+      "fechaDesde":"Fecha inicio",
+      "fechaHasta":"Fecha fin",
+      "envio_pse_flag":"Envío SUNAT",
+      "fecha_vencimiento":"Fecha vencimiento",
+      "cnf_plan_contrato":"Plan",
+      "direccion":"Direccion",
+      "nro_poste" :"Nro poste",
+      "vicinity":"Ubicación",
+      "cnf_zona":"Zona",
+      "monto_primer_mes":"Monto primer mes",
+      "ultimo_pago": "Ultimo pago",
+      "monto_deuda": "Monto deuda",
+      "meses_deuda": "Meses en deuda"
+    },
+    "cnf_plan_contrato": {
+      "home": {
+        "title": "Planes de contratos",
+        "subTitleForm": " Mantenimiento Planes de contratos",
+        "subTitleList": " Listado de Planes de contratos"
+      },
+      "id": "ID",
+      "nombre": "Plan",
+      "precio": "Precio",
+      "dia_vencimiento":"Día de vencimiento (31 = fin de mes)",
+      "precio_instalacion": "Precio instalación",
+      "dia_proceso_corte":"Día de proceso de corte"
+    },
+    "cnf_zona": {
+      "home": {
+        "title": "Zonas",
+        "subTitleForm": " Mantenimiento Zonas",
+        "subTitleList": " Listado de Zonas"
+      },
+      "id": "ID",
+      "nombre": "Zona"
+    },
+    "act_pago": {
+      "home": {
+        "title": "Pagos",
+        "subTitleForm": " Mantenimiento de Centro de Costo",
+        "subTitleList": " Listado de Centros de Costo"
+      },
+      "id": "ID",
+      "cnf_maestro":"Cliente/Proveedor",
+      "fecha_vencimiento":"Fecha vencimiento",
+      "monto": "Monto",
+      "monto_pendiente": "Monto pendiente",
+      "monto_pagar": "Monto a pagar",
+      "estado":"Estado",
+      "fecha": "Fecha",
+      "fechareg": "Fecha Registro",
+      "numero": "Número",
+      "numero_ref": "Número referencial",
+      "total": "Total",
+      "observacion": "Observación",
+      "igv":"IGV",
+      "subtotal":"Subtotal",
+      "serie":"Serie",
+      "envio_pse_mensaje":"Envío F.E.",
+      "cnf_tipo_comprobante":"Tipo",
+      "cnf_forma_pago":"Forma de pago",
+      "cnf_local":"Local"
+    },
+    "act_contrato_corte": {
+      "home": {
+        "title": "Corte de Contrato",
+        "subTitleForm": " Mantenimiento Corte de Contrato",
+        "subTitleList": " Listado de Corte de Contrato"
+      },
+      "id": "ID",
+      "fecha": "Fecha",
+      "observacion": "Observacion"
+    },
+    "reportes": {
+      "act_comprobante_listado":"Listado de Ventas",
+      "act_comprobante_compra_listado":"Listado de Compras",
+      "act_comprobante":"Reporte de Ventas",
+      "act_comprobante_compra":"Reporte de Compra",
+      "inv_almacen_producto":"Reporte de Stock Valorizado",
+      "inv_movimiento_producto":"Reporte de Kardex Valorizado"
+    }
+  }
+}

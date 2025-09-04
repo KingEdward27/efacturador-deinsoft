@@ -1,0 +1,33 @@
+{
+  "webpagos": {
+    "cnfTenant": {
+      "home": {
+        "title": "Cnf Tenants",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Cnf Tenant",
+        "createOrEditLabel": "Crear o editar Cnf Tenant",
+        "notFound": "Ningún Cnf Tenants encontrado"
+      },
+      "created": "Un nuevo Cnf Tenant ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cnf Tenant ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cnf Tenant ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cnf Tenant {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Tenant"
+      },
+      "id": "ID",
+      "cnfTenantId": "Cnf Tenant Id",
+      "name": "Name",
+      "cnfBpgroup": "Cnf Bpgroup",
+      "cnfBrand": "Cnf Brand",
+      "cnfCompany": "Cnf Company",
+      "cnfProduct": "Cnf Product",
+      "fltAgreement": "Flt Agreement",
+      "fltVehicle": "Flt Vehicle",
+      "fltVehiclegroup": "Flt Vehiclegroup",
+      "secRoleUser": "Sec Role User"
+    }
+  }
+}

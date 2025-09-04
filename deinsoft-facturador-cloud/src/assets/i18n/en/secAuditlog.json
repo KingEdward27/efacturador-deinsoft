@@ -1,0 +1,30 @@
+{
+  "webpagos": {
+    "secAuditlog": {
+      "home": {
+        "title": "Sec Auditlogs",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Sec Auditlog",
+        "createOrEditLabel": "Create or edit a Sec Auditlog",
+        "notFound": "No Sec Auditlogs found"
+      },
+      "created": "A new Sec Auditlog is created with identifier {{ param }}",
+      "updated": "A Sec Auditlog is updated with identifier {{ param }}",
+      "deleted": "A Sec Auditlog is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Sec Auditlog {{ id }}?"
+      },
+      "detail": {
+        "title": "Sec Auditlog"
+      },
+      "id": "ID",
+      "secAuditlogId": "Sec Auditlog Id",
+      "created": "Created",
+      "createdby": "Createdby",
+      "tablename": "Tablename",
+      "prevdata": "Prevdata",
+      "newdata": "Newdata",
+      "extradata": "Extradata"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "cnfCurrency": {
+      "home": {
+        "title": "Cnf Currencies",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Cnf Currency",
+        "createOrEditLabel": "Crear o editar Cnf Currency",
+        "notFound": "Ningún Cnf Currencies encontrado"
+      },
+      "created": "Un nuevo Cnf Currency ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cnf Currency ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cnf Currency ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cnf Currency {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Currency"
+      },
+      "id": "ID",
+      "cnfCurrencyId": "Cnf Currency Id",
+      "isocode": "Isocode",
+      "cnfCompany": "Cnf Company",
+      "cnfCurrencydata": "Cnf Currencydata"
+    }
+  }
+}

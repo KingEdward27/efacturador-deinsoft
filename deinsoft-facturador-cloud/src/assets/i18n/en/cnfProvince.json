@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "cnfProvince": {
+      "home": {
+        "title": "Cnf Provinces",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Cnf Province",
+        "createOrEditLabel": "Create or edit a Cnf Province",
+        "notFound": "No Cnf Provinces found"
+      },
+      "created": "A new Cnf Province is created with identifier {{ param }}",
+      "updated": "A Cnf Province is updated with identifier {{ param }}",
+      "deleted": "A Cnf Province is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Cnf Province {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Province"
+      },
+      "id": "ID",
+      "cnfProvinceId": "Cnf Province Id",
+      "name": "Name",
+      "cnfRegion": "Cnf Region",
+      "cnfDistrict": "Cnf District"
+    }
+  }
+}

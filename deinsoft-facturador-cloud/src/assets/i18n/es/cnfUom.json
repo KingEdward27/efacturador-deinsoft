@@ -1,0 +1,28 @@
+{
+  "webpagos": {
+    "cnfUom": {
+      "home": {
+        "title": "Cnf Uoms",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Cnf Uom",
+        "createOrEditLabel": "Crear o editar Cnf Uom",
+        "notFound": "Ningún Cnf Uoms encontrado"
+      },
+      "created": "Un nuevo Cnf Uom ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cnf Uom ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cnf Uom ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cnf Uom {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Uom"
+      },
+      "id": "ID",
+      "cnfUomId": "Cnf Uom Id",
+      "name": "Name",
+      "nameplural": "Nameplural",
+      "isocode": "Isocode",
+      "cnfProduct": "Cnf Product"
+    }
+  }
+}

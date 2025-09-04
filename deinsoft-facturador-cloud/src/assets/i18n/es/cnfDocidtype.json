@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "cnfDocidtype": {
+      "home": {
+        "title": "Cnf Docidtypes",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Cnf Docidtype",
+        "createOrEditLabel": "Crear o editar Cnf Docidtype",
+        "notFound": "Ningún Cnf Docidtypes encontrado"
+      },
+      "created": "Un nuevo Cnf Docidtype ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cnf Docidtype ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cnf Docidtype ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cnf Docidtype {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Docidtype"
+      },
+      "id": "ID",
+      "cnfDocidtypeId": "Cnf Docidtype Id",
+      "name": "Name",
+      "value": "Value",
+      "cnfBpartner": "Cnf Bpartner"
+    }
+  }
+}

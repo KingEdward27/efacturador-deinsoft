@@ -8,6 +8,7 @@ package com.deinsoft.efacturador3.controllers;
 import com.deinsoft.efacturador3.bean.ComprobanteCab;
 import com.deinsoft.efacturador3.bean.ComprobanteDet;
 import com.deinsoft.efacturador3.bean.ParamBean;
+import com.deinsoft.efacturador3.dto.FacturaElectronicaResponse;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.config.AppConfig;
@@ -18,7 +19,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -194,6 +197,21 @@ public class FacturaController extends BaseController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
     }
+
+    @GetMapping(value = "/status")
+    public ResponseEntity<?> getStatus(@RequestParam(name = "numTicket") String numTicket) {
+        log.debug("FacturaController.send-sunat...Iniciando el procesamiento");
+        FacturaElectronicaResponse facturaElectronicaResponse = null;
+        try {
+            facturaElectronicaResponse =  facturaElectronicaService.getStatus(numTicket);
+        }catch (Exception e) {
+            e.printStackTrace();
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(facturaElectronicaResponse);
+    }
+
     @PostMapping(value = "/get-pdf")
     public ResponseEntity<?> getPDF(@RequestParam(name = "id") String id,
             @RequestParam(name = "tipo") int tipo,
@@ -211,8 +229,43 @@ public class FacturaController extends BaseController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
     }
-    
-    
+
+    @PostMapping(value = "/get-xml")
+    public ResponseEntity<?> getXml(@RequestParam(name = "serie") String serie,
+                                    @RequestParam(name = "numero") String numero,
+                                    HttpServletRequest request) throws Exception {
+        try {
+            Empresa empresa = getEmpresa(request);
+            Map<String, Object> map = facturaElectronicaService.getXmlAsBytes(null, serie, numero, empresa);
+
+            if (map != null) {
+                return ResponseEntity.ok()
+                        .body(map);
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+//    @PostMapping(value = "/get-xml")
+//    public ResponseEntity<byte[]> getXml(@RequestParam(name = "serie") String serie,
+//                                         @RequestParam(name = "numero") String numero,
+//                                         @RequestParam(name = "idEmpresa") int idEmpresa) {
+//        try {
+//            Empresa empresa = empresaService.getEmpresaById(idEmpresa);
+//            byte[] fileBytes = facturaElectronicaService.getXmlAsBytes(serie, numero, empresa);
+//
+//            return ResponseEntity.ok()
+//                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + serie + "-"
+//                            + numero + ".xml" + "\"")
+//                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+//                    .body(fileBytes);
+//
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//    }
 
     
 }

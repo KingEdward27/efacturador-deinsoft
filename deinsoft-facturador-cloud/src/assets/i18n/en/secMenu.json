@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "secMenu": {
+      "home": {
+        "title": "Sec Menus",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Sec Menu",
+        "createOrEditLabel": "Create or edit a Sec Menu",
+        "notFound": "No Sec Menus found"
+      },
+      "created": "A new Sec Menu is created with identifier {{ param }}",
+      "updated": "A Sec Menu is updated with identifier {{ param }}",
+      "deleted": "A Sec Menu is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Sec Menu {{ id }}?"
+      },
+      "detail": {
+        "title": "Sec Menu"
+      },
+      "id": "ID",
+      "secMenuId": "Sec Menu Id",
+      "parentId": "Parent Id",
+      "seqorder": "Seqorder",
+      "secNodeAction": "Sec Node Action"
+    }
+  }
+}

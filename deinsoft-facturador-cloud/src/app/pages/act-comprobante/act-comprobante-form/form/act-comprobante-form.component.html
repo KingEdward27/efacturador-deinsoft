@@ -1,0 +1,425 @@
+
+
+<!-- Main content -->
+<section class="content">
+    <!-- Default box -->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{'webpagos.act_comprobante.home.title'| translate}}</h3>
+
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <form class="col-sm-12" style="padding-top: 6px;">
+                        <div class="row">
+                            <div class="col-lg-9 col-sm-12 col-xs-12">
+                                <div class="row">
+                                    <ng-container *ngFor="let item of error" >
+                                        <div class="alert alert-danger col-sm-12 col-lg-12" *ngIf="error">{{item}}</div>
+                                    </ng-container>
+                                    
+                                    
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3 col-sm-12 col-xs-12" *ngIf="empresaPrincipal.flagVentaRapida === '1'">
+                                        <div class="form-group-sm row">
+                                            <label
+                                                class="col-lg-12 col-sm-12 col-form-label">{{'webpagos.act_comprobante.cnf_local'
+                                                |
+                                                translate}} <span *ngIf="loadingCnfLocal"
+                                                    class="spinner-border spinner-border-sm mr-1"></span><span
+                                                    style="color: red;font-size: 16px !important;font-weight: bold;">*</span></label>
+                                            <div class="col-sm-12 col-lg-12">
+                                                <select name="model.cnfLocal" [compareWith]="compareCnfLocal"
+                                                    [(ngModel)]="model.cnfLocal"
+                                                    class="form-control-sm col-sm-12 col-lg-12"
+                                                    (change)="getListInvAlmacen()">
+                                                    <option *ngIf="loadingCnfLocal" [ngValue]="0" selected="selected">
+                                                        Cargando...</option>
+                                                    <option *ngIf="!loadingCnfLocal" [ngValue]="selectDefaultCnfLocal">
+                                                        {{selectDefaultCnfLocal.nombre}}</option>
+                                                    <option *ngFor="let item of listCnfLocal; index as i;"
+                                                        [ngValue]="item">
+                                                        {{item.nombre}}
+                                                    </option>
+
+                                                </select>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-12 col-xs-12">
+
+                                        <div class="form-group-sm">
+                                            <label for="fecha"
+                                                class="col-lg-12 col-sm-12 col-form-label">{{'webpagos.act_comprobante.fecha'
+                                                |
+                                                translate}} <span
+                                                    style="color: red;font-size: 16px !important;font-weight: bold;">*</span></label>
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="input-group input-group-sm">
+                                                    <input placeholder="dd/mm/yyyy" autofocus (focus)="$event.target.select()" tabindex="1"
+                                                        class="form-control-sm-dp col-xs-10 col-sm-10 col-md-10 col-lg-8"
+                                                        id="fecha" name="model.fecha" maxlength="200"
+                                                        [(ngModel)]="model.fecha" ngbDatepicker #dfecha="ngbDatepicker">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-secondary calendar button-dp"
+                                                            (click)="dfecha.toggle()" type="button">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label
+                                                class="col-lg-12 col-sm-12 col-form-label">{{'webpagos.act_comprobante.cnf_tipo_comprobante'
+                                                |
+                                                translate}} <span *ngIf="loadingCnfTipoComprobante"
+                                                    class="spinner-border spinner-border-sm mr-1"></span><span
+                                                    style="color: red;font-size: 16px !important;font-weight: bold;">*</span></label>
+                                            <div class="col-sm-12 col-lg-12">
+                                                <select name="model.cnfTipoComprobante" tabindex="2"
+                                                    [compareWith]="compareCnfTipoComprobante"
+                                                    [(ngModel)]="model.cnfTipoComprobante"
+                                                    class="form-control-sm col-sm-12 col-lg-12"
+                                                    (change)="loadSerie()">
+                                                    <option *ngIf="loadingCnfTipoComprobante" [ngValue]="0"
+                                                        selected="selected">Cargando...
+                                                    </option>
+                                                    <option *ngIf="!loadingCnfTipoComprobante"
+                                                        [ngValue]="selectDefaultCnfTipoComprobante">
+                                                        {{selectDefaultCnfTipoComprobante.nombre}}</option>
+                                                    <option *ngFor="let item of listCnfTipoComprobante; index as i;"
+                                                        [ngValue]="item">
+                                                        {{item.nombre}}</option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-lg-3 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label for="serie"
+                                                class="col-lg-12 col-sm-12 col-form-label">{{'webpagos.act_comprobante.serie'
+                                                |
+                                                translate}} <span
+                                                    style="color: red;font-size: 16px !important;font-weight: bold;">*</span></label>
+                                            <div class="col-sm-12 col-lg-12">
+                                                <input type="text" tabindex="3"
+                                                    [(ngModel)]="model.serie" maxlength="4" 
+                                                    name="serie"
+                                                    id="serie" name="serie" class="form-control-sm col-sm-12 col-lg-12"
+                                                    placeholder="Ingrese serie" disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label for="numero"
+                                                class="col-lg-12 col-sm-12 col-form-label">{{'webpagos.act_comprobante.numero'
+                                                | translate}} <span
+                                                    style="color: red;font-size: 16px !important;font-weight: bold;">*</span></label>
+                                            <div class="col-sm-12 col-lg-12">
+                                                <input type="text" [(ngModel)]="model.numero" maxlength="8" tabindex="4"
+                                                    name="numero" id="numero" name="numero"
+                                                    class="form-control-sm col-sm-12 col-lg-12"
+                                                    placeholder="Número generado" readonly = "readonly" disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-lg-6 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label
+                                                class="col-lg-12 col-sm-12 col-form-label">{{'webpagos.act_comprobante.cnf_maestro'
+                                                |
+                                                translate}} <span *ngIf="loadingCnfMaestro"
+                                                    class="spinner-border spinner-border-sm mr-1"></span><span
+                                                    style="color: red;font-size: 16px !important;font-weight: bold;">*</span></label>
+                                            <div class="col-sm-12 col-lg-12">
+                                                <input class="form-control-sm col-sm-12 col-lg-10"  type="text" tabindex="5"
+                                                    [(ngModel)]="model.cnfMaestro"  
+                                                    name="model.cnfMaestro"
+                                                    #input2 
+                                                    [ngbTypeahead]="searchCnfMaestro"
+                                                    [resultTemplate]="rt2" 
+                                                    [inputFormatter]="formatterCnfMaestro"/>
+                                                    <ng-template #rt2 let-r="result" let-t="term">
+                                                        {{ r.apellidoPaterno}}  {{ r.apellidoMaterno}}  {{ r.nombres}}  -  {{ r.nroDoc}}
+                                                    </ng-template>
+                                                &nbsp;
+                                                <a class="fas fa-plus"
+                                                    style="cursor: pointer;"
+                                                    title="agregar"></a>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label
+                                                class="col-lg-12 col-sm-12 col-form-label">{{'webpagos.act_comprobante.cnf_forma_pago'
+                                                |
+                                                translate}} <span *ngIf="loadingCnfFormaPago"
+                                                    class="spinner-border spinner-border-sm mr-1"></span><span
+                                                    style="color: red;font-size: 16px !important;font-weight: bold;">*</span></label>
+                                            <div class="col-sm-12 col-lg-12">
+                                                <select name="model.cnfFormaPago" [compareWith]="compareCnfFormaPago" tabindex="6"
+                                                    [(ngModel)]="model.cnfFormaPago"
+                                                    class="form-control-sm col-sm-12 col-lg-12">
+                                                    <option *ngIf="loadingCnfFormaPago" [ngValue]="0"
+                                                        selected="selected">
+                                                        Cargando...</option>
+                                                    <option *ngIf="!loadingCnfFormaPago"
+                                                        [ngValue]="selectDefaultCnfFormaPago">
+                                                        {{selectDefaultCnfFormaPago.nombre}}</option>
+                                                    <option *ngFor="let item of listCnfFormaPago; index as i;"
+                                                        [ngValue]="item">{{item.nombre}}
+                                                    </option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label
+                                                class="col-lg-12 col-sm-12 col-form-label">{{'webpagos.act_comprobante.cnf_moneda'
+                                                |
+                                                translate}} <span *ngIf="loadingCnfMoneda"
+                                                    class="spinner-border spinner-border-sm mr-1"></span><span
+                                                    style="color: red;font-size: 16px !important;font-weight: bold;">*</span></label>
+                                            <div class="col-sm-12 col-lg-12">
+                                                <select name="model.cnfMoneda" [compareWith]="compareCnfMoneda" tabindex="7"
+                                                    [(ngModel)]="model.cnfMoneda"
+                                                    class="form-control-sm col-sm-12 col-lg-12">
+                                                    <option *ngIf="loadingCnfMoneda" [ngValue]="0" selected="selected">
+                                                        Cargando...</option>
+                                                    <option *ngIf="!loadingCnfMoneda"
+                                                        [ngValue]="selectDefaultCnfMoneda">
+                                                        {{selectDefaultCnfMoneda.nombre}}</option>
+                                                    <option *ngFor="let item of listCnfMoneda; index as i;"
+                                                        [ngValue]="item">{{item.nombre}}
+                                                    </option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-lg-3 col-sm-12 col-xs-12" *ngIf="empresaPrincipal.flagVentaRapida === '1'">
+                                        <div class="form-group-sm row">
+                                            <label
+                                                class="col-lg-12 col-sm-12 col-form-label">{{'webpagos.act_comprobante.inv_almacen'
+                                                |
+                                                translate}} <span *ngIf="loadingInvAlmacen"
+                                                    class="spinner-border spinner-border-sm mr-1"></span><span
+                                                    style="color: red;font-size: 16px !important;font-weight: bold;">*</span></label>
+                                            <div class="col-sm-12 col-lg-12">
+                                                <select name="model.invAlmacen" [compareWith]="compareInvAlmacen"
+                                                    [(ngModel)]="model.invAlmacen"
+                                                    class="form-control-sm col-sm-12 col-lg-12">
+                                                    <option *ngIf="loadingInvAlmacen" [ngValue]="0" selected="selected">
+                                                        Cargando...</option>
+                                                    <option *ngIf="!loadingInvAlmacen"
+                                                        [ngValue]="selectDefaultInvAlmacen">
+                                                        {{selectDefaultInvAlmacen.nombre}}</option>
+                                                    <option *ngFor="let item of listInvAlmacen; index as i;"
+                                                        [ngValue]="item">{{item.nombre}}
+                                                    </option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label for="observacion"
+                                                class="col-lg-12 col-sm-12 col-form-label">{{'webpagos.act_comprobante.observacion'
+                                                |
+                                                translate}}</label>
+                                            <div class="col-sm-12 col-lg-12">
+                                                <input type="text" [(ngModel)]="model.observacion" maxlength="100" tabindex="8"
+                                                    name="observacion" id="observacion" name="observacion"
+                                                    class="form-control-sm col-sm-12 col-lg-12"
+                                                    placeholder="Ingrese observacion" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                            <div class="col-lg-3 col-sm-12 col-xs-12 align-middle" style="padding: 1.5em;">
+                                <div class="form-group-sm row totales">
+                                    <label for="subtotal"
+                                        class="col-6 col-form-label">{{'webpagos.act_comprobante.subtotal'
+                                        |
+                                        translate}}</label>
+                                    <div class="col-6">
+                                        <label class="col-sm-12 col-lg-12 col-form-label text-right">{{model.cnfMoneda.simbolo}} {{model.subtotal | number : '1.2-2'}}</label>
+                                        <div class="alert alert-danger col-sm-12 col-lg-6" *ngIf="error?.subtotal">
+                                            {{ error.subtotal }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group-sm row totales">
+                                    <label for="igv"
+                                        class="col-6 col-form-label">{{'webpagos.act_comprobante.igv' |
+                                        translate}}</label>
+                                    <div class="col-6">
+                                        <label class="col-sm-12 col-lg-12 col-form-label text-right">{{model.cnfMoneda.simbolo}} {{model.igv | number : '1.2-2'}}</label>
+                                    </div>
+                                </div>
+                                <div class="form-group-sm row totales">
+                                    <label for="total"
+                                        class="col-6 col-form-label">{{'webpagos.act_comprobante.total'
+                                        |
+                                        translate}} <span
+                                            style="color: red;font-size: 16px !important;font-weight: bold;">*</span></label>
+                                    <div class="col-6">
+                                        <label class="col-sm-12 col-lg-12 col-form-label text-right">{{model.cnfMoneda.simbolo}} {{ model.total | number : '1.2-2'}}</label>
+                                        <div class="alert alert-danger col-sm-12 col-lg-6" *ngIf="error?.total">{{
+                                            error.total }}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+        
+                                    <div class="col-sm-12" style="padding-top: 20px;">
+                                        <div class="row justify-content-center">
+                                            <div class="col-xl-6 col-lg-6 col-md-12" style="margin-left: 50x;">
+                                                <a class="btn btn-default col-12" (click)="getBack()" data-toggle="modal">
+                                                    <i class="fa fa-arrow-circle-left"></i> {{'webpagos.btnBack' | translate }}
+                                                </a>
+                                            </div>
+                                            <div *ngIf="option === '1'" class="col-xl-6 col-lg-6 col-md-12" style="margin-left: 20x;">
+                                                <button class="btn btn-primary col-12" (keyup.enter)= "save()" (click)="save()" data-toggle="modal" tabindex="10">
+                                                    <i [ngClass]="id ? 'fa fa-pen' : 'fa fa-plus'"></i> {{ id ?
+                                                    ('webpagos.btnEdit' | translate):('webpagos.btnSave' | translate) }}
+                                                    </button>
+                                            </div>
+        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <br>
+                        <div class="row">
+                            <div class="col-12">
+                                <h4 style="border-bottom: solid 1px;padding-bottom: 6px;">{{'webpagos.act_comprobante.act_comprobante_detalle' | translate}}</h4>
+                            </div>
+        
+                        </div>
+                        <div class="form-group-sm row" >
+                           
+                            <div class="form-group-sm row col-12 mb-2">
+                                <label class="col-sm-12 col-lg-2 col-form-label">
+                                    {{'webpagos.act_comprobante_detalle.cnf_producto' | translate}}</label>
+                                    <input class="form-control-sm col-sm-12 col-lg-6"  type="text" tabindex="9"
+                                    [(ngModel)]="cnfProducto"  
+                                    name="cnfProducto"
+                                    #input 
+                                    [ngbTypeahead]="searchProduct"
+                                    [resultTemplate]="rt" 
+                                    [inputFormatter]="formatter"
+                                    (selectItem)="onchangeProduct($event,input)" />
+                                    <ng-template #rt let-r="result" let-t="term">
+                                        {{ r.nombre}}  -  {{ r.barcode}}
+                                      </ng-template>
+    
+    
+                            </div>
+                            <div class="col-sm-12 col-lg-12">
+                                <div >
+                                    <table id="dtData"
+                                        class="col-xl-12 col-lg-12 col-sm-12 table table-sm table-striped table-bordered table-td-valign-middle">
+                                        <thead>
+                                            <tr>
+                                                <th width="1%">Nro.</th>
+                                                <th class="text-nowrap">{{'webpagos.cnf_producto.nombre' | translate}}</th>
+                                                <th class="text-nowrap">{{'webpagos.act_comprobante_detalle.cnf_impuesto_condicion' | translate}}</th>
+                                                <th class="text-nowrap">{{'webpagos.cnf_producto.descripcion' | translate}}</th>
+                                                <th class="text-nowrap">{{'webpagos.act_comprobante_detalle.cantidad' | translate}}</th>
+                                                <th class="text-nowrap">{{'webpagos.act_comprobante_detalle.precio' | translate}}</th>
+                                                <th class="text-nowrap">{{'webpagos.act_comprobante_detalle.importe' | translate}}</th>
+                                                <th width="1%" class="text-nowrap">{{'webpagos.actionsText' |
+                                                    translate}}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            <tr *ngFor="let item of model.listActComprobanteDetalle; index as i"
+                                                class="odd gradeX">
+                                                <td width="1%" class="f-w-600 text-inverse">{{i+1}}</td>
+                                                <td>{{item.descripcion}}</td>
+                                                <td><select name="item.cnfImpuestoCondicion"
+                                                    [(ngModel)]="item.cnfImpuestoCondicion"
+                                                    [compareWith]="compareCnfImpuestoCondicion"
+                                                    class="form-control-sm col-sm-12 col-lg-12">
+                                                    <option *ngIf="loadingCnfImpuestoCondicion" [ngValue]="0" selected="selected"> Cargando...</option>
+                                                    <option *ngIf="!loadingCnfImpuestoCondicion" [ngValue]="selectDefaultImpuestoCondicion">{{selectDefaultImpuestoCondicion.nombre}}</option>
+                                                    <option *ngFor="let item of listImpuestoCondicion; index as i;" [ngValue]="item">{{item.nombre}}</option>
+
+                                                </select></td>
+                                                <td><input type="text" 
+                                                    [(ngModel)]="item.descripcion" 
+                                                    maxlength="14" name="descripcion"
+                                                    class="form-control-sm col-sm-12 col-lg-12"
+                                                    placeholder="Ingrese descripción" /></td>
+                                                <td><input type="number" 
+                                                    [(ngModel)]="item.cantidad" 
+                                                    maxlength="14" name="cantidad_{{i}}"
+                                                    class="form-control-sm col-sm-12 col-lg-12"
+                                                    placeholder="Ingrese descripción"
+                                                    (input)="onChangeCantidad(item,$event.target.value)"/></td>
+                                                <td><input type="number" 
+                                                    [(ngModel)]="item.precio" 
+                                                    maxlength="14" name="precio_{{i}}"
+                                                    class="form-control-sm col-sm-12 col-lg-12"
+                                                    placeholder="Ingrese precio" 
+                                                    (input)="onChangePrecio(item,$event.target.value)"/></td>
+                                                <td><input type="number" 
+                                                    [(ngModel)]="item.importe" 
+                                                    maxlength="14" name="importe_{{i}}"
+                                                    class="form-control-sm col-sm-12 col-lg-12"
+                                                    placeholder="Ingrese importe" disabled /></td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-6 col-xs-6"><a
+                                                                (click)="removeItem(i)"
+                                                                style="cursor: pointer;" title="Cambiar estado"><i
+                                                                    class="fa fa-trash fa-lg"></i></a></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">Footer</div>
+            <!-- /.card-footer-->
+        </div>
+    </div>
+    <!-- /.card -->
+</section>
+<!-- /.content -->

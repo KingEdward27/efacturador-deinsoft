@@ -1,0 +1,30 @@
+{
+  "webpagos": {
+    "secAuditlog": {
+      "home": {
+        "title": "Sec Auditlogs",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Sec Auditlog",
+        "createOrEditLabel": "Crear o editar Sec Auditlog",
+        "notFound": "Ningún Sec Auditlogs encontrado"
+      },
+      "created": "Un nuevo Sec Auditlog ha sido creado con el identificador {{ param }}",
+      "updated": "Un Sec Auditlog ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Sec Auditlog ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Sec Auditlog {{ id }}?"
+      },
+      "detail": {
+        "title": "Sec Auditlog"
+      },
+      "id": "ID",
+      "secAuditlogId": "Sec Auditlog Id",
+      "created": "Created",
+      "createdby": "Createdby",
+      "tablename": "Tablename",
+      "prevdata": "Prevdata",
+      "newdata": "Newdata",
+      "extradata": "Extradata"
+    }
+  }
+}

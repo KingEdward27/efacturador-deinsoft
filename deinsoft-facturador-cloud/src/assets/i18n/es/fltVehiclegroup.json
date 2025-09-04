@@ -1,0 +1,28 @@
+{
+  "webpagos": {
+    "fltVehiclegroup": {
+      "home": {
+        "title": "Flt Vehiclegroups",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Flt Vehiclegroup",
+        "createOrEditLabel": "Crear o editar Flt Vehiclegroup",
+        "notFound": "Ningún Flt Vehiclegroups encontrado"
+      },
+      "created": "Un nuevo Flt Vehiclegroup ha sido creado con el identificador {{ param }}",
+      "updated": "Un Flt Vehiclegroup ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Flt Vehiclegroup ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Flt Vehiclegroup {{ id }}?"
+      },
+      "detail": {
+        "title": "Flt Vehiclegroup"
+      },
+      "id": "ID",
+      "fltVehiclegroupId": "Flt Vehiclegroup Id",
+      "name": "Name",
+      "cnfTenant": "Cnf Tenant",
+      "fltAgreementVehiclegroup": "Flt Agreement Vehiclegroup",
+      "fltVehicle": "Flt Vehicle"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "cnfRegion": {
+      "home": {
+        "title": "Cnf Regions",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Cnf Region",
+        "createOrEditLabel": "Create or edit a Cnf Region",
+        "notFound": "No Cnf Regions found"
+      },
+      "created": "A new Cnf Region is created with identifier {{ param }}",
+      "updated": "A Cnf Region is updated with identifier {{ param }}",
+      "deleted": "A Cnf Region is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Cnf Region {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Region"
+      },
+      "id": "ID",
+      "cnfRegionId": "Cnf Region Id",
+      "name": "Name",
+      "cnfCountry": "Cnf Country",
+      "cnfProvince": "Cnf Province"
+    }
+  }
+}

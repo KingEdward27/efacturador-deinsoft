@@ -1,0 +1,30 @@
+{
+  "webpagos": {
+    "cnfDistrict": {
+      "home": {
+        "title": "Cnf Districts",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Cnf District",
+        "createOrEditLabel": "Create or edit a Cnf District",
+        "notFound": "No Cnf Districts found"
+      },
+      "created": "A new Cnf District is created with identifier {{ param }}",
+      "updated": "A Cnf District is updated with identifier {{ param }}",
+      "deleted": "A Cnf District is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Cnf District {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf District"
+      },
+      "id": "ID",
+      "cnfDistrictId": "Cnf District Id",
+      "name": "Name",
+      "value": "Value",
+      "cnfProvince": "Cnf Province",
+      "cnfBpartner": "Cnf Bpartner",
+      "cnfCompany": "Cnf Company",
+      "cnfOrg": "Cnf Org"
+    }
+  }
+}

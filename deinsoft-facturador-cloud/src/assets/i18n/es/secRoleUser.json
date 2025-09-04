@@ -1,0 +1,29 @@
+{
+  "webpagos": {
+    "secRoleUser": {
+      "home": {
+        "title": "Sec Role Users",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Sec Role User",
+        "createOrEditLabel": "Crear o editar Sec Role User",
+        "notFound": "Ningún Sec Role Users encontrado"
+      },
+      "created": "Un nuevo Sec Role User ha sido creado con el identificador {{ param }}",
+      "updated": "Un Sec Role User ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Sec Role User ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Sec Role User {{ id }}?"
+      },
+      "detail": {
+        "title": "Sec Role User"
+      },
+      "id": "ID",
+      "secRoleUserId": "Sec Role User Id",
+      "secRole": "Sec Role",
+      "secUser": "Sec User",
+      "cnfTenant": "Cnf Tenant",
+      "cnfCompany": "Cnf Company",
+      "cnfOrg": "Cnf Org"
+    }
+  }
+}

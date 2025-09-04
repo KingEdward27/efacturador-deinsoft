@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "secNode": {
+      "home": {
+        "title": "Sec Nodes",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Sec Node",
+        "createOrEditLabel": "Crear o editar Sec Node",
+        "notFound": "Ningún Sec Nodes encontrado"
+      },
+      "created": "Un nuevo Sec Node ha sido creado con el identificador {{ param }}",
+      "updated": "Un Sec Node ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Sec Node ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Sec Node {{ id }}?"
+      },
+      "detail": {
+        "title": "Sec Node"
+      },
+      "id": "ID",
+      "secNodeId": "Sec Node Id",
+      "name": "Name",
+      "description": "Description",
+      "secNodeAction": "Sec Node Action"
+    }
+  }
+}

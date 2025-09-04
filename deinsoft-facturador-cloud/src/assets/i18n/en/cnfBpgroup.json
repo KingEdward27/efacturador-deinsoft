@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "cnfBpgroup": {
+      "home": {
+        "title": "Cnf Bpgroups",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Cnf Bpgroup",
+        "createOrEditLabel": "Create or edit a Cnf Bpgroup",
+        "notFound": "No Cnf Bpgroups found"
+      },
+      "created": "A new Cnf Bpgroup is created with identifier {{ param }}",
+      "updated": "A Cnf Bpgroup is updated with identifier {{ param }}",
+      "deleted": "A Cnf Bpgroup is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Cnf Bpgroup {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Bpgroup"
+      },
+      "id": "ID",
+      "cnfBpgroupId": "Cnf Bpgroup Id",
+      "name": "Name",
+      "cnfTenant": "Cnf Tenant",
+      "cnfBpartner": "Cnf Bpartner"
+    }
+  }
+}

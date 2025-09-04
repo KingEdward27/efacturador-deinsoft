@@ -7,13 +7,12 @@ package com.deinsoft.efacturador3.service;
 
 import com.deinsoft.efacturador3.bean.ComprobanteCab;
 import com.deinsoft.efacturador3.bean.ParamBean;
-import com.deinsoft.efacturador3.dto.FacturaElectronicaDto;
-import com.deinsoft.efacturador3.dto.NumeroDocumentoDto;
-import com.deinsoft.efacturador3.dto.ResumentRle2Dto;
-import com.deinsoft.efacturador3.dto.ResumentRleDto;
+import com.deinsoft.efacturador3.dto.*;
 import com.deinsoft.efacturador3.model.Empresa;
 import com.deinsoft.efacturador3.model.FacturaElectronica;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
+
+import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
@@ -79,4 +78,6 @@ public interface FacturaElectronicaService {
     public List<FacturaElectronicaDto> getReportActComprobanteCombined(ParamBean paramBean) throws Exception;
 
     void validateApi(long id) throws Exception;
+    FacturaElectronicaResponse getStatus (String numTicket);
+    Map<String, Object> getXmlAsBytes(Long id, String serie, String numero, Empresa empresa) throws IOException;
 }

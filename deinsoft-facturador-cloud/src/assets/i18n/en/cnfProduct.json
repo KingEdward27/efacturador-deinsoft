@@ -1,0 +1,30 @@
+{
+  "webpagos": {
+    "cnfProduct": {
+      "home": {
+        "title": "Cnf Products",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Cnf Product",
+        "createOrEditLabel": "Create or edit a Cnf Product",
+        "notFound": "No Cnf Products found"
+      },
+      "created": "A new Cnf Product is created with identifier {{ param }}",
+      "updated": "A Cnf Product is updated with identifier {{ param }}",
+      "deleted": "A Cnf Product is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Cnf Product {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Product"
+      },
+      "id": "ID",
+      "cnfProductId": "Cnf Product Id",
+      "name": "Name",
+      "value": "Value",
+      "cnfTenant": "Cnf Tenant",
+      "cnfUom": "Cnf Uom",
+      "cnfBrand": "Cnf Brand",
+      "cnfCodeUpc": "Cnf Code Upc"
+    }
+  }
+}

@@ -1,0 +1,42 @@
+
+<div *ngIf="load" class="modal-body">
+
+    <div class="panel-body">
+        <div class="table-responsive">
+            <form class="col-sm-12" style="padding-top: 6px;">
+                <div class="row text-center" style="float: right;">
+                    <i class="fa fa-check-circle fa-4x" style='color: green'></i>
+                </div>
+                <div class="form-group row">
+                    <h4 class="text-center">{{message}}</h4>
+                </div>
+                <div class="form-group row">
+
+                    <div class="col-sm-12" style="padding-top: 20px;">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-6  col-sm-6 col-xs-5" style="margin-left: 50x;">
+                                <button (click) = "ticketChild()" class="btn btn-outline-secondary col-12">
+                                    <i class="fa fa-file-pdf"></i> {{'webpagos.btnTicket' | translate }}
+                                </button>
+                            </div>
+                            <div class="col-lg-6 col-sm-6 col-xs-5" style="margin-left: 20x;">
+                                <button (click) = "a4()" class="btn btn-outline-secondary col-12">
+                                    <i class="fa fa-file-pdf"></i> {{ 'webpagos.btnA4' | translate }}
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group-sm row">
+                    &nbsp;
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" ngbAutofocus class="btn btn-primary" (click)="save()">{{'webpagos.btnAccept' |
+            translate}}</button>
+    </div>

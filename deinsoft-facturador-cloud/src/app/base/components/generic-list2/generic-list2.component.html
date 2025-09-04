@@ -1,0 +1,116 @@
+
+<!-- Main content -->
+<section class="content">
+    <!-- Default box -->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{properties.title}}</h3>
+
+                <div class="card-tools">
+                    <button
+                        type="button"
+                        class="btn btn-tool"
+                        data-widget="collapse"
+                        data-toggle="tooltip"
+                        title="Collapse"
+                    >
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-tool"
+                        data-widget="remove"
+                        data-toggle="tooltip"
+                        title="Remove"
+                    >
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <div class="row">
+                        <div class="col-6">
+                            <!-- <div class="col-md-12 col-lg-6 col-xl-6 col-xs-9" style="margin-left:-15px">
+                                <a class="btn btn-primary" (click) = "goToForm()" data-toggle="modal">
+                                    <i class="fa fa-plus"></i> {{'webpagos.btnNew' | translate }}
+                                </a>
+                            </div> -->
+                        </div>
+                        
+                        <div class="col-6">
+                            <div class = "row float-right">
+                                <div class="col-md-12 col-lg-6 col-xl-6 col-xs-9" style="margin-left:-15px">
+                                    <button class="btn btn-success" (click) = "exportData()" data-toggle="modal">
+                                        <i class="fa fa-file-excel"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                    <br>
+                    <table id="dtData{{properties.tableName}}"
+                        class="col-xl-12 col-lg-12 col-sm-12 table table-sm table-striped table-bordered table-td-valign-middle">
+                        <thead>
+                            <tr>
+                                <th width="1%">Nro.</th>
+                                <th *ngFor="let item of properties.columnsList" translate="{{item.alias}}">...Cargando</th>
+                                <th class="text-nowrap">{{'webpagos.actionsText' | translate}}</th>
+                                <!-- <th class="text-nowrap">{{item}}</th>
+                                                <th class="text-nowrap">{{headers[1]}}</th>
+                                                <th class="text-nowrap">{{headers[2]}}</th>
+                                                <th class="text-nowrap">{{headers[3]}}</th>
+                                                <th class="text-nowrap">{{headers[4]}}</th> -->
+                            </tr>
+                        </thead>
+                        <tr>
+                            <th></th>
+                            <th *ngFor="let item of properties.columnsList; index as i">
+                                <ng-container *ngIf="item.filterType == 'text'">
+                                    <input type="text" class="form-control-sm"
+                                    name="{{item.tableName}}.{{item.columnName}}" id="{{item.tableName}}.{{item.columnName}}" (keyUp.enter)="getListWithParams()" />
+                                </ng-container>
+                                
+                            </th>
+                            <th></th>
+                            <!-- <th><input type="text" class="form-control-sm" placeholder="{{'webpagos.searchFor' | translate}} {{'webpagos.cnfOrg.address' | translate}}" name="search-id"
+                                    [(ngModel)]="modelSearch.address" (keyUp.enter)="getAllData()" /></th>
+                            <th></th>
+                            <th></th> -->
+                        </tr>
+                        <tbody>
+                            <!-- [disabled]="item.actInvoiceLine == null?false:true" -->
+                            <tr *ngFor="let item of listDetail; index as i">
+                                <td width="1%" class="f-w-600 text-inverse">{{i+1}}</td>
+                                <ng-container *ngFor="let itemDetail of item; index as i2">
+                                    <td *ngIf="i2 > 0" [ngClass]="properties.columnsList[i2-1].type =='number'? 'content-number' : ''">{{itemDetail}}</td>
+                                </ng-container>
+                                <td>
+                                    <div class="row row2">
+                                        <ng-container *ngFor="let item2 of properties.actions; index as i3">
+                                                    <div [style.width]="widthIcons" style="text-align: center;">
+                                                        <a class="{{item2.icon}}" (click)="actionByName(item,item2)" style="cursor: pointer;"
+                                                                title="{{item2.value}}"></a></div>
+                                        </ng-container>    
+                                    </div>
+                                </td>
+                                <!-- <td>{{item[0]}}</td>
+                                                    <td>{{item.totalqty}}</td>
+                                                    <td>{{item.unitvalue}}</td>
+                                                    <td>{{item.linesubtotal}}</td>
+                                                    <td>{{item.actInvoiceLine?.actInvoice?.documentserial}} - {{item.actInvoiceLine?.actInvoice?.documentno}}</td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">Footer</div>
+            <!-- /.card-footer-->
+        </div>
+    </div>
+    <!-- /.card -->
+</section>

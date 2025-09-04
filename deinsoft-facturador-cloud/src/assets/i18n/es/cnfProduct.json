@@ -1,0 +1,30 @@
+{
+  "webpagos": {
+    "cnfProduct": {
+      "home": {
+        "title": "Cnf Products",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Cnf Product",
+        "createOrEditLabel": "Crear o editar Cnf Product",
+        "notFound": "Ningún Cnf Products encontrado"
+      },
+      "created": "Un nuevo Cnf Product ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cnf Product ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cnf Product ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cnf Product {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Product"
+      },
+      "id": "ID",
+      "cnfProductId": "Cnf Product Id",
+      "name": "Name",
+      "value": "Value",
+      "cnfTenant": "Cnf Tenant",
+      "cnfUom": "Cnf Uom",
+      "cnfBrand": "Cnf Brand",
+      "cnfCodeUpc": "Cnf Code Upc"
+    }
+  }
+}

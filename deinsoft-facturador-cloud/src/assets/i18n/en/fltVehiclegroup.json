@@ -1,0 +1,28 @@
+{
+  "webpagos": {
+    "fltVehiclegroup": {
+      "home": {
+        "title": "Flt Vehiclegroups",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Flt Vehiclegroup",
+        "createOrEditLabel": "Create or edit a Flt Vehiclegroup",
+        "notFound": "No Flt Vehiclegroups found"
+      },
+      "created": "A new Flt Vehiclegroup is created with identifier {{ param }}",
+      "updated": "A Flt Vehiclegroup is updated with identifier {{ param }}",
+      "deleted": "A Flt Vehiclegroup is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Flt Vehiclegroup {{ id }}?"
+      },
+      "detail": {
+        "title": "Flt Vehiclegroup"
+      },
+      "id": "ID",
+      "fltVehiclegroupId": "Flt Vehiclegroup Id",
+      "name": "Name",
+      "cnfTenant": "Cnf Tenant",
+      "fltAgreementVehiclegroup": "Flt Agreement Vehiclegroup",
+      "fltVehicle": "Flt Vehicle"
+    }
+  }
+}

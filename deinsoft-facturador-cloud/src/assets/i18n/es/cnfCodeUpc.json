@@ -1,0 +1,26 @@
+{
+  "webpagos": {
+    "cnfCodeUpc": {
+      "home": {
+        "title": "Cnf Code Upcs",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Cnf Code Upc",
+        "createOrEditLabel": "Crear o editar Cnf Code Upc",
+        "notFound": "Ningún Cnf Code Upcs encontrado"
+      },
+      "created": "Un nuevo Cnf Code Upc ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cnf Code Upc ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cnf Code Upc ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cnf Code Upc {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Code Upc"
+      },
+      "id": "ID",
+      "cnfCodeUpcId": "Cnf Code Upc Id",
+      "value": "Value",
+      "cnfProduct": "Cnf Product"
+    }
+  }
+}

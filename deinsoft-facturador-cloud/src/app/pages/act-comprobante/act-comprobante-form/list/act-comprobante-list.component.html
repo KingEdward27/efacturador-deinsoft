@@ -1,0 +1,366 @@
+<!-- Main content -->
+<section class="content">
+    <!-- Default box -->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Listado de comprobantes</h3>
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse" data-toggle="tooltip"
+                        title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-widget="remove" data-toggle="tooltip"
+                        title="Remove">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <form class="col-sm-12" style="padding-top: 6px;">
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 col-xs-12">
+                                <div class="row">
+                                    <div class="col-lg-12 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label
+                                                class="col-lg-3 col-sm-12 col-form-label">{{'webpagos.cnf_empresa.nombre'
+                                                |
+                                                translate}} <span *ngIf="loadingEmpresa"
+                                                    class="spinner-border spinner-border-sm mr-1"></span></label>
+                                            <div class="col-sm-12 col-lg-9">
+                                                <select name="model.empresa" [(ngModel)]="model.empresa"
+                                                    class="form-control-sm col-sm-12 col-lg-6">
+                                                    <option *ngIf="loadingEmpresa" [ngValue]="0" selected="selected">
+                                                        Cargando...</option>
+                                                    <option *ngIf="!loadingEmpresa" [ngValue]="selectDefaultEmpresa">
+                                                        {{selectDefaultCnfLocal.nombre}}</option>
+                                                    <option *ngFor="let item of listEmpresa; index as i;"
+                                                        [ngValue]="item">
+                                                        {{item.razonSocial}}
+                                                    </option>
+
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-lg-12 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label
+                                                class="col-lg-3 col-sm-12 col-form-label">{{'webpagos.act_comprobante.cnf_local'
+                                                |
+                                                translate}} <span *ngIf="loadingCnfLocal"
+                                                    class="spinner-border spinner-border-sm mr-1"></span></label>
+                                            <div class="col-sm-12 col-lg-9">
+                                                <select name="model.cnfLocal" [compareWith]="compareCnfLocal"
+                                                    [(ngModel)]="model.cnfLocal"
+                                                    class="form-control-sm col-sm-12 col-lg-6"
+                                                    (change)="getListInvAlmacen()">
+                                                    <option *ngIf="loadingCnfLocal" [ngValue]="0" selected="selected">
+                                                        Cargando...</option>
+                                                    <option *ngIf="!loadingCnfLocal" [ngValue]="selectDefaultCnfLocal">
+                                                        {{selectDefaultCnfLocal.nombre}}</option>
+                                                    <option *ngFor="let item of listCnfLocal; index as i;"
+                                                        [ngValue]="item">
+                                                        {{item.nombre}}
+                                                    </option>
+
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <!-- <div class="col-lg-12 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label
+                                                class="col-lg-3 col-sm-12 col-form-label">{{'webpagos.act_comprobante.anio'
+                                                |
+                                                translate}} <span *ngIf="loadingListAnios"
+                                                    class="spinner-border spinner-border-sm mr-1"></span></label>
+                                            <div class="col-sm-12 col-lg-9">
+                                                <select name="model.anio" [compareWith]="compareAnio"
+                                                    [(ngModel)]="model.anio"
+                                                    class="form-control-sm col-sm-12 col-lg-6"
+                                                    (change)="getListPeriodosDetail()">
+                                                    <option *ngIf="!loadingListAnios" [ngValue]="0">- Seleccione -</option>
+                                                    <option *ngFor="let item of listAnio; index as i;"[ngValue]="item">
+                                                        {{item.numEjercicio}}
+                                                    </option>
+
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label
+                                                class="col-lg-3 col-sm-12 col-form-label">{{'webpagos.act_comprobante.periodo'
+                                                |
+                                                translate}} <span *ngIf="loadingListPeriodos"
+                                                    class="spinner-border spinner-border-sm mr-1"></span></label>
+                                            <div class="col-sm-12 col-lg-9">
+                                                <select name="model.periodo" [compareWith]="comparePeriodo"
+                                                    [(ngModel)]="model.periodo"
+                                                    class="form-control-sm col-sm-12 col-lg-6">
+                                                    <option *ngIf="!loadingListPeriodos" [ngValue]="0">- Seleccione -</option>
+                                                    <option *ngFor="let item of listPeriodo; index as i;"[ngValue]="item">
+                                                        {{item.perTributario}} - {{item.desEstado}}
+                                                    </option>
+
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="col-lg-12 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label for="numero"
+                                                class="col-lg-3 col-sm-12 col-form-label">{{'webpagos.act_comprobante.fechaDesde'
+                                                | translate}}</label>
+                                            <div class="col-sm-12 col-lg-9">
+                                                <div class="input-group input-group-sm">
+                                                    <input placeholder="dd/mm/yyyy" class="form-control-sm-dp"
+                                                        id="fechaDesde" name="model.fechaDesde" maxlength="200"
+                                                        [(ngModel)]="model.fechaDesde" ngbDatepicker
+                                                        #dfechaDesde="ngbDatepicker">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-secondary calendar button-dp"
+                                                            (click)="dfechaDesde.toggle()" type="button">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label for="numero"
+                                                class="col-lg-3 col-sm-12 col-form-label">{{'webpagos.act_comprobante.fechaHasta'
+                                                | translate}} </label>
+                                            <div class="col-sm-12 col-lg-9">
+                                                <div class="input-group input-group-sm">
+                                                    <input placeholder="dd/mm/yyyy" class="form-control-sm-dp"
+                                                        id="fechaHasta" name="model.fechaHasta" maxlength="200"
+                                                        [(ngModel)]="model.fechaHasta" ngbDatepicker
+                                                        #dfechaHasta="ngbDatepicker">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-secondary calendar button-dp"
+                                                            (click)="dfechaHasta.toggle()" type="button">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label class="col-lg-3 col-sm-12 col-form-label">Situación<span
+                                                    *ngIf="loadingCnfLocal"
+                                                    class="spinner-border spinner-border-sm mr-1"></span></label>
+                                            <div class="col-sm-12 col-lg-9">
+                                                <select name="model.codEstadoEnvio" [compareWith]="compareState"
+                                                    [(ngModel)]="model.codEstadoEnvio"
+                                                    class="form-control-sm col-sm-12 col-lg-6">
+                                                    <option [ngValue]="'-1'" selected="selected">- Todos -</option>
+                                                    <option [ngValue]="'03'">Aceptado</option>
+                                                    <option [ngValue]="'02'">Pendiente</option>
+                                                    <option [ngValue]="'06'">Con problemas</option>
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label class="col-lg-3 col-sm-12 col-form-label">Estado<span
+                                                    *ngIf="loadingCnfLocal"
+                                                    class="spinner-border spinner-border-sm mr-1"></span></label>
+                                            <div class="col-sm-12 col-lg-9">
+                                                <select name="model.flagEstado" [(ngModel)]="model.flagEstado"
+                                                    [compareWith]="compareState"
+                                                    class="form-control-sm col-sm-12 col-lg-6">
+                                                    <option [ngValue]="'-1'" selected="selected">- Todos -</option>
+                                                    <option [ngValue]="'1'">ACTIVOS</option>
+                                                    <option [ngValue]="'0'">ANULADOS</option>
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12 col-sm-12 col-xs-12 pt-2 row" *ngIf="listData && listData.length > 0"
+                                style="margin:auto">
+                                <div class="col-xl-4 col-lg-4 col-sm-12">
+                                    <table
+                                        class="col-sm-12 col-12 table table-sm text-center table-striped table-bordered table-td-valign-middle table-responsive">
+                                        <thead>
+                                            <tr>
+                                                <th style="padding: 0px 10px 0px 10px;">Enviados</th>
+                                                <th style="padding: 0px 10px 0px 10px;">Pendientes</th>
+                                                <th style="padding: 0px 10px 0px 10px;">Rechazados</th>
+                                                <th style="width: 40%;">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><a class="state03">{{enviados}}</a></td>
+                                                <td><a class="state02">{{pendientes}}</a></td>
+                                                <td><a class="state06">{{rechazados}}</a></td>
+                                                <td><a style="font-weight: bold;">{{total}}</a></td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                                <div class="alert alert-warning col-sm-12 col-lg-8 p-1"
+                                    style="font-weight: bold; font-size: 18px;" *ngIf="error"><i
+                                        class="fa fa-exclamation"></i> {{error}}</div>
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-12" style="padding-top: 20px;">
+                                <div class="row justify-content-center">
+                                    <div style="margin-left: 20px;">
+                                        <button class="btn btn-primary col-12" (click)="getListData()">
+                                            <i class="fa fa-search"></i> {{'webpagos.btnSearch' | translate }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-sm row">
+                            <div class="col-sm-12 text-right" *ngIf="listData && listData.length > 0">
+                                <div class="row text-right">
+                                    <div class="col-lg-10 col-sm-12"></div>
+                                    <div class="col-lg-2 col-sm-12">
+                                        <button class="btn btn-danger" (click)="resumenDiario()">
+                                            <i class="fa fa-cog"></i> Resumen Diario
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-lg-12">
+                                <div>
+                                    <table id="dtData"
+                                        class="col-xl-12 col-lg-12 col-sm-12 table table-sm table-striped table-bordered table-td-valign-middle">
+                                        <thead>
+                                            <tr>
+                                                <th width="1%">Nro.</th>
+                                                <th width="1%"><input type="checkbox" name="seleccionAll"
+                                                        id="seleccionAll" (change)="selectAll()"></th>
+                                                <th width="1%" class="text-nowrap">F- Emisión
+                                                </th>
+                                                <th width="1%" class="text-nowrap">N Doc Ident.</th>
+                                                <th class="text-nowrap">Cliente</th>
+                                                <th class="text-nowrap">Comprobante</th>
+                                                <th class="text-nowrap">Subtotal</th>
+                                                <th class="text-nowrap">IGV</th>
+                                                <th class="text-nowrap">Total</th>
+                                                <th class="text-nowrap">Referencia</th>
+                                                <th class="text-nowrap">Estado Envío</th>
+                                                <th width="1%" class="text-nowrap">Estado Comprobante</th>
+                                                <th width="1%" class="text-nowrap">{{'webpagos.actionsText' |
+                                                    translate}}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            <tr *ngFor="let item of listData; index as i" class="odd gradeX">
+                                                <td width="1%" class="f-w-600 text-inverse">{{i+1}}</td>
+                                                <td><input type="checkbox" name="item.selection" id="item.id"
+                                                        [(ngModel)]="item.selection"></td>
+                                                <td>{{item.fechaEmision}}</td>
+                                                <td>{{item.clienteDocumento}}</td>
+                                                <td>{{item.clienteNombre}}</td>
+                                                <td>{{item.serie + '-' +item.numero}}</td>
+
+                                                <td class="content-number">S/ {{((item.tipo == '07'?-1:1) *
+                                                    (item.totalValorVenta - item.sumatoriaIGV )) | number:'1.2-2'}}</td>
+                                                <td class="content-number">S/ {{((item.tipo == '07'?-1:1) *
+                                                    item.sumatoriaIGV) | number:'1.2-2'}}</td>
+                                                <td class="content-number">S/ {{((item.tipo == '07'?-1:1) *
+                                                    item.totalValorVenta) | number:'1.2-2'}}
+                                                </td>
+                                                <td>{{!item.notaReferenciaSerie? '':(item.notaReferenciaSerie + '-'
+                                                    +item.notaReferenciaNumero)}}</td>
+                                                <td class="text-center">
+                                                    <a [ngClass]="'state' + item.indSituacion"
+                                                        ngbPopover="Mensaje de error: {{item.observacionEnvio}}"
+                                                        triggers="mouseenter:mouseleave">{{item.dscEstadoEnvio}}
+                                                    </a>
+                                                </td>
+                                                <td class="text-center">
+                                                    <a [ngClass]="'state' + item.estado">{{item.dscEstado}}
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <div class="row row2">
+                                                        <div *ngIf="item.indSituacion != '03'"
+                                                            class="col-lg-3 col-sm-6 col-xs-6 text-center"><a
+                                                                (click)="genXml(item)" class="fa fa-cog fa-md"
+                                                                style="cursor: pointer;" title="Generar xml"></a></div>
+                                                        <div class="col-lg-3 col-sm-6 col-xs-6 text-center"><a
+                                                                (click)="print(item)" class="fa fa-print fa-md"
+                                                                style="cursor: pointer;" title="Imprimir"></a></div>
+                                                        <div *ngIf="item.indSituacion == '03' && item.estado == '1'"
+                                                            class="col-lg-3 col-sm-6 col-xs-6 text-center">
+                                                            <a (click)="xml(item)"
+                                                                class="fa fa-file fa-md"
+                                                                style="cursor: pointer;"
+                                                                title="Descargar XML"></a>
+                                                        </div>
+                                                        <div *ngIf="item.indSituacion == '02' && item.estado == '1'"
+                                                            class="col-lg-3 col-sm-6 col-xs-6 text-center">
+                                                            <a (click)="sendApi(item)"
+                                                                class="fa fa-cloud-upload-alt fa-md"
+                                                                style="cursor: pointer;"
+                                                                title="Enviar comprobante a SUNAT"></a>
+                                                        </div>
+                                                        <div *ngIf="item.indSituacion != '03'"
+                                                            class="col-lg-3 col-sm-6 col-xs-6 text-center">
+                                                            <a (click)="validate(item)" class="fa fa-refresh fa-md"
+                                                                style="cursor: pointer;"
+                                                                title="Validar comprobante"></a>
+                                                        </div>
+                                                        <div *ngIf="item.indSituacion == '03'"
+                                                            class="col-lg-3 col-sm-6 col-xs-6 text-center"><a
+                                                                (click)="genNotaCredito(item)" class="fa fa-ban fa-md"
+                                                                style="cursor: pointer;"
+                                                                title="Generar nota de crédito"></a></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">Footer</div>
+            <!-- /.card-footer-->
+        </div>
+    </div>
+    <!-- /.card -->
+</section>
+<!-- /.content -->

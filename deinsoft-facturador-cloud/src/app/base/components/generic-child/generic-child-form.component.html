@@ -1,0 +1,128 @@
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>{{properties.title}}</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="javascript:;" translate="webpagos.adminModule"></a></li>
+                    <li class="breadcrumb-item active">{{properties.title}}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+</section>
+<!-- Main content -->
+<section class="content">
+    <!-- Default box -->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Formulario de {{properties.title}}</h3>
+
+                <div class="card-tools">
+                    <button
+                        type="button"
+                        class="btn btn-tool"
+                        data-widget="collapse"
+                        data-toggle="tooltip"
+                        title="Collapse"
+                    >
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-tool"
+                        data-widget="remove"
+                        data-toggle="tooltip"
+                        title="Remove"
+                    >
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <h4 style="border-bottom: solid 1px;padding-bottom: 6px;">{{'webpagos.register' | translate}} - {{properties.title}}</h4>
+                    <form class="col-sm-12" style="padding-top: 6px;">
+                        <ng-container *ngFor="let item of properties.columnsForm; index as i ">
+                            <div class="form-group-sm row">
+                                <label class="col-lg-3 col-sm-12 col-form-label" translate="webpagos.{{item.tableName}}.{{item.columnName}}">...cargando<span
+                                        style="color: red;font-size: 16px !important;font-weight: bold;"> *</span></label>  
+                                
+                                    <div class="col-sm-12 col-lg-9"> 
+                                        <ng-container *ngIf="item.type == 'input' || item.type == 'number'" >
+                                            <input type="{{item.tableName}}" maxlength="255"
+                                                name="{{item.tableName}}.{{item.columnName}}" 
+                                                id="{{item.tableName}}.{{item.columnName}}"  
+                                                class="form-control-sm col-sm-12 col-lg-6"
+                                                value="{{item.value}}" />
+                                            <div class="alert alert-danger col-sm-12 col-lg-6" *ngIf='error?[item.columnName]:false'>{{ error[item.columnName] }}</div>
+                                        </ng-container>
+                                        <ng-container *ngIf="item.type == 'select'" >
+                                            <select name="{{item.tableName}}.{{item.load?item.load.loadBy:item.relatedBy}}" id="{{item.tableName}}.{{item.load?item.load.loadBy:item.relatedBy}}"  
+                                            (change)="load(item,i)" class="form-control-sm col-sm-12 col-lg-6">
+                                                    <ng-container *ngFor="let columnas of item.listData; index as u;">
+                                                        <option [selected]="(this.properties.id?(item.value == columnas[0]): (columnas[0]==0))" value="{{columnas[0]}}" >{{columnas[1]}} </option>
+                                                    </ng-container>
+                                                    
+                
+                                            </select>
+                                                <div class="alert alert-danger col-sm-12 col-lg-6" *ngIf='error?[item.load?item.load.loadBy:item.relatedBy]:false'>{{ error[item.load?item.load.loadBy:item.relatedBy] }}</div>
+                                            
+                                        </ng-container>
+                                        <ng-container *ngIf="item.type == 'date'">
+                                            <div class="input-group input-group-sm">
+                                                <input placeholder="dd/mm/yyyy" 
+                                                class="form-control-sm-dp col-xs-10 col-sm-10 col-lg-5"
+                                                name="{{item.tableName}}.{{item.columnName}}" 
+                                                id="{{item.tableName}}.{{item.columnName}}" value="{{item.value}}" maxlength="200" 
+                                                ngbDatepicker #d="ngbDatepicker" >
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary calendar button-dp"
+                                                        (click)="d.toggle()" type="button">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </button>
+                                                </div>
+                    
+                                            </div>
+                                        </ng-container>
+                                        
+                                    </div>
+                                
+                            </div>
+                        </ng-container>
+                        
+                        <div class="form-group row">
+        
+                            <div class="col-sm-12" style="padding-top: 20px;">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-2 col-sm-4 col-xs-5" style="margin-left: 50x;">
+                                        <a class="btn btn-default col-12" (click)="back()" data-toggle="modal">
+                                            <i class="fa fa-arrow-circle-left"></i> {{'webpagos.btnBack' | translate }}
+                                        </a>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-4 col-xs-5" style="margin-left: 20x;">
+                                        <a class="btn btn-primary col-12" (click)="save()">
+                                            <i [ngClass]="id ? 'fa fa-pen' : 'fa fa-plus'"></i> {{ id ?
+                                            ('webpagos.btnEdit' | translate):('webpagos.btnSave' | translate) }}
+                                            </a>
+                                    </div>
+        
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">Footer</div>
+            <!-- /.card-footer-->
+        </div>
+    </div>
+    <!-- /.card -->
+</section>
+<!-- /.content -->

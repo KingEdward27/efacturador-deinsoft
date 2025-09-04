@@ -1,0 +1,26 @@
+{
+  "webpagos": {
+    "secPermission": {
+      "home": {
+        "title": "Sec Permissions",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Sec Permission",
+        "createOrEditLabel": "Crear o editar Sec Permission",
+        "notFound": "Ningún Sec Permissions encontrado"
+      },
+      "created": "Un nuevo Sec Permission ha sido creado con el identificador {{ param }}",
+      "updated": "Un Sec Permission ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Sec Permission ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Sec Permission {{ id }}?"
+      },
+      "detail": {
+        "title": "Sec Permission"
+      },
+      "id": "ID",
+      "secPermissionId": "Sec Permission Id",
+      "secRole": "Sec Role",
+      "secNodeAction": "Sec Node Action"
+    }
+  }
+}

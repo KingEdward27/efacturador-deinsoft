@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "invWarehouse": {
+      "home": {
+        "title": "Inv Warehouses",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Inv Warehouse",
+        "createOrEditLabel": "Crear o editar Inv Warehouse",
+        "notFound": "Ningún Inv Warehouses encontrado"
+      },
+      "created": "Un nuevo Inv Warehouse ha sido creado con el identificador {{ param }}",
+      "updated": "Un Inv Warehouse ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Inv Warehouse ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Inv Warehouse {{ id }}?"
+      },
+      "detail": {
+        "title": "Inv Warehouse"
+      },
+      "id": "ID",
+      "invWarehouseId": "Inv Warehouse Id",
+      "name": "Name",
+      "cnfOrg": "Cnf Org",
+      "invLocation": "Inv Location"
+    }
+  }
+}

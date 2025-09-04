@@ -1,0 +1,28 @@
+{
+  "webpagos": {
+    "secRole": {
+      "home": {
+        "title": "Sec Roles",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Sec Role",
+        "createOrEditLabel": "Create or edit a Sec Role",
+        "notFound": "No Sec Roles found"
+      },
+      "created": "A new Sec Role is created with identifier {{ param }}",
+      "updated": "A Sec Role is updated with identifier {{ param }}",
+      "deleted": "A Sec Role is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Sec Role {{ id }}?"
+      },
+      "detail": {
+        "title": "Sec Role"
+      },
+      "id": "ID",
+      "secRoleId": "Sec Role Id",
+      "name": "Name",
+      "description": "Description",
+      "secPermission": "Sec Permission",
+      "secRoleUser": "Sec Role User"
+    }
+  }
+}

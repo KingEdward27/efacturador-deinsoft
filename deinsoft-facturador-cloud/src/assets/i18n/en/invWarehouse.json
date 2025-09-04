@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "invWarehouse": {
+      "home": {
+        "title": "Inv Warehouses",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Inv Warehouse",
+        "createOrEditLabel": "Create or edit a Inv Warehouse",
+        "notFound": "No Inv Warehouses found"
+      },
+      "created": "A new Inv Warehouse is created with identifier {{ param }}",
+      "updated": "A Inv Warehouse is updated with identifier {{ param }}",
+      "deleted": "A Inv Warehouse is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Inv Warehouse {{ id }}?"
+      },
+      "detail": {
+        "title": "Inv Warehouse"
+      },
+      "id": "ID",
+      "invWarehouseId": "Inv Warehouse Id",
+      "name": "Name",
+      "cnfOrg": "Cnf Org",
+      "invLocation": "Inv Location"
+    }
+  }
+}

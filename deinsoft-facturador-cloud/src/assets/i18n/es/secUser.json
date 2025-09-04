@@ -1,0 +1,28 @@
+{
+  "webpagos": {
+    "secUser": {
+      "home": {
+        "title": "Sec Users",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Sec User",
+        "createOrEditLabel": "Crear o editar Sec User",
+        "notFound": "Ningún Sec Users encontrado"
+      },
+      "created": "Un nuevo Sec User ha sido creado con el identificador {{ param }}",
+      "updated": "Un Sec User ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Sec User ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Sec User {{ id }}?"
+      },
+      "detail": {
+        "title": "Sec User"
+      },
+      "id": "ID",
+      "secUserId": "Sec User Id",
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "secRoleUser": "Sec Role User"
+    }
+  }
+}

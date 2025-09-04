@@ -75,36 +75,12 @@ public class PipeFacturaParser
     public Map<String, Object> pipeToMap() throws ParserException {
         log.debug("SoftwareFacturadorController.formatoResumenBajas...Inicio Procesamiento");
 
-//        String[] datosArchivo = this.nombreArchivo.split("\\-");
         String identificadorFirmaSwf = "SIGN";
         Random calcularRnd = new Random();
         Integer codigoFacturadorSwf = Integer.valueOf((int) (calcularRnd.nextDouble() * 1000000.0D));
 
-//        log.debug("SoftwareFacturadorController.formatoResumenBajas...Leyendo Archivo: " + this.archivoCabecera);
-        Map<String, Object> factura = new HashMap<>();
-//
-//        Path fileCabecera = Paths.get(this.archivoCabecera, new String[0]);
-//
-//        if (!Files.exists(fileCabecera, new java.nio.file.LinkOption[0])) {
-//            throw new ParserException("El archivo no existe: " + this.archivoCabecera);
-//        }
-//
-//        try (InputStream in = Files.newInputStream(fileCabecera, new java.nio.file.OpenOption[0]);
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-//            String cadena = null;
-//
-//            while ((cadena = reader.readLine()) != null) {
-//                String[] registro = cadena.split("\\|");
-//
-//                if (registro.length != 18) {
-//                    throw new ParserException("El archivo cabecera no continene la cantidad de datos esperada (18 columnas).");
-//                }
-//                Date d = sdf.parse(oldDateString);
-//                sdf.applyPattern(NEW_FORMAT);
-//                Date d = sdf.parse(oldDateString);
-//                sdf.applyPattern(NEW_FORMAT);
         String sumTotalAnticipos = cabecera.getDocrefMonto() != null ? Impresion.df.format(cabecera.getDocrefMonto()) : "0.00";
-        factura = new HashMap<>();
+        Map<String, Object> factura = new HashMap<>();
         factura.put("tipOperacion", cabecera.getTipoOperacion());
         factura.put("fecEmision", cabecera.getFechaEmision().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         factura.put("horEmision", "12:00:00");
@@ -171,32 +147,11 @@ public class PipeFacturaParser
         
         log.debug("cabecera factura plano:" + factura);
 
-//            }
-//
-//        } catch (IOException x) {
-//            throw new ParserException("No se pudo leer el archivo cabecera: " + this.archivoCabecera, x);
-//        }
-//        Path fileDetalle = Paths.get(this.archivoDetalle, new String[0]);
-//
-//        if (!Files.exists(fileDetalle, new java.nio.file.LinkOption[0])) {
-//            throw new ParserException("El archivo no existe: " + this.archivoDetalle);
-//        }
         Map<String, Object> detalle = null;
         List<Map<String, Object>> listaDetalle = new ArrayList<>();
         Map<String, Object> adicionalDetalle = null;
         List<Map<String, Object>> listaAdicionalDetalle = new ArrayList<>();
 
-//        try (InputStream in = Files.newInputStream(fileDetalle, new java.nio.file.OpenOption[0]);
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-//            String cadena = null;
-//
-//            Integer linea = Integer.valueOf(0);
-//
-//            while ((cadena = reader.readLine()) != null) {
-//                String[] registro = cadena.split("\\|");
-//                if (registro.length != 36) {
-//                    throw new ParserException("El archivo detalle no continene la cantidad de datos esperada (36 columnas).");
-//                }
         int contadorItem = 0;
         for (FacturaElectronicaDet item : cabecera.getListFacturaElectronicaDet()) {
 
@@ -259,14 +214,6 @@ public class PipeFacturaParser
                 adicionalDetalle = new HashMap<>();
                 adicionalDetalle.put("idLinea", String.valueOf(contadorItem));
                 adicionalDetalle.put("nomPropiedad", "");
-//                adicionalDetalle.put("codPropiedad", registro[2]);
-//                adicionalDetalle.put("valPropiedad", registro[3]);
-//                adicionalDetalle.put("codBienPropiedad", registro[4]);
-//                adicionalDetalle.put("fecInicioPropiedad", registro[5]);
-//                adicionalDetalle.put("horInicioPropiedad", registro[6]);
-//                adicionalDetalle.put("fecFinPropiedad", registro[7]);
-//                adicionalDetalle.put("numDiasPropiedad", registro[8]);
-
                 adicionalDetalle.put("tipVariable", "false");
                 adicionalDetalle.put("codTipoVariable", "00");
                 adicionalDetalle.put("porVariable", Impresion.DF_0000.format(item.getDescuento()

@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "cnfDocidtype": {
+      "home": {
+        "title": "Cnf Docidtypes",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Cnf Docidtype",
+        "createOrEditLabel": "Create or edit a Cnf Docidtype",
+        "notFound": "No Cnf Docidtypes found"
+      },
+      "created": "A new Cnf Docidtype is created with identifier {{ param }}",
+      "updated": "A Cnf Docidtype is updated with identifier {{ param }}",
+      "deleted": "A Cnf Docidtype is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Cnf Docidtype {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Docidtype"
+      },
+      "id": "ID",
+      "cnfDocidtypeId": "Cnf Docidtype Id",
+      "name": "Name",
+      "value": "Value",
+      "cnfBpartner": "Cnf Bpartner"
+    }
+  }
+}

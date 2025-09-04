@@ -1,0 +1,142 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>{{'webpagos.seg_menu.home.title'| translate}}</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="javascript:;" translate="webpagos.adminModule"></a></li>
+                    <li class="breadcrumb-item active">{{'webpagos.seg_menu.home.title'| translate}}
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <!-- Default box -->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{'webpagos.seg_menu.home.title'| translate}}</h3>
+
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse" data-toggle="tooltip"
+                        title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-widget="remove" data-toggle="tooltip"
+                        title="Remove">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <h4 style="border-bottom: solid 1px;padding-bottom: 6px;">{{'webpagos.register' | translate}} -
+                        {{'webpagos.seg_menu.home.title' | translate}}</h4>
+                    <form class="col-sm-12" style="padding-top: 6px;">
+                        <div class="form-group-sm row">
+                            <label for="nombre" class="col-lg-3 col-sm-12 col-form-label">{{'webpagos.seg_menu.nombre' |
+                                translate}}</label>
+                            <div class="col-sm-12 col-lg-9">
+                                <input type="text" [(ngModel)]="model.nombre" maxlength="200" name="nombre" id="nombre"
+                                    name="nombre" class="form-control-sm col-sm-12 col-lg-6"
+                                    placeholder="Ingrese nombre" />
+                                <div class="alert alert-danger col-sm-12 col-lg-6" *ngIf="error?.nombre">{{ error.nombre
+                                    }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-sm row">
+                            <label for="seqorder"
+                                class="col-lg-3 col-sm-12 col-form-label">{{'webpagos.seg_menu.seqorder' |
+                                translate}} <span
+                                    style="color: red;font-size: 16px !important;font-weight: bold;">*</span></label>
+                            <div class="col-sm-12 col-lg-9">
+                                <input type="text" [(ngModel)]="model.seqorder" maxlength="10" name="seqorder"
+                                    id="seqorder" name="seqorder" class="form-control-sm col-sm-12 col-lg-6"
+                                    placeholder="Ingrese seqorder" />
+                                <div class="alert alert-danger col-sm-12 col-lg-6" *ngIf="error?.seqorder">{{
+                                    error.seqorder }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-sm row">
+                            <label for="icon" class="col-lg-3 col-sm-12 col-form-label">{{'webpagos.seg_menu.icon' |
+                                translate}}</label>
+                            <div class="col-sm-12 col-lg-9">
+                                <input type="text" [(ngModel)]="model.icon" maxlength="64" name="icon" id="icon"
+                                    name="icon" class="form-control-sm col-sm-12 col-lg-6" placeholder="Ingrese icon" />
+                                <div class="alert alert-danger col-sm-12 col-lg-6" *ngIf="error?.icon">{{ error.icon }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-sm row">
+                            <label for="path" class="col-lg-3 col-sm-12 col-form-label">{{'webpagos.seg_menu.path' |
+                                translate}}</label>
+                            <div class="col-sm-12 col-lg-9">
+                                <input type="text" [(ngModel)]="model.path" maxlength="45" name="path" id="path"
+                                    name="path" class="form-control-sm col-sm-12 col-lg-6" placeholder="Ingrese path" />
+                                <div class="alert alert-danger col-sm-12 col-lg-6" *ngIf="error?.path">{{ error.path }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group-sm row">
+                            <label class="col-lg-3 col-sm-12 col-form-label">{{'webpagos.seg_menu.seg_menu' |
+                                translate}} <span *ngIf="loadingSegMenu"
+                                    class="spinner-border spinner-border-sm mr-1"></span><span
+                                    style="color: red;font-size: 16px !important;font-weight: bold;">*</span></label>
+                            <div class="col-sm-12 col-lg-9">
+                                <select name="model.parent" [compareWith]="compareSegMenu" [(ngModel)]="model.parent"
+                                    class="form-control-sm col-sm-12 col-lg-6">
+                                    <option *ngIf="loadingSegMenu" [ngValue]="0" selected="selected">Cargando...
+                                    </option>
+                                    <option *ngIf="!loadingSegMenu" [ngValue]="selectDefaultSegMenu">
+                                        {{selectDefaultSegMenu.name}}</option>
+                                    <option *ngFor="let item of listSegMenu; index as i;" [ngValue]="item">
+                                        {{item.nombre}}
+                                    </option>
+
+                                </select>
+                                <div class="alert alert-danger col-sm-12 col-lg-6"
+                                    *ngIf="error?['segMenu.nombre']:false">
+                                    {{error["segMenu.nombre"] }}</div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+
+                            <div class="col-sm-12" style="padding-top: 20px;">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-2 col-sm-4 col-xs-5" style="margin-left: 50x;">
+                                        <a class="btn btn-default col-12" (click)="getBack()" data-toggle="modal">
+                                            <i class="fa fa-arrow-circle-left"></i> {{'webpagos.btnBack' | translate }}
+                                        </a>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-4 col-xs-5" style="margin-left: 20x;">
+                                        <a class="btn btn-primary col-12" (click)="save()">
+                                            <i [ngClass]="id ? 'fa fa-pen' : 'fa fa-plus'"></i> {{ id ?
+                                            ('webpagos.btnEdit' | translate):('webpagos.btnSave' | translate) }}
+                                            </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">Footer</div>
+            <!-- /.card-footer-->
+        </div>
+    </div>
+    <!-- /.card -->
+</section>
+<!-- /.content -->

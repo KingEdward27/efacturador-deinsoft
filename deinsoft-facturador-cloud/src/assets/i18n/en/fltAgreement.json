@@ -1,0 +1,30 @@
+{
+  "webpagos": {
+    "fltAgreement": {
+      "home": {
+        "title": "Flt Agreements",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Flt Agreement",
+        "createOrEditLabel": "Create or edit a Flt Agreement",
+        "notFound": "No Flt Agreements found"
+      },
+      "created": "A new Flt Agreement is created with identifier {{ param }}",
+      "updated": "A Flt Agreement is updated with identifier {{ param }}",
+      "deleted": "A Flt Agreement is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Flt Agreement {{ id }}?"
+      },
+      "detail": {
+        "title": "Flt Agreement"
+      },
+      "id": "ID",
+      "fltAgreementId": "Flt Agreement Id",
+      "name": "Name",
+      "agreementtype": "Agreementtype",
+      "vollimit": "Vollimit",
+      "amtlimit": "Amtlimit",
+      "cnfTenant": "Cnf Tenant",
+      "fltAgreementVehiclegroup": "Flt Agreement Vehiclegroup"
+    }
+  }
+}

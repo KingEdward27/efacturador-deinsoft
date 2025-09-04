@@ -1,0 +1,193 @@
+
+<!-- Main content -->
+<section class="content">
+    <!-- Default box -->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{{'webpagos.act_pago_programacion.home.title'| translate}}</h3>
+
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <form class="col-sm-12" style="padding-top: 6px;">
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 col-xs-12">
+                                <div class="row">
+                                    <div class="col-lg-12 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label
+                                                class="col-lg-3 col-sm-12 col-form-label">{{'webpagos.act_comprobante.cnf_local'
+                                                |
+                                                translate}} <span *ngIf="loadingCnfLocal"
+                                                    class="spinner-border spinner-border-sm mr-1"></span></label>
+                                            <div class="col-sm-12 col-lg-9">
+                                                <select name="model.cnfLocal" [compareWith]="compareCnfLocal"
+                                                    [(ngModel)]="model.cnfLocal"
+                                                    class="form-control-sm col-sm-12 col-lg-6"
+                                                    (change)="getListInvAlmacen()">
+                                                    <option *ngIf="loadingCnfLocal" [ngValue]="0" selected="selected">
+                                                        Cargando...</option>
+                                                    <option *ngIf="!loadingCnfLocal" [ngValue]="selectDefaultCnfLocal">
+                                                        {{selectDefaultCnfLocal.nombre}}</option>
+                                                    <option *ngFor="let item of listCnfLocal; index as i;"
+                                                        [ngValue]="item">
+                                                        {{item.nombre}}
+                                                    </option>
+
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label
+                                                class="col-lg-3 col-sm-12 col-form-label">{{'webpagos.act_pago_programacion.cnf_maestro'
+                                                |
+                                                translate}} <span *ngIf="loadingCnfMaestro"
+                                                    class="spinner-border spinner-border-sm mr-1"></span></label>
+                                            <div class="col-sm-12 col-lg-9">
+                                                <input class="form-control-sm col-sm-12 col-lg-6"  type="text"
+                                                    [(ngModel)]="model.cnfMaestro"  
+                                                    name="model.cnfMaestro"
+                                                    #input2 
+                                                    [ngbTypeahead]="searchCnfMaestro"
+                                                    [resultTemplate]="rt2" 
+                                                    [inputFormatter]="formatterCnfMaestro"
+                                                    placeholder="{{'webpagos.act_pago_programacion.cnf_maestro' | translate}}"/>
+                                                    <ng-template #rt2 let-r="result" let-t="term">
+                                                        {{ r.apellidoPaterno}}  {{ r.apellidoMaterno}}  {{ r.nombres}}  -  {{ r.nroDoc}}
+                                                    </ng-template>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-sm-12 col-xs-12">
+                                        <div class="form-group-sm row">
+                                            <label for="numero"
+                                                class="col-lg-3 col-sm-12 col-form-label">{{'webpagos.act_comprobante.fecha_vencimiento'
+                                                | translate}} </label>
+                                            <div class="col-sm-12 col-lg-9">
+                                                <div class="input-group input-group-sm">
+                                                    <input placeholder="dd/mm/yyyy" class="form-control-sm-dp"
+                                                        id="fechaVencimiento" name="model.fechaVencimiento" maxlength="200"
+                                                        [(ngModel)]="model.fechaVencimiento" ngbDatepicker
+                                                        #dfechaVencimiento="ngbDatepicker">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-secondary calendar button-dp"
+                                                            (click)="dfechaVencimiento.toggle()" type="button">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-12" style="padding-top: 20px;">
+                                <div class="row justify-content-center">
+                                    <div style="margin-left: 20px;">
+                                        <button class="btn btn-primary col-12" (click)="getListData()">
+                                            <i class="fa fa-search"></i> {{'webpagos.btnSearch' | translate }}
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group-sm row tex">
+                            <div class="col-sm-12 col-lg-12">
+                                <div>
+                                    <table id="dtDataReportActPagoProgramacion"
+                                        class="col-xl-12 col-lg-12 col-sm-12 table table-sm table-striped table-bordered table-td-valign-middle">
+                                        <thead>
+                                            <tr>
+                                                <th width="1%">Nro.</th>
+                                                <th class="text-nowrap">
+                                                    {{'webpagos.act_comprobante.cnf_maestro' | translate}}</th>
+                                                <th class="text-nowrap">
+                                                        {{'webpagos.act_comprobante.cnf_tipo_comprobante' | translate}}</th>
+                                                <th class="text-nowrap">{{'webpagos.act_comprobante.numero' |
+                                                    translate}}</th>
+                                                <th class="text-nowrap">
+                                                        {{'webpagos.act_pago_programacion.mes' | translate}}
+                                                </th>
+                                                <th class="text-nowrap">
+                                                    {{'webpagos.act_pago_programacion.fecha_vencimiento' | translate}}
+                                                </th>
+                                                <th class="text-nowrap">{{'webpagos.act_pago_programacion.monto' |
+                                                    translate}}</th>
+                                                <th class="text-nowrap">
+                                                    {{'webpagos.act_pago_programacion.monto_pendiente' | translate}}
+                                                </th>
+                                                <th class="text-nowrap">
+                                                    {{'webpagos.act_pago_programacion.ultimo_pago' | translate}}
+                                                </th>
+                                                <th class="text-nowrap">
+                                                    {{'webpagos.act_pago_programacion.estado' | translate}}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            <tr *ngFor="let item of listData; index as i" class="odd gradeX">
+                                                <td width="1%" class="f-w-600 text-inverse">{{i+1}}</td>
+                                                <!-- <td>{{item.actComprobante?item.actComprobante.fecha:item.actContrato.fecha}}</td>
+                                                <td>{{item.actComprobante?item.actComprobante.cnfTipoComprobante.nombre : 
+                                                    item.actContrato.cnfTipoComprobante.nombre}}</td>
+                                                <td>{{item.actComprobante?item.actComprobante.serie + '-' +item.actComprobante.numero : 
+                                                    item.actContrato.serie + '-' +item.actContrato.numero}}</td> -->
+
+                                                <td>{{item.actComprobante?
+                                                    item.actComprobante.cnfMaestro.razonSocial:
+                                                    item.actContrato.cnfMaestro.razonSocial}}</td>
+                                                <td>{{item.actComprobante?item.actComprobante.cnfTipoComprobante.nombre : 
+                                                        item.actContrato.cnfTipoComprobante.nombre + ' ' + item.actContrato.cnfPlanContrato.nombre}}</td>
+                                                    <td>{{item.actComprobante?item.actComprobante.serie + '-' +item.actComprobante.numero : 
+                                                        item.actContrato.serie + '-' +item.actContrato.numero}}</td>
+                                                <td >{{item.mes}}</td>
+                                                <td *ngIf="item.montoPendiente == 0">{{item.fechaVencimiento}}</td>
+                                                <td *ngIf="item.montoPendiente != 0" [ngClass] = "'state' + item.color">{{item.fechaVencimiento}}</td>
+                                                <td class="content-number">{{item.monto | number:'1.2-2' | currency:'S/'}}</td>
+                                                <td class="content-number">{{item.montoPendiente | number:'1.2-2' | currency:'S/'}}</td>
+                                                <td>{{item.ultimoPago}}</td>
+                                                <td >{{item.montoPendiente == 0? 'CANCELADO':'PENDIENTE'}}</td> 
+                                                
+                                                
+                                                    
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan = "6">Total:</td>
+                                                <td class="content-number">S/ {{totalMontos| number:'1.2-2'}}</td>
+                                                <td class="content-number">S/ {{totalPendiente| number:'1.2-2'}}</td>
+                                                <td colspan = "2"></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">Footer</div>
+            <!-- /.card-footer-->
+        </div>
+    </div>
+    <!-- /.card -->
+</section>
+<!-- /.content -->

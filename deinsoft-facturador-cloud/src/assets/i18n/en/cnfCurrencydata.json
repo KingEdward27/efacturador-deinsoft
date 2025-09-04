@@ -1,0 +1,30 @@
+{
+  "webpagos": {
+    "cnfCurrencydata": {
+      "home": {
+        "title": "Cnf Currencydata",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Cnf Currencydata",
+        "createOrEditLabel": "Create or edit a Cnf Currencydata",
+        "notFound": "No Cnf Currencydata found"
+      },
+      "created": "A new Cnf Currencydata is created with identifier {{ param }}",
+      "updated": "A Cnf Currencydata is updated with identifier {{ param }}",
+      "deleted": "A Cnf Currencydata is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Cnf Currencydata {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Currencydata"
+      },
+      "id": "ID",
+      "cnfCurrencydataId": "Cnf Currencydata Id",
+      "name": "Name",
+      "nameplural": "Nameplural",
+      "symbol": "Symbol",
+      "validfrom": "Validfrom",
+      "validto": "Validto",
+      "cnfCurrency": "Cnf Currency"
+    }
+  }
+}

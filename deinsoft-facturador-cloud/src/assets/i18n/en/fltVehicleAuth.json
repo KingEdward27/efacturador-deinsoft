@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "fltVehicleAuth": {
+      "home": {
+        "title": "Flt Vehicle Auths",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Flt Vehicle Auth",
+        "createOrEditLabel": "Create or edit a Flt Vehicle Auth",
+        "notFound": "No Flt Vehicle Auths found"
+      },
+      "created": "A new Flt Vehicle Auth is created with identifier {{ param }}",
+      "updated": "A Flt Vehicle Auth is updated with identifier {{ param }}",
+      "deleted": "A Flt Vehicle Auth is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Flt Vehicle Auth {{ id }}?"
+      },
+      "detail": {
+        "title": "Flt Vehicle Auth"
+      },
+      "id": "ID",
+      "fltVehicleAuthId": "Flt Vehicle Auth Id",
+      "authtype": "Authtype",
+      "authdata": "Authdata",
+      "fltVehicle": "Flt Vehicle"
+    }
+  }
+}

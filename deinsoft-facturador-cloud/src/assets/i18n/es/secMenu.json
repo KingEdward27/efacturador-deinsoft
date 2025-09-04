@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "secMenu": {
+      "home": {
+        "title": "Sec Menus",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Sec Menu",
+        "createOrEditLabel": "Crear o editar Sec Menu",
+        "notFound": "Ningún Sec Menus encontrado"
+      },
+      "created": "Un nuevo Sec Menu ha sido creado con el identificador {{ param }}",
+      "updated": "Un Sec Menu ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Sec Menu ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Sec Menu {{ id }}?"
+      },
+      "detail": {
+        "title": "Sec Menu"
+      },
+      "id": "ID",
+      "secMenuId": "Sec Menu Id",
+      "parentId": "Parent Id",
+      "seqorder": "Seqorder",
+      "secNodeAction": "Sec Node Action"
+    }
+  }
+}

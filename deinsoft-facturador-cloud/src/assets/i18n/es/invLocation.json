@@ -1,0 +1,26 @@
+{
+  "webpagos": {
+    "invLocation": {
+      "home": {
+        "title": "Inv Locations",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Inv Location",
+        "createOrEditLabel": "Crear o editar Inv Location",
+        "notFound": "Ningún Inv Locations encontrado"
+      },
+      "created": "Un nuevo Inv Location ha sido creado con el identificador {{ param }}",
+      "updated": "Un Inv Location ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Inv Location ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Inv Location {{ id }}?"
+      },
+      "detail": {
+        "title": "Inv Location"
+      },
+      "id": "ID",
+      "invLocationId": "Inv Location Id",
+      "name": "Name",
+      "invWarehouse": "Inv Warehouse"
+    }
+  }
+}

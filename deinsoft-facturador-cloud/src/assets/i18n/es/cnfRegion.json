@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "cnfRegion": {
+      "home": {
+        "title": "Cnf Regions",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Cnf Region",
+        "createOrEditLabel": "Crear o editar Cnf Region",
+        "notFound": "Ningún Cnf Regions encontrado"
+      },
+      "created": "Un nuevo Cnf Region ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cnf Region ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cnf Region ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cnf Region {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Region"
+      },
+      "id": "ID",
+      "cnfRegionId": "Cnf Region Id",
+      "name": "Name",
+      "cnfCountry": "Cnf Country",
+      "cnfProvince": "Cnf Province"
+    }
+  }
+}

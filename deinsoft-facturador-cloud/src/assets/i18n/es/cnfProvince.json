@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "cnfProvince": {
+      "home": {
+        "title": "Cnf Provinces",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Cnf Province",
+        "createOrEditLabel": "Crear o editar Cnf Province",
+        "notFound": "Ningún Cnf Provinces encontrado"
+      },
+      "created": "Un nuevo Cnf Province ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cnf Province ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cnf Province ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cnf Province {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Province"
+      },
+      "id": "ID",
+      "cnfProvinceId": "Cnf Province Id",
+      "name": "Name",
+      "cnfRegion": "Cnf Region",
+      "cnfDistrict": "Cnf District"
+    }
+  }
+}

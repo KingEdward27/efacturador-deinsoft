@@ -1,0 +1,34 @@
+{
+  "webpagos": {
+    "fltVehicle": {
+      "home": {
+        "title": "Flt Vehicles",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Flt Vehicle",
+        "createOrEditLabel": "Create or edit a Flt Vehicle",
+        "notFound": "No Flt Vehicles found"
+      },
+      "created": "A new Flt Vehicle is created with identifier {{ param }}",
+      "updated": "A Flt Vehicle is updated with identifier {{ param }}",
+      "deleted": "A Flt Vehicle is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Flt Vehicle {{ id }}?"
+      },
+      "detail": {
+        "title": "Flt Vehicle"
+      },
+      "id": "ID",
+      "fltVehicleId": "Flt Vehicle Id",
+      "value": "Value",
+      "limittype": "Limittype",
+      "amtlimit": "Amtlimit",
+      "vollimit": "Vollimit",
+      "amtaccum": "Amtaccum",
+      "volaccum": "Volaccum",
+      "cnfTenant": "Cnf Tenant",
+      "cnfBpartner": "Cnf Bpartner",
+      "fltVehiclegroup": "Flt Vehiclegroup",
+      "fltVehicleAuth": "Flt Vehicle Auth"
+    }
+  }
+}

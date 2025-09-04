@@ -145,7 +145,7 @@ public class PipeResumenBoletaParser
             resumenDiario.put("tipDocUsuario", resumenDiarioLinea.getTipDocUsuario());
             resumenDiario.put("numDocUsuario", resumenDiarioLinea.getNumDocUsuario());
             resumenDiario.put("moneda", resumenDiarioLinea.getMoneda());
-            resumenDiario.put("totValGrabado", String.valueOf(resumenDiarioLinea.getTotImpCpe()));
+            resumenDiario.put("totValGrabado", String.valueOf(resumenDiarioLinea.getTotValGrabado()));
             resumenDiario.put("totValExoneado", String.valueOf(resumenDiarioLinea.getTotValExonerado()));
             resumenDiario.put("totValInafecto", String.valueOf(resumenDiarioLinea.getTotValInafecto()));
             resumenDiario.put("totValExportado", String.valueOf(resumenDiarioLinea.getTotValExportado()));

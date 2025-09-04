@@ -1,0 +1,348 @@
+/* body {
+    font: 14px/1.5 sans-serif;
+    font-family: Arial,Verdana;
+  } */
+
+dt {
+  font-weight: bold;
+}
+
+label {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+dl {
+  margin-bottom: 50px;
+}
+
+.form-control-sm {
+  border: solid 1px #CCC;
+  border-radius: 6px 6px 6px 6px;
+}
+
+.form-control-sm-ta {
+  border: solid 1px #CCC;
+  border-radius: 6px 6px 6px 6px;
+  height: 6rem;
+}
+
+.form-control-sm-dp {
+  border: solid 1px #CCC;
+  border-radius: 6px 0px 0px 6px;
+  font: 12px/1.5 sans-serif !important;
+  padding-left: 8px !important;
+}
+
+.button-dp {
+  border: solid 1px #CCC;
+  border-radius: 0px 6px 6px 0px !important;
+}
+
+.btn-primary {
+  border-radius: 8px;
+}
+
+.panel .panel-heading .panel-title {
+  font-size: 16px;
+}
+
+body table.dataTable thead tr th.sorting:after,
+body table.dataTable thead tr th.sorting_asc:after,
+body table.dataTable thead tr th.sorting_desc:after {
+  opacity: 0;
+}
+
+table {
+  display: block;
+  overflow-x: auto;
+}
+
+table>tr>th>input {
+  width: 90%;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #ECECEC;
+}
+
+.table-bordered {
+  border: 0px;
+}
+
+.alert-danger {
+  padding: 0;
+  margin-bottom: 0;
+  /*color: red;*/
+  /*background-color: transparent;*/
+}
+
+/*.alert.alert-danger {
+    color: red;
+    background-color: transparent;
+  }*/
+
+
+/* .form-group{
+    height: 1rem;
+  }
+  @media (max-width: 540px){
+    .form-group{
+      height: 0.75rem;
+    }
+}
+   */
+
+/* .form-control{
+    height: 20px;
+  } */
+#bug:target {
+  outline: 4px solid #ccc;
+}
+
+.container {
+  padding-top: 20px;
+  margin-left: 0px;
+}
+
+.table.dataTable.no-footer {
+  border-bottom: none;
+}
+
+/* .card-header:first-child {
+        border-radius: 8px 8px 0 0;
+    }
+  .card-header{
+    background: rgb(1,0,8);
+background: linear-gradient(0deg, rgba(1,0,8,1) 3%, rgba(79,82,107,1) 100%, rgba(70,132,176,1) 100%, rgba(0,212,255,1) 100%);
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 8px 6px 6px 16px;
+      position: relative;
+      top: -30px;
+      z-index: 0;
+  }
+  .card-body{
+    position: relative;
+    z-index: 1;
+  }
+  .card-title{
+    position: relative;
+    font-size: 20px;
+    top: -20px;
+    margin-bottom: 0px;
+  } */
+
+  .card-header{
+    background-color: rgb(15, 41, 66);
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 8px 6px 6px 16px;
+  }
+input:hover {
+  border: solid 1px;
+}
+
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: initial;
+}
+
+.row2 {
+  margin-right: 0px;
+  margin-left: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.table thead th {
+  vertical-align: middle;
+}
+
+table.dataTable thead th,
+table.dataTable thead td {
+  padding: 8px 16px !important;
+}
+
+table.dataTable tbody th,
+table.dataTable tbody td {
+  padding: 2px 5px !important;
+  overflow-x: auto;
+}
+
+.col-form-label {
+  padding-top: calc(.4375rem + 1px);
+  padding-bottom: calc(.4375rem + 1px);
+  margin-bottom: 0;
+  font-size: inherit;
+  line-height: 1.5;
+}
+
+.col-form-label-form-md {
+  padding-top: 10px;
+  padding-bottom: 1px;
+  margin-bottom: 0;
+  font-size: inherit;
+  line-height: 0.75;
+}
+
+.content-number {
+  text-align: right !important;
+
+}
+
+.buttons-excel {
+  margin-left: 20px;
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
+  box-shadow: none;
+  border-radius: .25rem;
+}
+
+.buttons-pdf {
+  color: #fff;
+  background-color: #b43030;
+  border-color: #b43030;
+  box-shadow: none;
+  border-radius: .25rem;
+}
+
+.buttons-csv {
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
+  box-shadow: none;
+  border-radius: .25rem;
+}
+
+table.dataTable {
+  width: 100% !important;
+}
+
+tfoot>tr>td {
+  font-weight: bold;
+}
+
+table>thead {
+  background-color: rgb(15, 41, 66);
+  color: rgb(223, 222, 222);
+}
+
+[type="file"] {
+  /* Style the color of the message that says 'No file chosen' */
+  color: #878787;
+}
+
+[type="file"]::-webkit-file-upload-button {
+  background-color: #007bff;
+  border-color: #007bff;
+  box-shadow: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  outline: none;
+  text-transform: uppercase;
+  transition: all 1s ease;
+}
+
+[type="file"]::-webkit-file-upload-button:hover {
+  background: rgb(24, 13, 83);
+  border: 2px solid #535353;
+  color: #fff;
+}
+
+.state0 {
+  background: rgb(124, 37, 37);
+  border: 2px solid #535353;
+  color: #fff;
+  border-radius: .25rem;
+}
+
+.state1,
+.state03,
+.stategreen {
+  background: rgb(38, 107, 36);
+  border: 2px solid #535353;
+  color: #fff;
+  padding-left: 1em;
+  padding-right: 1em;
+  border-radius: .25rem;
+}
+
+.state2,
+.state02,
+.stateblue {
+  background: rgb(21, 47, 105);
+  border: 2px solid #535353;
+  color: #fff;
+  padding-left: 1em;
+  padding-right: 1em;
+  border-radius: .25rem;
+}
+
+.state2,
+.state00,
+.state01,
+.state06,
+.state10,
+.statered {
+  background: rgb(126, 26, 43);
+  border: 2px solid #535353;
+  color: #fff;
+  padding-left: 1em;
+  padding-right: 1em;
+  border-radius: .25rem;
+}
+
+.map {
+  margin: 10px 0;
+  height: 340px;
+  max-width: 100%;
+}
+
+.selectRow {
+  cursor: pointer;
+}
+
+section.content {
+  padding-top: 10px;
+}
+
+.card-title {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+@media (max-width: 576px) {
+  .hideOnMobile {
+    display: none;
+  }
+  .form-left-contrato {
+    padding-left: 0rem !important;
+    padding-right: 0rem !important;
+  }
+
+}
+.form-left-contrato {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.totales {
+  font-size: 1.3em;
+}
+.alert-warning {
+  color: #f7f7f7;
+  background-color: #d87751;
+  border-color: #d87751;
+}
+
+.table-footer {
+  font-weight: bold;
+  font-size: 16px;
+}

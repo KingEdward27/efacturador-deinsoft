@@ -1,0 +1,26 @@
+{
+  "webpagos": {
+    "secPermission": {
+      "home": {
+        "title": "Sec Permissions",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Sec Permission",
+        "createOrEditLabel": "Create or edit a Sec Permission",
+        "notFound": "No Sec Permissions found"
+      },
+      "created": "A new Sec Permission is created with identifier {{ param }}",
+      "updated": "A Sec Permission is updated with identifier {{ param }}",
+      "deleted": "A Sec Permission is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Sec Permission {{ id }}?"
+      },
+      "detail": {
+        "title": "Sec Permission"
+      },
+      "id": "ID",
+      "secPermissionId": "Sec Permission Id",
+      "secRole": "Sec Role",
+      "secNodeAction": "Sec Node Action"
+    }
+  }
+}

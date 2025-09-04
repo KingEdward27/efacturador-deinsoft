@@ -1,0 +1,28 @@
+{
+  "webpagos": {
+    "fltAgreementVehiclegroup": {
+      "home": {
+        "title": "Flt Agreement Vehiclegroups",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Flt Agreement Vehiclegroup",
+        "createOrEditLabel": "Create or edit a Flt Agreement Vehiclegroup",
+        "notFound": "No Flt Agreement Vehiclegroups found"
+      },
+      "created": "A new Flt Agreement Vehiclegroup is created with identifier {{ param }}",
+      "updated": "A Flt Agreement Vehiclegroup is updated with identifier {{ param }}",
+      "deleted": "A Flt Agreement Vehiclegroup is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Flt Agreement Vehiclegroup {{ id }}?"
+      },
+      "detail": {
+        "title": "Flt Agreement Vehiclegroup"
+      },
+      "id": "ID",
+      "fltAgreementVehiclegroupId": "Flt Agreement Vehiclegroup Id",
+      "validfrom": "Validfrom",
+      "validto": "Validto",
+      "fltAgreement": "Flt Agreement",
+      "fltVehiclegroup": "Flt Vehiclegroup"
+    }
+  }
+}

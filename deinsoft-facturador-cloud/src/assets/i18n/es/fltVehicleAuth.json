@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "fltVehicleAuth": {
+      "home": {
+        "title": "Flt Vehicle Auths",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Flt Vehicle Auth",
+        "createOrEditLabel": "Crear o editar Flt Vehicle Auth",
+        "notFound": "Ningún Flt Vehicle Auths encontrado"
+      },
+      "created": "Un nuevo Flt Vehicle Auth ha sido creado con el identificador {{ param }}",
+      "updated": "Un Flt Vehicle Auth ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Flt Vehicle Auth ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Flt Vehicle Auth {{ id }}?"
+      },
+      "detail": {
+        "title": "Flt Vehicle Auth"
+      },
+      "id": "ID",
+      "fltVehicleAuthId": "Flt Vehicle Auth Id",
+      "authtype": "Authtype",
+      "authdata": "Authdata",
+      "fltVehicle": "Flt Vehicle"
+    }
+  }
+}

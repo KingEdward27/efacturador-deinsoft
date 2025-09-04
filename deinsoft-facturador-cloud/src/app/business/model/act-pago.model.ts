@@ -1,0 +1,33 @@
+import * as dayjs from 'dayjs';
+import { ActPagoProgramacion } from './act-pago-programacion.model';
+import { CnfMaestro } from './cnf-maestro.model';
+import { CnfFormaPago } from './cnf-forma-pago.model';
+import { CnfMoneda } from './cnf-moneda.model';
+import { CnfLocal } from './cnf-local.model';
+import { CnfTipoComprobante } from './cnf-tipo-comprobante.model';
+import { ActPagoDetalle } from './act-pago-detalle.model';
+
+export class ActPago {
+	id: number = 0;
+	fecha?: dayjs.Dayjs | null;
+	serie: string = "";
+	numero: string = "";
+	fechaRegistro!: dayjs.Dayjs;
+	billete!: number;
+	total!: number;
+	vuelto!: number;
+	descuento!: number;
+	subtotal!: number;
+	igv!: number;
+	observacion: string = "";
+	flagEstado: string = "";
+	monto!: number;
+	actPagoProgramacion: ActPagoProgramacion = new ActPagoProgramacion();
+	cnfMaestro: CnfMaestro = new CnfMaestro();
+	cnfFormaPago: CnfFormaPago = new CnfFormaPago();
+	cnfMoneda: CnfMoneda = new CnfMoneda();
+	cnfLocal: CnfLocal = new CnfLocal();
+	cnfTipoComprobante: CnfTipoComprobante = new CnfTipoComprobante();
+	listActPagoDetalle: ActPagoDetalle[] = [];
+	token?: string = "";
+};

@@ -1,0 +1,32 @@
+{
+  "webpagos": {
+    "cnfCompany": {
+      "home": {
+        "title": "Cnf Companies",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Cnf Company",
+        "createOrEditLabel": "Crear o editar Cnf Company",
+        "notFound": "Ningún Cnf Companies encontrado"
+      },
+      "created": "Un nuevo Cnf Company ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cnf Company ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cnf Company ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cnf Company {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Company"
+      },
+      "id": "ID",
+      "cnfCompanyId": "Cnf Company Id",
+      "name": "Name",
+      "taxid": "Taxid",
+      "address": "Address",
+      "cnfTenant": "Cnf Tenant",
+      "cnfDistrict": "Cnf District",
+      "cnfCurrency": "Cnf Currency",
+      "cnfOrg": "Cnf Org",
+      "secRoleUser": "Sec Role User"
+    }
+  }
+}

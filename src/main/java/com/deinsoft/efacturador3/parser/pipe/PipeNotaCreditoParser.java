@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -87,9 +88,13 @@ public class PipeNotaCreditoParser
         notaCredito.put("numDocAfectado", cabecera.getNotaReferenciaSerie() + "-" + String.format("%08d", Integer.parseInt(cabecera.getNotaReferenciaNumero())));
 
         notaCredito.put("sumTotTributos", Impresion.df.format(cabecera.getSumatoriaIGV().add(cabecera.getSumatoriaISC())));
-        notaCredito.put("sumTotValVenta", Impresion.df.format(cabecera.getTotalValorVenta().subtract(cabecera.getSumatoriaIGV())));
-        notaCredito.put("sumPrecioVenta", Impresion.df.format(cabecera.getTotalValorVenta()));
-        notaCredito.put("sumDescTotal", cabecera.getDescuentosGlobales() == null ? "0.00" : cabecera.getDescuentosGlobales());
+//        notaCredito.put("sumTotValVenta", Impresion.df.format(cabecera.getTotalValorVenta().subtract(cabecera.getSumatoriaIGV())));
+//        notaCredito.put("sumPrecioVenta", Impresion.df.format(cabecera.getTotalValorVenta()));
+        notaCredito.put("sumTotValVenta", Impresion.df.format(cabecera.getTotalValorVentasGravadas().subtract(cabecera.getDescuentosGlobales()).subtract(cabecera.getSumatoriaIGV())));
+        notaCredito.put("sumPrecioVenta", Impresion.df.format(cabecera.getTotalValorVentasGravadas().subtract(cabecera.getDescuentosGlobales())));
+
+        //notaCredito.put("sumDescTotal", cabecera.getDescuentosGlobales() == null ? "0.00" : cabecera.getDescuentosGlobales());
+        notaCredito.put("sumDescTotal","0.00");
         notaCredito.put("sumOtrosCargos", cabecera.getSumatoriaOtrosCargos() == null ? "0.00" : cabecera.getSumatoriaOtrosCargos());
         notaCredito.put("sumTotalAnticipos", 0);
         notaCredito.put("sumImpVenta", Impresion.df.format(cabecera.getTotalValorVenta()));
@@ -105,12 +110,6 @@ public class PipeNotaCreditoParser
         notaCredito.put("tipDocuEmisorSwf", cabecera.getEmpresa().getTipodoc().toString());
         notaCredito.put("nombreComercialSwf", this.contri.getRazonSocial());
         notaCredito.put("razonSocialSwf", this.contri.getRazonSocial());
-//        notaCredito.put("ubigeoDomFiscalSwf", this.contri.getDireccion().getUbigeo());
-//        notaCredito.put("direccionDomFiscalSwf", this.contri.getDireccion().getDireccion());
-//        notaCredito.put("deparSwf", this.contri.getDireccion().getDepar());
-//        notaCredito.put("provinSwf", this.contri.getDireccion().getProvin());
-//        notaCredito.put("distrSwf", this.contri.getDireccion().getDistr());
-//        notaCredito.put("urbanizaSwf", this.contri.getDireccion().getUrbaniza());
         notaCredito.put("ubigeoDomFiscalSwf", "");
         notaCredito.put("direccionDomFiscalSwf", "");
         notaCredito.put("deparSwf", "");
@@ -138,6 +137,8 @@ public class PipeNotaCreditoParser
 
         List<Map<String, Object>> listaDetalle = new ArrayList<>();
         Map<String, Object> detalle = null;
+        Map<String, Object> adicionalDetalle = null;
+        List<Map<String, Object>> listaAdicionalDetalle = new ArrayList<>();
 
         Integer linea = Integer.valueOf(0);
 //      
@@ -145,63 +146,30 @@ public class PipeNotaCreditoParser
             int contadorItem = 0;
             for (FacturaElectronicaDet item : cabecera.getListFacturaElectronicaDet()) {
                 contadorItem++;
+                BigDecimal descuentoReal = item.getDescuento()
+                        .multiply(BigDecimal.ONE.add(cabecera.getPorcentajeIGV()
+                                .divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP)));
                 linea = Integer.valueOf(linea.intValue() + 1);
                 detalle = new HashMap<>();
-//                detalle.put("unidadMedida", item.getUnidadMedida());
-//                detalle.put("ctdUnidadItem", String.valueOf(item.getCantidad()));
-//                detalle.put("codProducto", item.getCodigo());
-//                detalle.put("desItem", item.getDescripcion());
-//                detalle.put("mtoValorUnitario", item.getValorUnitario());
-//
-//                detalle.put("sumTotTributosItem", String.valueOf(item.getAfectacionIgv()));
-//
-//                detalle.put("codTriIGV", "1000");
-//                detalle.put("mtoIgvItem", String.valueOf(item.getAfectacionIgv()));
-//                detalle.put("mtoBaseIgvItem", item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv()));
-//                detalle.put("nomTributoIgvItem", "IGV");
-//                detalle.put("codTipTributoIgvItem", "VAT");
-//                detalle.put("tipAfeIGV", item.getAfectacionIGVCode());
-//                detalle.put("porIgvItem", String.valueOf(cabecera.getPorcentajeIGV()));
-//
-//                detalle.put("codTriISC", "-");
-//                detalle.put("mtoIscItem", "-");
-//                detalle.put("mtoBaseIscItem", "-");
-//                detalle.put("nomTributoIscItem", "-");
-//                detalle.put("codTipTributoIscItem", "-");
-//                detalle.put("tipSisISC", "-");
-//                detalle.put("porIscItem", "-");
-//
-//                detalle.put("codTriOtro", "-");
-//                detalle.put("mtoTriOtroItem", "-");
-//                detalle.put("mtoBaseTriOtroItem", "-");
-//                detalle.put("nomTributoOtroItem", "-");
-//                detalle.put("codTipTributoOtroItem", "-");
-//                detalle.put("porTriOtroItem", "-");
-//
-//                detalle.put("codTriIcbper", "-");
-//                detalle.put("mtoTriIcbperItem", "-");
-//                detalle.put("ctdBolsasTriIcbperItem", "-");
-//                detalle.put("nomTributoIcbperItem", "-");
-//                detalle.put("codTipTributoIcbperItem", "-");
-//                detalle.put("mtoTriIcbperUnidad", "-");
-//
-//                detalle.put("mtoPrecioVentaUnitario", item.getPrecioVentaUnitario());
-//                detalle.put("mtoValorVentaItem", String.valueOf(item.getValorVentaItem()));
-//                detalle.put("mtoValorReferencialUnitario", "0.00");
-//                detalle.put("lineaSwf", String.valueOf(linea));
-//                detalle.put("tipoCodiMoneGratiSwf", "02");
 
                 detalle.put("codProducto", item.getCodigo());
                 detalle.put("desItem", item.getDescripcion());
-                detalle.put("mtoValorUnitario", item.getValorUnitario());
+                detalle.put("mtoValorUnitario", item.getValorUnitario().subtract(
+                        item.getDescuento()
+                        .divide(item.getCantidad(), 4, RoundingMode.HALF_UP)).doubleValue());
 
                 detalle.put("sumTotTributosItem", String.valueOf(item.getAfectacionIgv()));
                 detalle.put("unidadMedida", item.getUnidadMedida());
                 detalle.put("codTriIGV", item.getCodTipTributoIgv());
                 detalle.put("mtoIgvItem", String.valueOf(item.getAfectacionIgv()));
+
                 detalle.put("mtoBaseIgvItem", item.getValorRefUnitario().compareTo(BigDecimal.ZERO) == 0
-                        ? Impresion.df.format(item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv()))
+                        ? Impresion.df.format(item.getValorVentaItem())
                         : Impresion.df.format(item.getValorRefUnitario().multiply(item.getCantidad())));
+
+//                detalle.put("mtoBaseIgvItem", item.getValorRefUnitario().compareTo(BigDecimal.ZERO) == 0
+//                        ? Impresion.df.format(item.getPrecioVentaUnitario().multiply(item.getCantidad()).subtract(item.getAfectacionIgv()))
+//                        : Impresion.df.format(item.getValorRefUnitario().multiply(item.getCantidad())));
                 detalle.put("nomTributoIgvItem", item.getAfectacionIGVCode().equals("31") ? "GRA" : "IGV");
                 detalle.put("codTipTributoIgvItem", item.getAfectacionIGVCode().equals("31") ? "FRE" : "VAT");
                 detalle.put("tipAfeIGV", item.getAfectacionIGVCode());
@@ -229,19 +197,45 @@ public class PipeNotaCreditoParser
                 detalle.put("codTipTributoIcbperItem", "-");
                 detalle.put("mtoTriIcbperUnidad", "-");
 
-                detalle.put("mtoPrecioVentaUnitario", item.getPrecioVentaUnitario());
-                detalle.put("mtoValorVentaItem",
-                        Impresion.df.format(item.getPrecioVentaUnitario().multiply(item.getCantidad())
-                                .subtract(item.getAfectacionIgv())));
+//                detalle.put("mtoValorVentaItem",
+//                        Impresion.df.format(item.getPrecioVentaUnitario().multiply(item.getCantidad())
+//                                .subtract(item.getAfectacionIgv())));
+                detalle.put("mtoValorVentaItem", Impresion.df.format(item.getValorVentaItem()));
+
+//                detalle.put("mtoPrecioVentaUnitario", item.getPrecioVentaUnitario());
+                detalle.put("mtoPrecioVentaUnitario", Impresion.df.format(
+                        item.getPrecioVentaUnitario()
+                                .subtract(descuentoReal.divide(item.getCantidad(), 4, RoundingMode.HALF_UP))
+                ));
                 detalle.put("mtoValorReferencialUnitario", Impresion.df.format(item.getValorRefUnitario()));
                 detalle.put("ctdUnidadItem", Impresion.df.format(item.getCantidad()));
                 detalle.put("lineaSwf", String.valueOf(contadorItem));
                 detalle.put("tipoCodiMoneGratiSwf", "02");
                 listaDetalle.add(detalle);
+
+//                if (item.getDescuento().compareTo(BigDecimal.ZERO) > 0) {
+//                    adicionalDetalle = new HashMap<>();
+//                    adicionalDetalle.put("idLinea", String.valueOf(contadorItem));
+//                    adicionalDetalle.put("nomPropiedad", "");
+//
+//                    adicionalDetalle.put("tipVariable", "false");
+//                    adicionalDetalle.put("codTipoVariable", "00");
+//                    adicionalDetalle.put("porVariable", Impresion.DF_0000.format(item.getDescuento()
+//                            .divide(item.getValorVentaItem().add(item.getDescuento()), 4, RoundingMode.HALF_UP)));
+//                    adicionalDetalle.put("monMontoVariable", "PEN");
+//                    adicionalDetalle.put("mtoVariable", Impresion.df.format(item.getDescuento()));
+//                    adicionalDetalle.put("monBaseImponibleVariable","PEN");
+//                    adicionalDetalle.put("mtoBaseImpVariable",
+//                            Impresion.df.format(item.getValorVentaItem().add(item.getDescuento())));
+//
+//                    listaAdicionalDetalle.add(adicionalDetalle);
+//                }
             }
             notaCredito.put("listaDetalle", listaDetalle);
+//            notaCredito.put("listaAdicionalDetalle", listaAdicionalDetalle);
         } else {
             notaCredito.put("listaDetalle", new ArrayList<>());
+//            notaCredito.put("listaAdicionalDetalle", new ArrayList<>());
         }
 
         List<Map<String, Object>> listaTributos = new ArrayList<>();

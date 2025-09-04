@@ -1,0 +1,27 @@
+{
+  "webpagos": {
+    "cnfBrand": {
+      "home": {
+        "title": "Cnf Brands",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Cnf Brand",
+        "createOrEditLabel": "Crear o editar Cnf Brand",
+        "notFound": "Ningún Cnf Brands encontrado"
+      },
+      "created": "Un nuevo Cnf Brand ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cnf Brand ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cnf Brand ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cnf Brand {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Brand"
+      },
+      "id": "ID",
+      "cnfBrandId": "Cnf Brand Id",
+      "name": "Name",
+      "cnfTenant": "Cnf Tenant",
+      "cnfProduct": "Cnf Product"
+    }
+  }
+}

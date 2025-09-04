@@ -1,0 +1,30 @@
+{
+  "webpagos": {
+    "cnfOrg": {
+      "home": {
+        "title": "Cnf Orgs",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Cnf Org",
+        "createOrEditLabel": "Crear o editar Cnf Org",
+        "notFound": "Ningún Cnf Orgs encontrado"
+      },
+      "created": "Un nuevo Cnf Org ha sido creado con el identificador {{ param }}",
+      "updated": "Un Cnf Org ha sido actualizado con el identificador {{ param }}",
+      "deleted": "Un Cnf Org ha sido eliminado con el identificador {{ param }}",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Cnf Org {{ id }}?"
+      },
+      "detail": {
+        "title": "Cnf Org"
+      },
+      "id": "ID",
+      "cnfOrgId": "Cnf Org Id",
+      "name": "Name",
+      "address": "Address",
+      "cnfCompany": "Cnf Company",
+      "cnfDistrict": "Cnf District",
+      "invWarehouse": "Inv Warehouse",
+      "secRoleUser": "Sec Role User"
+    }
+  }
+}
