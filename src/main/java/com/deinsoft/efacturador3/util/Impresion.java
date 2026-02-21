@@ -108,6 +108,17 @@ public class Impresion {
             parametros.put("presumen", comprobante.getXmlHash());
             parametros.put("idTipoDoc", String.valueOf(tipo));
             parametros.put("pFormaPago", comprobante.getFormaPago());
+
+            if (comprobante.getCtaBancoNacionDetraccion() != null && !comprobante.getCtaBancoNacionDetraccion().isEmpty()) {
+
+                parametros.put("pTipoOperacion", comprobante.getTipoOperacion() + "- Operación Sujeta a Detracción");
+                parametros.put("pCodBienDetraccion", comprobante.getCodBienDetraccion());
+                parametros.put("pCodMedioPagoDetraccion", "001");//deposito en cuenta valor fijo
+                parametros.put("pNroCuentaDetraccion", comprobante.getCtaBancoNacionDetraccion());
+                parametros.put("pPorcentajeDetraccion", df.format(comprobante.getPorDetraccion()));
+                parametros.put("pMontoDetraccion", "S/ " + df.format(comprobante.getMtoDetraccion()));
+            }
+
 //            if (comprobante.getTipo() != Constantes.ID_TIPO_DOC_PROFORMA) {
                 String pathResult = CodigoQR.GenerarQR(comprobante.getEmpresa().getNumdoc()+"|"+
                         comprobante.getTipo()+"|"+

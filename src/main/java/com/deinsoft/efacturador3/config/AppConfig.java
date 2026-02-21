@@ -59,7 +59,7 @@ public class AppConfig
   @Value("${app.config.mail.client.clientSecret}")
   private String mailClientSecret;
 
-  @Value("${app.config.support.mail")
+  @Value("${app.config.support.mail}")
   private String mailSupport;
 
   @JsonProperty

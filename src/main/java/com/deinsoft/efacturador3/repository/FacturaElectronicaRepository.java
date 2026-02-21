@@ -44,7 +44,22 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
     List<FacturaElectronica> findBySerieRefAndNumeroRefAndEmpresaId(@Param("serie")String serie,
                                                                     @Param("numero")String numero,
                                                                     @Param("empresaId")int empresaId);
-    
+
+    @Query(value="select p from facturaElectronica p "
+            + "where p.fechaEmision >= :fecha "
+            + "and p.empresa.id = :empresaId "
+            + "and p.tipo in (:listTipo) "
+            + "and p.indSituacion in (:listSituacion) "
+            + "and p.estado = :estado "
+            + "and p.flagIsVenta = '1' "
+            + "order by p.fechaEmision asc,p.tipo asc,p.numero asc")
+    List<FacturaElectronica> findToVerify
+            (@Param("empresaId") Integer empresaId,
+             @Param("listTipo") List<String> listTipo,
+             @Param("listSituacion") List<String> listSituacion,
+             @Param("estado") String estado,
+             @Param("fecha") LocalDate fecha);
+
     @Query(value="select p from facturaElectronica p "
             + "where p.fechaEmision >= :fecha "
             + "and p.nroIntentoEnvio < 3"

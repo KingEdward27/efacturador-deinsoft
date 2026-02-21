@@ -72,7 +72,7 @@ public class Efacturador3Application extends WebMvcConfigurerAdapter implements 
 //        }
     }
 
-    @Scheduled(cron = "0 0 22 * * *")
+    @Scheduled(cron = "0 0 1,12,22 * * *")
 //    @Scheduled(cron = "0 * * * * ?")
     void verifyPending() {
         if (!this.environment.getActiveProfiles()[0].equalsIgnoreCase("local")) {

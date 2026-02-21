@@ -552,11 +552,11 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 List<FacturaElectronica> listRechazados = new ArrayList<>();
                 for (FacturaElectronica facturaElectronica:list) {
                     FacturaElectronica item = sendCp(facturaElectronica, urlWebService);
-                    if (item != null
-                            && (item.getIndSituacion().equalsIgnoreCase(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO)
-                            || (item.getIndSituacion().equalsIgnoreCase(Constantes.CONSTANTE_SITUACION_XML_GENERADO)
+                    if (item != null) {
+                        if (item.getIndSituacion().equalsIgnoreCase(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO)
+                                || (item.getIndSituacion().equalsIgnoreCase(Constantes.CONSTANTE_SITUACION_CON_ERRORES)
                                 && item.getNroIntentoEnvio() >= 2)
-                    )) {
+                        )
                         listRechazados.add(item);
                     }
                 }
@@ -612,9 +612,12 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 facturaElectronica.setEstado(Constantes.ESTADO_ANULADO);
 
             } else {
-                facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
-                facturaElectronica.setObservacionEnvio("CODE: " + res.getCode() + "-"+ res.getDescription());
-                facturaElectronica.setNroIntentoEnvio(facturaElectronica.getNroIntentoEnvio() + 1);
+                if (!res.getCode().toString().equals("100") && !res.getCode().toString().equals("111")) {
+                    facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+                    facturaElectronica.setObservacionEnvio("CODE: " + res.getCode() + "-"+ res.getDescription());
+                    facturaElectronica.setNroIntentoEnvio(facturaElectronica.getNroIntentoEnvio() + 1);
+                }
+
             }
             facturaElectronica.setTicketSunat(res.getTicket());
             save(facturaElectronica);
@@ -774,7 +777,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                     .subtract(comprobanteDet.getAfectacion_igv())
                     .subtract(valorDescuento));
             det.setValorUnitario(comprobanteDet.getPrecio_unitario().divide(valorIgv, 4, RoundingMode.HALF_UP)
-                    .setScale(2, BigDecimal.ROUND_HALF_EVEN));
+                    .setScale(4, BigDecimal.ROUND_HALF_EVEN));
 
             det.setAfectacionIgv(comprobanteDet.getAfectacion_igv().setScale(2, BigDecimal.ROUND_HALF_EVEN));
             det.setAfectacionIGVCode(comprobanteDet.getTipo_igv());
@@ -1301,7 +1304,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             if (empresa.getFlagSend().equals("1") && !Util.isNullOrEmpty(empresa.getValidationClientId())
                                                     && !Util.isNullOrEmpty(empresa.getValidationClientSecret())) {
                 List<FacturaElectronica> list = facturaElectronicaRepository.
-                        findToSendSunat(
+                        findToVerify(
                                 empresa.getId(), Arrays.asList(
                                         Constantes.CONSTANTE_TIPO_DOCUMENTO_FACTURA,
                                         Constantes.CONSTANTE_TIPO_DOCUMENTO_BOLETA,
