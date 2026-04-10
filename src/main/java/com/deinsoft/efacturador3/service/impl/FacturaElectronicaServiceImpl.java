@@ -429,7 +429,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             Local local = documento.getEmpresa().getListLocales().stream()
                     .filter(predicate -> documento.getSerie().equals(predicate.getSerie()))
                     .findFirst().orElse(null);
-            if (local == null) {
+            if (local == null && documento.getFlagIsVenta().equals("1")) {
                 throw new Exception("Serie no configurada en locales de empresa");
             }
             facturaElectronicaResult = save(documento);
@@ -516,8 +516,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     public void sendToSUNAT() {
         List<String> listSituacion = new ArrayList<>();
         listSituacion.add(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
-//        listSituacion.add(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO);
-//        listSituacion.add(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+        listSituacion.add(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
         String urlWebService = (appConfig.getUrlServiceCDP() != null) ? appConfig.getUrlServiceCDP() : "XX";
         int cont = 1;
         boolean connection = false;
@@ -550,14 +549,19 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 log.info("A enviar: " + String.valueOf(list.size()));
 
                 List<FacturaElectronica> listRechazados = new ArrayList<>();
-                for (FacturaElectronica facturaElectronica:list) {
+                for (FacturaElectronica facturaElectronica : list) {
+                    // Si ya alcanzó 3 intentos fallidos, no reintentar — solo notificar
+                    if (facturaElectronica.getNroIntentoEnvio() >= 3) {
+                        listRechazados.add(facturaElectronica);
+                        continue;
+                    }
                     FacturaElectronica item = sendCp(facturaElectronica, urlWebService);
                     if (item != null) {
                         if (item.getIndSituacion().equalsIgnoreCase(Constantes.CONSTANTE_SITUACION_ENVIADO_RECHAZADO)
                                 || (item.getIndSituacion().equalsIgnoreCase(Constantes.CONSTANTE_SITUACION_CON_ERRORES)
-                                && item.getNroIntentoEnvio() >= 2)
-                        )
-                        listRechazados.add(item);
+                                && item.getNroIntentoEnvio() >= 3)) {
+                            listRechazados.add(item);
+                        }
                     }
                 }
                 if (listRechazados.size() > 0) {
@@ -628,10 +632,15 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
             String mensaje = "Hubo un problema al invocar servicio SUNAT: " + e.getMessage();
             e.printStackTrace();
             log.error(mensaje);
+            int nuevoIntento = facturaElectronica.getNroIntentoEnvio() + 1;
             facturaElectronica.setFechaEnvio(LocalDateTime.now().plusHours(appConfig.getDiferenceHours()));
-            facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
             facturaElectronica.setObservacionEnvio(mensaje);
-            facturaElectronica.setNroIntentoEnvio(facturaElectronica.getNroIntentoEnvio() + 1);
+            facturaElectronica.setNroIntentoEnvio(nuevoIntento);
+            if (nuevoIntento >= 3) {
+                facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_CON_ERRORES);
+            } else {
+                facturaElectronica.setIndSituacion(Constantes.CONSTANTE_SITUACION_XML_GENERADO);
+            }
             save(facturaElectronica);
             return facturaElectronica;
         }
@@ -1770,7 +1779,7 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
 
     public EmailResponse sendMail(String mail, List<FacturaElectronica> actComprobante) {
         log.info("FacturaElectronicaServiceImpl.sendMail...mail: " + mail + ", actComprobante: " + actComprobante.size());
-        if (mail.equals("")){ return null; }
+        if (mail == null || mail.isEmpty()){ return null; }
 
         //before use -> clean and build
         InputStream is = FacturaElectronicaServiceImpl.class

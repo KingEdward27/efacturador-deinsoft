@@ -62,7 +62,6 @@ public interface FacturaElectronicaRepository extends JpaRepository<FacturaElect
 
     @Query(value="select p from facturaElectronica p "
             + "where p.fechaEmision >= :fecha "
-            + "and p.nroIntentoEnvio < 3"
             + "and p.empresa.id = :empresaId "
             + "and p.tipo in (:listTipo) "
             + "and p.indSituacion in (:listSituacion) "

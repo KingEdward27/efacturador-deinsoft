@@ -162,7 +162,7 @@ public class PipeFacturaParser
             contadorItem++;
             detalle.put("codProducto", item.getCodigo());
             detalle.put("desItem", item.getDescripcion());
-            detalle.put("mtoValorUnitario", item.getValorUnitario());
+            detalle.put("mtoValorUnitario", Impresion.DF_0000.format(item.getValorUnitario()));
 
             detalle.put("sumTotTributosItem", String.valueOf(item.getAfectacionIgv()));
             detalle.put("unidadMedida", item.getUnidadMedida());

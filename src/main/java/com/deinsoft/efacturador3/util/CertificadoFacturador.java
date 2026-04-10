@@ -6,6 +6,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import org.slf4j.Logger;
@@ -78,8 +80,39 @@ public class CertificadoFacturador {
         return validacion;
     }
 
+    /**
+     * Lee el alias y las fechas de vigencia de un certificado PFX/P12.
+     * Retorna: alias (String), fechaInicio (Date), fechaFin (Date)
+     */
+    public HashMap<String, Object> leerInfoCertificado(String rutaCertificado, String passPrivateKey) throws Exception {
+        if (Security.getProvider("BC") == null) {
+            Security.addProvider(new BouncyCastleProvider());
+        }
+        KeyStore ks = KeyStore.getInstance("PKCS12", "BC");
+        try (InputStream fis = new FileInputStream(rutaCertificado)) {
+            ks.load(fis, passPrivateKey.toCharArray());
+        }
+
+        HashMap<String, Object> info = new HashMap<>();
+        for (Enumeration<String> e = ks.aliases(); e.hasMoreElements();) {
+            String alias = e.nextElement();
+            if (ks.isKeyEntry(alias)) {
+                Certificate cert = ks.getCertificate(alias);
+                if (cert instanceof X509Certificate) {
+                    X509Certificate x509 = (X509Certificate) cert;
+                    info.put("alias", alias);
+                    info.put("fechaInicio", x509.getNotBefore());
+                    info.put("fechaFin", x509.getNotAfter());
+                    info.put("subjectDN", x509.getSubjectX500Principal().getName());
+                    log.info("leerInfoCertificado - alias: {}, vigencia: {} -> {}", alias, x509.getNotBefore(), x509.getNotAfter());
+                }
+                break;
+            }
+        }
+        return info;
+    }
+
     public HashMap<String, Object> importarCertificado(HashMap<String, Object> obj) throws Exception {
-        String aliasPfx = "";
         Integer error = Integer.valueOf(0);
         HashMap<String, Object> resultado = new HashMap<>();
         String nombreCertificado = (obj.get("nombreCertificado") != null) ? (String) obj.get("nombreCertificado") : "";
@@ -115,9 +148,6 @@ public class CertificadoFacturador {
                 if (!output.contains("[ALIAS]")) {
                     resultado.put("validacion", "Certificado, no esta configurado con el valor del RUC");
                     error = Integer.valueOf(1);
-                } else {
-                    Integer position = Integer.valueOf(output.indexOf(":") + 1);
-                    aliasPfx = output.substring(position.intValue());
                 }
             } catch (Exception e) {
                 log.info("Mensaje de Error: " + e.getMessage());
@@ -127,27 +157,14 @@ public class CertificadoFacturador {
 
         if (error.intValue() == 0) {
 
-//            importPfxToJks(rutaCertificado, passPrivateKey, certGenericPath + "FacturadorKey.jks", "SuN@TF4CT", Constantes.PRIVATE_KEY_ALIAS + numDoc);
-            String salida = FacturadorUtil.executeCommand("keytool -delete -alias " + Constantes.PRIVATE_KEY_ALIAS + numDoc + " -storepass SuN@TF4CT -keystore " + certGenericPath + "FacturadorKey.jks");
-
-            log.debug("Metodo importarCertificado: Salida de keytool -delete " + salida);
-            String command;
-            if (aliasPfx.contains(" ")) {
-                command = "keytool -importkeystore -srcalias \"" + aliasPfx + "\" -srckeystore " + rutaCertificado + " -srcstoretype pkcs12 -srcstorepass " + passPrivateKey + " -destkeystore " + certGenericPath + "FacturadorKey.jks -deststoretype JKS -destalias " + Constantes.PRIVATE_KEY_ALIAS + numDoc + " -deststorepass SuN@TF4CT";
-            } else {
-                command = "keytool -importkeystore -srcalias " + aliasPfx + " -srckeystore " + rutaCertificado + " -srcstoretype pkcs12 -srcstorepass " + passPrivateKey + " -destkeystore " + certGenericPath + "FacturadorKey.jks -deststoretype JKS -destalias " + Constantes.PRIVATE_KEY_ALIAS + numDoc + " -deststorepass SuN@TF4CT";
-            }
-
-            log.debug("command: " + command);
-            salida = FacturadorUtil.executeCommand(command);
-
-            log.debug("Metodo importarCertificado: Salida de keytool -importkeystore " + salida);
-            if (!"".equals(salida)) {
-                resultado.put("validacion", "Hubo un error, el certificado no fue creado");
+            try {
+                importPfxToJks(rutaCertificado, passPrivateKey, certGenericPath + "FacturadorKey.jks", "SuN@TF4CT", Constantes.PRIVATE_KEY_ALIAS + numDoc);
+                log.debug("Metodo importarCertificado: importPfxToJks ejecutado correctamente");
+            } catch (Exception e) {
+                log.error("Metodo importarCertificado: Error al importar certificado al JKS: " + e.getMessage(), e);
+                resultado.put("validacion", "Hubo un error, el certificado no fue creado: " + e.getMessage());
                 error = Integer.valueOf(1);
             }
-
-
 
         }
         return resultado;
@@ -165,7 +182,9 @@ public class CertificadoFacturador {
 
         // 2. Cargar el archivo PFX
 
-        Security.addProvider(new BouncyCastleProvider());
+        if (Security.getProvider("BC") == null) {
+            Security.addProvider(new BouncyCastleProvider());
+        }
         KeyStore pfxStore = KeyStore.getInstance("PKCS12", "BC");
         try (FileInputStream pfxIn = new FileInputStream(pfxPath)) {
             pfxStore.load(pfxIn, pfxPassword.toCharArray());
