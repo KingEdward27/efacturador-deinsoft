@@ -45,8 +45,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import com.deinsoft.efacturador3.model.EmpresaCertificado;
+import com.deinsoft.efacturador3.repository.EmpresaCertificadoRepository;
 import com.deinsoft.efacturador3.repository.ErrorRepository;
 import com.deinsoft.efacturador3.signer.SignerXml;
+import com.deinsoft.efacturador3.util.FacturadorUtil;
 import com.deinsoft.efacturador3.soap.gencdp.ExceptionDetail;
 import com.deinsoft.efacturador3.soap.gencdp.TransferirArchivoException;
 import java.io.FileNotFoundException;
@@ -70,6 +73,9 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
 
     @Autowired
     AppConfig appConfig;
+
+    @Autowired
+    private EmpresaCertificadoRepository empresaCertificadoRepository;
 //    ConfigurationHolder config = ConfigurationHolder.getInstance();
 
     public byte[] formatoPlantillaXml(String rootPath, FacturaElectronica facturaElectronica, String nombreArchivo) throws TransferirArchivoException {
@@ -163,11 +169,27 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
 
     public Map<String, Object> firmarXml(String rootPath, Empresa empresa, String nombreArchivo) {
         String rutaNombreEntrada = rootPath + empresa.getNumdoc() + "/TEMP/" + nombreArchivo + ".xml";
-        String rutaNombreSalida = rootPath + empresa.getNumdoc() + "/PARSE/" + nombreArchivo + ".xml";
+
+        List<EmpresaCertificado> vigentes = empresaCertificadoRepository
+                .findVigentesByNumdoc(empresa.getNumdoc(), new Date());
+        if (vigentes.isEmpty()) {
+            throw new RuntimeException("No existe certificado digital vigente para la empresa: " + empresa.getNumdoc());
+        }
+        EmpresaCertificado certVigente = vigentes.get(0);
+        String rawPassword = certVigente.getPassword();
+        String certPass;
+        if (rawPassword != null && !rawPassword.isEmpty()) {
+            certPass = FacturadorUtil.Desencriptar(rawPassword);
+        } else {
+            // Certs migrados sin contraseña en empresa_certificado:
+            // usar la contraseña almacenada en Empresa (también desencriptada)
+            certPass = FacturadorUtil.Desencriptar(empresa.getCertPass());
+        }
+        String alias = certVigente.getAlias();
 
         try {
             FileInputStream inDocument = new FileInputStream(rutaNombreEntrada);
-            return firmarDocumento(rootPath, empresa, inDocument, nombreArchivo);
+            return firmarDocumento(rootPath, empresa, inDocument, nombreArchivo, certPass, alias);
         } catch (Exception e) {
             throw new RuntimeException("Error al firma archivo XML", e);
         }
@@ -508,15 +530,14 @@ public class GenerarDocumentosServiceImpl implements GenerarDocumentosService {
         }
     }
 
-    private Map<String, Object> firmarDocumento(String rootPath, Empresa empresa, InputStream inDocument, String fileName) {
+    private Map<String, Object> firmarDocumento(String rootPath, Empresa empresa, InputStream inDocument, String fileName, String certPass, String alias) {
         try {
             log.debug("GenerarDocumentosServiceImpl.firmarDocumento...Inicio de Firma");
             log.debug("GenerarDocumentosServiceImpl.firmarDocumento...Crear Document");
             Document doc = buildDocument(inDocument);
             addExtensionContent(doc);
-            return SignerXml.firmarXml(rootPath, empresa, doc, rootPath + "/" + empresa.getNumdoc() + "/PARSE/" + fileName + ".xml");
+            return SignerXml.firmarXml(rootPath, empresa, doc, rootPath + "/" + empresa.getNumdoc() + "/PARSE/" + fileName + ".xml", certPass, alias);
         } catch (Exception e) {
-
             throw new RuntimeException("Error al firmar documento: ", e);
         }
     }

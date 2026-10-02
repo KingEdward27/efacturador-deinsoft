@@ -31,6 +31,12 @@
         </encoder>
     </appender>
 
+    <!-- Nivel para el paquete propio: DEBUG -->
+    <logger name="com.deinsoft" level="DEBUG" additivity="false">
+        <appender-ref ref="RollingFile" />
+        <appender-ref ref="Console" />
+    </logger>
+
     <!-- Nivel por defecto -->
     <root level="INFO">
         <appender-ref ref="RollingFile" />

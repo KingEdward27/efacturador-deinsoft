@@ -14,5 +14,9 @@ public interface EmpresaCertificadoService {
 
     List<EmpresaCertificado> findAll();
 
-    EmpresaCertificado importarCertificado(String numdoc, String passPrivateKey, MultipartFile file) throws Exception;
+    EmpresaCertificado importarCertificado(String numdoc, String razonSocial, String nombreComercial,
+            Integer tipodoc, String usuariosol, String clavesol, String direccion,
+            String passPrivateKey, MultipartFile file) throws Exception;
+
+    String getAccessToken(String numdoc);
 }

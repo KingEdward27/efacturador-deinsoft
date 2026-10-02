@@ -38,7 +38,7 @@ import org.w3c.dom.NodeList;
  * @author EDWARD-PC
  */
 public class SignerXml {
-    public static Map<String, Object> firmarXml(String rootPath, Empresa empresa, Document doc,String fileName) throws Exception {
+    public static Map<String, Object> firmarXml(String rootPath, Empresa empresa, Document doc, String fileName, String certPass, String alias) throws Exception {
         Map<String, Object> retorno = new HashMap<>();
         System.out.println("/ INICIO.");
 
@@ -46,8 +46,8 @@ public class SignerXml {
         String sTipoAlmacen = "jks";
         String sAlmacen = rootPath + "ALMCERT/FacturadorKey.jks";
         String sClaveAlmacen = "SuN@TF4CT";
-        String sClavePrivada = FacturadorUtil.Desencriptar(empresa.getCertPass());
-        String sAlias = Constantes.PRIVATE_KEY_ALIAS + empresa.getNumdoc();
+        String sClavePrivada = certPass;
+        String sAlias = (alias != null && !alias.isEmpty()) ? alias : Constantes.PRIVATE_KEY_ALIAS + empresa.getNumdoc();
 
         org.apache.xml.security.Init.init();
 

@@ -33,9 +33,10 @@ public class WebSecurity {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http.antMatcher("/api/**").csrf().disable().authorizeRequests()
-                    .antMatchers("/api/v1/empresa/**").permitAll() //permitimos el acceso a /login a cualquiera
-                    .antMatchers("/api/v1/local/**").permitAll() //permitimos el acceso a /login a cualquiera
-                    .anyRequest().authenticated() //cualquier otra peticion requiere autenticacion
+                    .antMatchers("/api/v1/empresa/**").permitAll()
+                    .antMatchers("/api/v1/local/**").permitAll()
+                    .antMatchers("/api/v1/public/**").permitAll() // consulta pública de CPE sin auth
+                    .anyRequest().authenticated()
                     .and()
                     .addFilter(new JWTAuthorizationFilter(authenticationManager()));
         }
@@ -96,8 +97,11 @@ public class WebSecurity {
 	public CorsFilter corsFilter() {
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
 		corsConfiguration.setAllowCredentials(true);
-		corsConfiguration.setAllowedOrigins(Arrays.asList("http://deinsoft-la.com/","http://66.29.149.124:8080/deinsoft-cloud/",
-                        "http://localhost:4201/","http://localhost:4200/", "http://localhost:15340/","http://localhost:57784/","http://127.0.0.1:5500/"));
+		corsConfiguration.setAllowedOrigins(Arrays.asList(
+                        "https://www.deinsoft-la.com", "https://deinsoft-la.com",
+                        "http://deinsoft-la.com/", "http://66.29.149.124:8080/deinsoft-cloud/",
+                        "http://localhost:4201/", "http://localhost:4200/",
+                        "http://localhost:15340/", "http://localhost:57784/", "http://127.0.0.1:5500/"));
 		corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
 				"Accept", "Authorization", "Origin, Accept", "X-Requested-With",
 				"Access-Control-Request-Method", "Access-Control-Request-Headers"));

@@ -68,10 +68,10 @@ public class Empresa implements Serializable {
     @Column(name = "clavesol")
     private String clavesol;
     
-    @Column(name = "cert_name")
+    @javax.persistence.Transient
     private String certName;
-    
-    @Column(name = "cert_pass")
+
+    @javax.persistence.Transient
     private String certPass;
     
     @Column(name = "token")
@@ -174,23 +174,6 @@ public class Empresa implements Serializable {
         this.clavesol = clavesol;
     }
 
-    public String getCertName() {
-        return certName;
-    }
-
-    public void setCertName(String certName) {
-        this.certName = certName;
-    }
-
-    public String getCertPass() {
-        return certPass;
-    }
-
-    public void setCertPass(String certPass) {
-        this.certPass = certPass;
-    }
-
-
     public String getToken() {
         return token;
     }
@@ -277,7 +260,7 @@ public class Empresa implements Serializable {
 
     @Override
     public String toString() {
-        return "Empresa{" + "id=" + id + ", razonSocial=" + razonSocial + ", tipodoc=" + tipodoc + ", numdoc=" + numdoc + ", serie=" + serie + ", usuariosol=" + usuariosol + ", clavesol=" + clavesol + ", certName=" + certName + ", certPass=" + certPass + ", token=" + token + ", estado=" + estado + '}';
+        return "Empresa{" + "id=" + id + ", razonSocial=" + razonSocial + ", tipodoc=" + tipodoc + ", numdoc=" + numdoc + ", serie=" + serie + ", usuariosol=" + usuariosol + ", clavesol=" + clavesol + ", token=" + token + ", estado=" + estado + '}';
     }
 
     public String getFlagSend() {
@@ -286,5 +269,21 @@ public class Empresa implements Serializable {
 
     public void setFlagSend(String flagSend) {
         this.flagSend = flagSend;
+    }
+
+    public String getCertName() {
+        return certName;
+    }
+
+    public void setCertName(String certName) {
+        this.certName = certName;
+    }
+
+    public String getCertPass() {
+        return certPass;
+    }
+
+    public void setCertPass(String certPass) {
+        this.certPass = certPass;
     }
 }

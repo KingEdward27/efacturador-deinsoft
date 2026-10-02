@@ -12,8 +12,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import java.security.Security;
 
 public class CertificadoFacturador {
 
@@ -85,10 +83,7 @@ public class CertificadoFacturador {
      * Retorna: alias (String), fechaInicio (Date), fechaFin (Date)
      */
     public HashMap<String, Object> leerInfoCertificado(String rutaCertificado, String passPrivateKey) throws Exception {
-        if (Security.getProvider("BC") == null) {
-            Security.addProvider(new BouncyCastleProvider());
-        }
-        KeyStore ks = KeyStore.getInstance("PKCS12", "BC");
+        KeyStore ks = KeyStore.getInstance("PKCS12");
         try (InputStream fis = new FileInputStream(rutaCertificado)) {
             ks.load(fis, passPrivateKey.toCharArray());
         }
@@ -158,7 +153,10 @@ public class CertificadoFacturador {
         if (error.intValue() == 0) {
 
             try {
-                importPfxToJks(rutaCertificado, passPrivateKey, certGenericPath + "FacturadorKey.jks", "SuN@TF4CT", Constantes.PRIVATE_KEY_ALIAS + numDoc);
+                String newAlias = (obj.get("alias") != null && !obj.get("alias").toString().isEmpty())
+                        ? (String) obj.get("alias")
+                        : Constantes.PRIVATE_KEY_ALIAS + numDoc;
+                importPfxToJks(rutaCertificado, passPrivateKey, certGenericPath + "FacturadorKey.jks", "SuN@TF4CT", newAlias);
                 log.debug("Metodo importarCertificado: importPfxToJks ejecutado correctamente");
             } catch (Exception e) {
                 log.error("Metodo importarCertificado: Error al importar certificado al JKS: " + e.getMessage(), e);
@@ -181,11 +179,7 @@ public class CertificadoFacturador {
         }
 
         // 2. Cargar el archivo PFX
-
-        if (Security.getProvider("BC") == null) {
-            Security.addProvider(new BouncyCastleProvider());
-        }
-        KeyStore pfxStore = KeyStore.getInstance("PKCS12", "BC");
+        KeyStore pfxStore = KeyStore.getInstance("PKCS12");
         try (FileInputStream pfxIn = new FileInputStream(pfxPath)) {
             pfxStore.load(pfxIn, pfxPassword.toCharArray());
         }
@@ -200,8 +194,10 @@ public class CertificadoFacturador {
 
                 Certificate[] chain = pfxStore.getCertificateChain(alias);
 
-                // Añadir al JKS con el alias deseado
-                jksStore.setKeyEntry(newAlias, entry.getPrivateKey(), jksPassword.toCharArray(), chain);
+                // Añadir al JKS con el alias deseado.
+                // La entrada de clave se protege con la contraseña del PFX original,
+                // que es la que SignerXml usa al llamar ks.getKey(alias, certPass).
+                jksStore.setKeyEntry(newAlias, entry.getPrivateKey(), pfxPassword.toCharArray(), chain);
                 log.info("Importado al JKS con alias: " + newAlias);
             }
         }

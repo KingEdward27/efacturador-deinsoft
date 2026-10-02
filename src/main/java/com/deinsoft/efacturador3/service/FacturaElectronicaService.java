@@ -77,7 +77,7 @@ public interface FacturaElectronicaService {
     
     public List<FacturaElectronicaDto> getReportActComprobanteCombined(ParamBean paramBean) throws Exception;
 
-    void validateApi(long id) throws Exception;
-    FacturaElectronicaResponse getStatus (String numTicket);
+    Map<String, Object> validateApi(long id) throws Exception;
+    FacturaElectronicaResponse getStatus(String serie, String numero, Empresa empresa);
     Map<String, Object> getXmlAsBytes(Long id, String serie, String numero, Empresa empresa) throws IOException;
 }

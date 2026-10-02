@@ -31,6 +31,9 @@ export class ActComprobanteService {
   public resumenDiario(ids: any): Observable<any> {
     return this.http.post<any>(this.url + '/resumendiario?ids=' + ids.toString(), null);
   }
+  public genXmlMasivo(ids: string): Observable<any> {
+    return this.http.post<any>(this.url + '/gen-xml-masivo?ids=' + ids, null);
+  }
   public genXml(id: any): Observable<any> {
     return this.http.post<any>(this.url + '/xml?id=' + id.toString(), null);
   }

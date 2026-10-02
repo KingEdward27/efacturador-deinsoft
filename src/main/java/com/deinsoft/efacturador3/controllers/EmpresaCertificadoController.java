@@ -33,6 +33,12 @@ public class EmpresaCertificadoController {
     @PostMapping(value = "importar", consumes = {"multipart/form-data"})
     public ResponseEntity<?> importar(
             @RequestPart("numdoc") String numdoc,
+            @RequestPart(value = "razonSocial", required = false) String razonSocial,
+            @RequestPart(value = "nombreComercial", required = false) String nombreComercial,
+            @RequestPart(value = "tipodoc", required = false) String tipodoc,
+            @RequestPart(value = "usuariosol", required = false) String usuariosol,
+            @RequestPart(value = "clavesol", required = false) String clavesol,
+            @RequestPart(value = "direccion", required = false) String direccion,
             @RequestPart("passPrivateKey") String passPrivateKey,
             @RequestPart("file") MultipartFile file,
             HttpServletRequest request, HttpServletResponse response) {
@@ -53,13 +59,25 @@ public class EmpresaCertificadoController {
         }
 
         try {
-            EmpresaCertificado ec = empresaCertificadoService.importarCertificado(numdoc, passPrivateKey, file);
+            Integer tipodocInt = (tipodoc != null && !tipodoc.isEmpty()) ? Integer.valueOf(tipodoc) : 6;
+            EmpresaCertificado ec = empresaCertificadoService.importarCertificado(
+                    numdoc, razonSocial, nombreComercial, tipodocInt,
+                    usuariosol, clavesol, direccion, passPrivateKey, file);
+
             resultado.put("code", "000");
             resultado.put("message", "Certificado importado y registrado correctamente");
             resultado.put("id", ec.getId());
             resultado.put("alias", ec.getAlias());
             resultado.put("fechaInicioVigencia", ec.getFechaInicioVigencia());
             resultado.put("fechaFinVigencia", ec.getFechaFinVigencia());
+
+            // Retornar token (útil cuando la empresa fue registrada por primera vez)
+            String accessToken = empresaCertificadoService.getAccessToken(numdoc);
+            if (accessToken != null) {
+                resultado.put("access_token", accessToken);
+                resultado.put("validacion", "EXITO");
+            }
+
             return ResponseEntity.status(HttpStatus.CREATED).body(resultado);
         } catch (Exception e) {
             log.error("importar certificado - error: {}", e.getMessage(), e);

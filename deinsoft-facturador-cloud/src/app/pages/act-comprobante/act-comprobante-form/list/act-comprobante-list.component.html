@@ -245,9 +245,14 @@
                         <div class="form-group-sm row">
                             <div class="col-sm-12 text-right" *ngIf="listData && listData.length > 0">
                                 <div class="row text-right">
-                                    <div class="col-lg-10 col-sm-12"></div>
+                                    <div class="col-lg-8 col-sm-12"></div>
                                     <div class="col-lg-2 col-sm-12">
-                                        <button class="btn btn-danger" (click)="resumenDiario()">
+                                        <button class="btn btn-warning col-12" (click)="genXmlMasivo()">
+                                            <i class="fa fa-file-code-o"></i> Generar XML
+                                        </button>
+                                    </div>
+                                    <div class="col-lg-2 col-sm-12">
+                                        <button class="btn btn-danger col-12" (click)="resumenDiario()">
                                             <i class="fa fa-cog"></i> Resumen Diario
                                         </button>
                                     </div>
@@ -332,11 +337,10 @@
                                                                 style="cursor: pointer;"
                                                                 title="Enviar comprobante a SUNAT"></a>
                                                         </div>
-                                                        <div *ngIf="item.indSituacion != '03'"
-                                                            class="col-lg-3 col-sm-6 col-xs-6 text-center">
-                                                            <a (click)="validate(item)" class="fa fa-refresh fa-md"
+                                                        <div class="col-lg-3 col-sm-6 col-xs-6 text-center">
+                                                            <a (click)="validate(item)" class="fa fa-check-circle fa-md"
                                                                 style="cursor: pointer;"
-                                                                title="Validar comprobante"></a>
+                                                                title="Consultar validez en SUNAT"></a>
                                                         </div>
                                                         <div *ngIf="item.indSituacion == '03'"
                                                             class="col-lg-3 col-sm-6 col-xs-6 text-center"><a

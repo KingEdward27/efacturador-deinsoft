@@ -199,17 +199,24 @@ public class FacturaController extends BaseController {
     }
 
     @GetMapping(value = "/status")
-    public ResponseEntity<?> getStatus(@RequestParam(name = "numTicket") String numTicket) {
-        log.debug("FacturaController.send-sunat...Iniciando el procesamiento");
-        FacturaElectronicaResponse facturaElectronicaResponse = null;
+    public ResponseEntity<?> getStatus(
+            @RequestParam(name = "serie") String serie,
+            @RequestParam(name = "numero") String numero,
+            HttpServletRequest request) {
         try {
-            facturaElectronicaResponse =  facturaElectronicaService.getStatus(numTicket);
-        }catch (Exception e) {
+            Empresa empresa = getEmpresa(request);
+            if (empresa == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            FacturaElectronicaResponse resp = facturaElectronicaService.getStatus(serie, numero, empresa);
+            if (resp == null) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            }
+            return ResponseEntity.ok(resp);
+        } catch (Exception e) {
             e.printStackTrace();
-
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(facturaElectronicaResponse);
     }
 
     @PostMapping(value = "/get-pdf")

@@ -113,6 +113,40 @@ public class FacturaBackendController extends BaseController {
         return facturaElectronicaService.getReportActComprobante(paramBean);
     }
 
+    @RequestMapping(value = {"/gen-xml-masivo"}, method = RequestMethod.POST)
+    public ResponseEntity<?> genXmlMasivo(@RequestParam(value = "ids") String ids) {
+        String[] partes = ids.split(",");
+        List<Long> listIds = new ArrayList<>();
+        for (String parte : partes) {
+            String trimmed = parte.trim();
+            if (!trimmed.isEmpty()) listIds.add(Long.valueOf(trimmed));
+        }
+        int exitosos = 0, fallidos = 0;
+        List<String> errores = new ArrayList<>();
+        for (Long id : listIds) {
+            try {
+                Map<String, Object> r = facturaElectronicaService.generarComprobantePagoSunat(id);
+                String code = r.get("code") == null ? "" : r.get("code").toString();
+                if (code.equals("-2") || code.equals("9999")) {
+                    fallidos++;
+                    errores.add("id=" + id + ": " + r.get("message"));
+                } else {
+                    exitosos++;
+                }
+            } catch (Exception e) {
+                fallidos++;
+                errores.add("id=" + id + ": " + e.getMessage());
+            }
+        }
+        Map<String, Object> resultado = new HashMap<>();
+        resultado.put("exitosos", exitosos);
+        resultado.put("fallidos", fallidos);
+        resultado.put("errores", errores);
+        resultado.put("code", fallidos == 0 ? "000" : (exitosos == 0 ? "9999" : "001"));
+        resultado.put("message", "Procesados: " + listIds.size() + ", exitosos: " + exitosos + ", fallidos: " + fallidos);
+        return ResponseEntity.ok(resultado);
+    }
+
     @RequestMapping(value = {"/xml"}, method = RequestMethod.POST)
     public ResponseEntity<?> genXml(@RequestParam(value = "id") long id) {
         Map<String, Object> resultado = null;
@@ -152,9 +186,8 @@ public class FacturaBackendController extends BaseController {
 
     @PostMapping(value = "/validate")
     public ResponseEntity<?> validate(@RequestParam(name = "id") long id) throws Exception {
-        facturaElectronicaService.validateApi(id);
-
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        Map<String, Object> result = facturaElectronicaService.validateApi(id);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @PostMapping(value = "/get-pdf")

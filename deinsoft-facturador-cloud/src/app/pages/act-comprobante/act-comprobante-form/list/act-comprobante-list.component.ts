@@ -167,6 +167,31 @@ export class ActComprobanteListFormComponent extends CommonReportFormComponent i
     this.modalRef.componentInstance.id = item.id;
 
   }
+  genXmlMasivo() {
+    const ids = this.listData
+      .filter((e: any) => e.selection)
+      .map((e: any) => e.id)
+      .join(',');
+    if (!ids) {
+      this.deps.utilService.msgWarning('Selección', 'Debe seleccionar al menos un comprobante');
+      return;
+    }
+    this.deps.utilService.confirmOperation(null).then((result) => {
+      if (result) {
+        this.deps.actComprobanteService.genXmlMasivo(ids).subscribe(data => {
+          if (data.fallidos > 0) {
+            this.deps.utilService.msgHTTP400WithMessage(data.message + (data.errores?.length ? ': ' + data.errores.join(' | ') : ''));
+          } else {
+            this.deps.utilService.msgOkOperation();
+          }
+          this.getListData();
+        }, err => {
+          this.deps.utilService.msgHTTP400WithMessage(err.message);
+        });
+      }
+    });
+  }
+
   resumenDiario() {
     this.deps.utilService.confirmOperation(null).then((result) => {
       if (result) {
@@ -245,19 +270,21 @@ export class ActComprobanteListFormComponent extends CommonReportFormComponent i
   }
 
   validate(item: any) {
-    this.deps.utilService.confirmOperation(null).then((result) => {
+    this.deps.utilService.confirmOperation("CONSULTAR VALIDEZ EN SUNAT").then((result) => {
       if (result) {
         this.deps.actComprobanteService.validateApi(item.id.toString()).subscribe(data => {
-          console.log(data);
-          
+          const msg = data?.message || 'Consulta completada';
+          const isAceptado = data?.indSituacion === '03';
+          if (isAceptado) {
+            this.deps.utilService.msgOkOperation();
+          } else {
+            this.deps.utilService.msgHTTP400WithMessage(msg);
+          }
+          this.getListData();
         }, err => {
-
-          //error en validaciones, los demas errores en JwtInterceptor
           this.deps.utilService.msgHTTP400WithMessage(err.message);
-          console.log(err);
         });
       }
-
     });
   }
 

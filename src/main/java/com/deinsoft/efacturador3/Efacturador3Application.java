@@ -57,7 +57,7 @@ public class Efacturador3Application extends WebMvcConfigurerAdapter implements 
 //        }
     }
 
-    @Scheduled(cron = "0 0 23 * * *")
+    @Scheduled(cron = "0 0 13,23 * * *")
 //    @Scheduled(cron = "0 * * * * ?")
     void sendSunat() {
         if (!this.environment.getActiveProfiles()[0].equalsIgnoreCase("local")) {
@@ -83,10 +83,6 @@ public class Efacturador3Application extends WebMvcConfigurerAdapter implements 
 
     @Override
     public void run(String... args) throws Exception {
-        String password = "DEINSOFT202201$$";
-        for (int i = 0; i < 2; i++) {
-            String bcryptPassword = passwordEncoder.encode(password);
-            System.out.println(bcryptPassword);
-        }
+        System.out.println("init run()");
     }
 }

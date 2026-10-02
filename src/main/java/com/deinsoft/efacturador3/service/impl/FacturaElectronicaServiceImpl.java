@@ -581,17 +581,17 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     }
 
     @Override
-    public FacturaElectronicaResponse getStatus (String numTicket) {
-        List<FacturaElectronica> facturas = getByTicketOperacion(Long.parseLong(numTicket));
-        if (facturas.size() > 0) {
-            FacturaElectronica facturaElectronica = facturas.get(0);
+    public FacturaElectronicaResponse getStatus(String serie, String numero, Empresa empresa) {
+        FacturaElectronica param = new FacturaElectronica();
+        param.setSerie(serie);
+        param.setNumero(numero);
+        param.setEmpresa(empresa);
+        List<FacturaElectronica> facturas = getBySerieAndNumeroAndEmpresaId(param);
+        if (!facturas.isEmpty()) {
+            FacturaElectronica f = facturas.get(0);
             return new FacturaElectronicaResponse(
-                    facturaElectronica.getTipo(),
-                    facturaElectronica.getSerie(),
-                    facturaElectronica.getNumero(),
-                    facturaElectronica.getFechaEmision(),
-                    facturaElectronica.getIndSituacion(),
-                    facturaElectronica.getObservacionEnvio());
+                    f.getTipo(), f.getSerie(), f.getNumero(),
+                    f.getFechaEmision(), f.getIndSituacion(), f.getObservacionEnvio());
         }
         return null;
     }
@@ -955,9 +955,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
                 if (item.getMonto_referencial_unitario() == null) {
                     item.setMonto_referencial_unitario(BigDecimal.ZERO);
                 }
-                if (!(item.getUnidad_medida().equals("NIU") || item.getUnidad_medida().equals("ZZ"))) {
-                    return "Código de unidad de medida no soportado";
-                }
+//                if (!(item.getUnidad_medida().equals("NIU") || item.getUnidad_medida().equals("ZZ"))) {
+//                    return "Código de unidad de medida no soportado";
+//                }
                 if (Integer.valueOf(item.getTipo_igv()) >= 10 && Integer.valueOf(item.getTipo_igv()) < 20
                         && item.getAfectacion_igv() == BigDecimal.ZERO) {
                     return "El monto de afectación de IGV por linea debe ser diferente a 0.00.";
@@ -1310,8 +1310,9 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
         listSituacion.add(Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO);
         listSituacion.add(Constantes.CONSTANTE_SITUACION_ENVIADO_ACEPTADO_OBSERVACIONES);
         for (Empresa empresa : empresaService.getEmpresas()) {
-            if (empresa.getFlagSend().equals("1") && !Util.isNullOrEmpty(empresa.getValidationClientId())
-                                                    && !Util.isNullOrEmpty(empresa.getValidationClientSecret())) {
+            if (empresa.getFlagSend() != null && empresa.getFlagSend().equals("1")
+                    && !Util.isNullOrEmpty(empresa.getValidationClientId())
+                    && !Util.isNullOrEmpty(empresa.getValidationClientSecret())) {
                 List<FacturaElectronica> list = facturaElectronicaRepository.
                         findToVerify(
                                 empresa.getId(), Arrays.asList(
@@ -1364,13 +1365,17 @@ public class FacturaElectronicaServiceImpl implements FacturaElectronicaService 
     }
 
     @Override
-    public void validateApi(long id) throws Exception {
+    public Map<String, Object> validateApi(long id) throws Exception {
         FacturaElectronica facturaElectronica = findById(id);
         ValidacionSUNAT val = new ValidacionSUNAT(Objects.requireNonNull(
                 appConfig.getUrlAuthValidation().replace("{{CLIENT_ID}}", facturaElectronica.getEmpresa().getValidationClientId())),
                 appConfig.getUrlValidation().replace("{{CLIENT_NUMDOC}}", facturaElectronica.getEmpresa().getNumdoc()));
         String token = val.getApiToken(facturaElectronica.getEmpresa().getValidationClientId(), facturaElectronica.getEmpresa().getValidationClientSecret());
         sendValidation(token, val, facturaElectronica);
+        Map<String, Object> result = new HashMap<>();
+        result.put("indSituacion", facturaElectronica.getIndSituacion());
+        result.put("message", facturaElectronica.getObservacionEnvio());
+        return result;
     }
 
     private void sendValidation(String token, ValidacionSUNAT val,
